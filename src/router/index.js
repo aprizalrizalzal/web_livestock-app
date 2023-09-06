@@ -76,4 +76,20 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const token = localStorage.getItem('token');
+
+  if (!isLoggedIn && !token) {
+    if (to.name !== 'register' && to.name !== 'login' && to.name !== 'home') {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  } else {
+    // Jika pengguna sudah login atau di halaman login, lanjutkan ke rute berikutnya
+    next();
+  }
+});
+
 export default router;

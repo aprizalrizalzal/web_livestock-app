@@ -23,7 +23,7 @@ onMounted(fetchLivestocks);
 </script>
 
 <template>
-  <div class="home">
+  <div class="home" v-if="livestocks[0] && livestocks[0].profile && livestocks[0].livestock_type && livestocks[0].livestock_species">
     <h2 class="mb-4">Beranda</h2>
     <div class="row justify-content-center">
       <div class="col-md-4 mb-2" v-for="livestock in livestocks" :key="livestock.id">
@@ -34,10 +34,13 @@ onMounted(fetchLivestocks);
             <p class="card-text m-0"><i class="bi bi-wallet"></i> {{ livestock.price }}</p>
             <p class="card-text m-0"><i class="bi bi-person"></i> {{ livestock.profile.name }}</p>
             <p class="card-text"><i class="bi bi-geo-alt"></i> {{ livestock.profile.address }}</p>
-            <button @click="navigateToDetail(livestock.id)" class="btn btn-primary">Lihat Detail</button>
+            <button @click="navigateToDetail(livestock.id)" class="btn btn-primary"><i class="bi bi-view-list"></i> Lihat Detail</button>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="home" v-else>
+    <h2 class="mb-4">Loading...</h2>
   </div>
 </template>

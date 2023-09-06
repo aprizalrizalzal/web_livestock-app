@@ -1,27 +1,21 @@
 <script setup>
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 import navbar from '@/views/layouts/Navbar.vue';
 import navbarGuest from '@/views/layouts/NavbarGuest.vue';
 import offcanvas from '@/views/layouts/Offcanvas.vue';
 
-const router = useRouter();
-
-const checkLocalStorageLogin = () => {
+const isLoggedIn = computed(() => {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
   const token = localStorage.getItem('token');
-
   return isLoggedIn === 'true' && token;
-};
-
-if (!checkLocalStorageLogin) {
-  router.push({ name: 'login' });
-}
+});
 </script>
 
 <template>
   <header>
-    <navbar v-if="checkLocalStorageLogin()" />
+    <navbar v-if="isLoggedIn" />
     <navbarGuest v-else />
   </header>
 
@@ -31,7 +25,7 @@ if (!checkLocalStorageLogin) {
     <router-view />
   </main>
 
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 120">
     <path
       fill="#0d6efd"
       fill-opacity="1"

@@ -3,4 +3,7 @@
   <div class="payments">
     <h2 class="mb-4">Pembayaran</h2>
   </div>
+  <div class="payments">
+    <h2 class="mb-4">Loading...</h2>
+  </div>
 </template>

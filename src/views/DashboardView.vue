@@ -3,4 +3,7 @@
   <div class="dashboard">
     <h2 class="mb-4">Dashboard</h2>
   </div>
+  <div class="dashboard">
+    <h2 class="mb-4">Loading...</h2>
+  </div>
 </template>

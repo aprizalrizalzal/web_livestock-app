@@ -24,8 +24,8 @@ onMounted(fetchLivestockById);
   <div class="livestock-detail" v-if="livestock && livestock.livestock_photos && livestock.profile && livestock.livestock_type && livestock.livestock_species">
     <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
     <div class="bg-body rounded shadow-sm">
-      <div class="table-responsive p-2">
-        <table class="table table-borderless table-sm">
+      <div class="table-responsive px-3 pt-4">
+        <table class="table align-middle table-borderless table-sm">
           <thead></thead>
           <tbody>
             <tr>
@@ -81,7 +81,7 @@ onMounted(fetchLivestockById);
       </div>
     </div>
   </div>
-  <div v-else>
+  <div class="livestock-detail" v-else>
     <h2>Loading...</h2>
   </div>
 </template>

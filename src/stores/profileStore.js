@@ -41,7 +41,8 @@ export const useProfileStore = defineStore({
           resolve(this.profile);
         } catch (error) {
           console.error('Error in getProfile ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -64,7 +65,33 @@ export const useProfileStore = defineStore({
           resolve(this.profile);
         } catch (error) {
           console.error('Error in postProfile ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
+    postProfilePhoto(profilePhoto) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await this.fetchCsrfToken();
+
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          };
+
+          const response = await axios.post('/api/profile-photo', profilePhoto, {
+            headers,
+          });
+
+          this.profile = response.data.profile;
+          resolve(this.profile);
+        } catch (error) {
+          console.error('Error in postProfile ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -87,7 +114,8 @@ export const useProfileStore = defineStore({
           resolve(this.profile);
         } catch (error) {
           console.error('Error in putProfile ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -111,7 +139,8 @@ export const useProfileStore = defineStore({
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deleteProfile ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },

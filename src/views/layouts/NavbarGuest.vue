@@ -7,6 +7,11 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{ name: 'home' }" exact-active-class="active">Beranda</router-link>
+          </li>
+        </ul>
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'register' }" exact-active-class="active">Register</router-link>

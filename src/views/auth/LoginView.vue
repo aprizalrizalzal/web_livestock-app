@@ -27,10 +27,11 @@ const loginUser = async () => {
 </script>
 
 <template>
-  <div class="login rounded bg-white mt-4 pb-4 shadow-sm">
-    <h2 class="fw-bold mb-4 pt-4 text-center">Masuk</h2>
+  <div class="login">
+    <h2 class="fw-bold mb-4 pt-4 text-center"><i class="bi bi-box-arrow-in-right"></i> Masuk</h2>
     <div class="row d-flex justify-content-center mx-4">
-      <div class="col-md-6">
+      <div class="rounded bg-white p-4 shadow-sm col-md-6">
+        <p>Silakan masuk ke akun Anda untuk melanjutkan.</p>
         <form @submit.prevent="loginUser">
           <div class="form-floating mb-2">
             <input type="email" class="form-control shadow-sm" id="floatingEmail" placeholder="name@example.com" v-model="userData.email" required />
@@ -44,7 +45,7 @@ const loginUser = async () => {
             <RouterLink class="text-decoration-none" :to="{ name: 'dashboard' }" exact-active-class="active">Lupa Password?</RouterLink>
           </div>
           <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-outline-primary shadow-sm mt-2">Masuk</button>
+            <button type="submit" class="btn btn-primary shadow-sm mt-2"><i class="bi bi-box-arrow-in-right"></i> Masuk</button>
           </div>
         </form>
       </div>

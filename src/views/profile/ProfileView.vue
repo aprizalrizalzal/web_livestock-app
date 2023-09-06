@@ -1,87 +1,143 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useProfileStore } from '@/stores/profileStore';
 import { useUserStore } from '@/stores/userStore';
 
 const storeProfile = useProfileStore();
 const storeUser = useUserStore();
-const profile = ref({});
+
+const profile = ref({
+  name: '',
+  gender: '',
+  phone_number: '',
+  address: '',
+});
+
 const user = ref({});
+const message = ref({});
+const modalTrigger = ref(null);
+
+watch(message, (newMessage) => {
+  if (newMessage) {
+    showModal();
+  } else {
+  }
+});
+
+const triggerModalClick = () => {
+  if (modalTrigger.value) {
+    modalTrigger.value.click();
+  }
+};
+
+const showModal = () => {
+  triggerModalClick();
+};
+
+onMounted(() => {
+  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
+
 const isEditPhoto = ref(false);
-const isEditProfile = ref(false);
-const isEditEmail = ref(false);
-const isEditPassword = ref(false);
 
 const fetchProfile = async () => {
   try {
     profile.value = await storeProfile.fetchProfile();
     if (profile.value && profile.value.user_id) {
-      fetchUser(profile.value.user_id);
+      fetchUserById(profile.value.user_id);
     }
   } catch (error) {
     console.error('Kesalahan dalam mengambil data profile:', error);
+    message.value = error;
   }
 };
 
-const fetchUser = async (userId) => {
+const fetchUserById = async (userId) => {
   try {
     user.value = await storeUser.fetchUserById(userId);
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data profile:', error);
+    console.error('Kesalahan dalam mengambil data user:', error);
   }
 };
 
-const startEditPhoto = () => {
-  isEditPhoto.value = true;
-};
+const handleFileUpload = async (event) => {
+  const selectedFile = event.target.files[0];
 
-const savePhoto = () => {
-  isEditPhoto.value = false;
+  if (selectedFile) {
+    try {
+      const formData = new FormData();
+      formData.append('photo', selectedFile);
+
+      const response = await storeProfile.postProfilePhoto(formData);
+      if (response) {
+        isEditPhoto.value = false;
+        fetchProfile();
+      }
+    } catch (error) {
+      console.error('Kesalahan dalam mengunggah gambar profil:', error);
+    }
+  }
 };
 
 const deletePhoto = () => {};
 
-const startEditProfile = () => {
-  isEditProfile.value = true;
+const saveProfile = async () => {
+  try {
+    const response = await storeProfile.postProfile(profile.value);
+    profile.value = response;
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data profile:', error);
+  }
 };
 
-const saveProfile = () => {
-  isEditProfile.value = false;
+const updateProfile = async () => {
+  try {
+    const response = await storeProfile.putProfile(profile.value);
+    profile.value = response;
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data profile:', error);
+  }
 };
 
-const startEditEmail = () => {
-  isEditEmail.value = true;
-};
+const saveEmail = () => {};
 
-const saveEmail = () => {
-  isEditEmail.value = false;
-};
-
-const startEditPassword = () => {
-  isEditPassword.value = true;
-};
-
-const savePassword = () => {
-  isEditPassword.value = false;
-};
+const savePassword = () => {};
 
 onMounted(fetchProfile);
 </script>
 <template>
-  <div class="profile">
+  <div class="profile" v-if="profile && user && user.roles && user.permissions">
+    <h2 class="mb-4">Profile</h2>
+    <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
+    <div id="showModalMessage" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-light">
+            <h5 class="modal-title">Pesan</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>{{ message }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container rounded bg-white mt-3 mb-5 shadow-sm">
       <div class="row">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center pt-5">
-            <img :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" />
+            <img src="../../../public/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-if="!profile.photo_url" />
+            <img :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-else />
             <span>{{ user.name }}</span>
             <span>{{ user.email }}</span>
-            <div class="mt-4 text-center" v-if="!isEditPhoto">
-              <button @click="startEditPhoto" class="btn btn-outline-primary shadow-sm me-2">Edit</button>
-              <button @click="deletePhoto" class="btn btn-outline-danger shadow-sm">Hapus Foto</button>
-            </div>
-            <div class="mt-4 text-center" v-else>
-              <button @click="savePhoto" class="btn btn-outline-primary shadow-sm">Simpan Foto</button>
+            <span>{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
+            <div class="mt-5 text-center">
+              <input type="file" @change="handleFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
+              <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
+              <button @click="deletePhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
             </div>
           </div>
         </div>
@@ -91,26 +147,37 @@ onMounted(fetchProfile);
               <h4 class="text-right">Pengaturan Profil</h4>
             </div>
             <div class="row mt-3">
-              <div class="col-md-12">
-                <label class="labels">Nama</label>
-                <input type="text" class="form-control shadow-sm mb-2" placeholder="Nama" v-model="profile.name" />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Jenis Kelamin</label>
-                <input type="text" class="form-control shadow-sm mb-2" placeholder="Jenis Kelamin" v-model="profile.gender" />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Nomer Telpon</label>
-                <input type="text" class="form-control shadow-sm mb-2" placeholder="Nomor Telepon" v-model="profile.phone_number" />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Alamat</label>
-                <input type="text" class="form-control shadow-sm mb-2" placeholder="Alamat" v-model="profile.address" />
-              </div>
-            </div>
-            <div class="mt-3 text-end">
-              <button @click="startEditProfile" class="btn btn-outline-primary shadow-sm" v-if="!isEditProfile">Edit</button>
-              <button @click="saveProfile" class="btn btn-outline-primary shadow-sm" v-else>Simpan Profil</button>
+              <form @submit.prevent="profile ? updateProfile() : saveProfile()">
+                <div class="col-md-12">
+                  <label class="labels">Nama</label>
+                  <input type="text" class="form-control shadow-sm mb-2" placeholder="Nama" v-model="profile.name" required />
+                </div>
+                <div class="col-md-12">
+                  <label class="labels">Jenis Kelamin</label>
+                  <div class="mt-2 mb-2">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input shadow-sm" type="radio" name="inlineRadioOptions" id="male" value="Male" v-model="profile.gender" />
+                      <label class="form-check-label" for="male">Laki-laki</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input shadow-sm" type="radio" name="inlineRadioOptions" id="female" value="Female" v-model="profile.gender" />
+                      <label class="form-check-label" for="female">Perempuan</label>
+                    </div>
+                  </div>
+                  <!-- <input type="text" class="form-control shadow-sm mb-2" placeholder="Jenis Kelamin" v-model="profile.gender" required /> -->
+                </div>
+                <div class="col-md-12">
+                  <label class="labels">Nomer Telpon</label>
+                  <input type="text" class="form-control shadow-sm mb-2" placeholder="Nomor Telepon" v-model="profile.phone_number" required />
+                </div>
+                <div class="col-md-12">
+                  <label class="labels">Alamat</label>
+                  <input type="text" class="form-control shadow-sm mb-2" placeholder="Alamat" v-model="profile.address" required />
+                </div>
+                <div class="mt-3 text-end">
+                  <button type="submit" :class="profile ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ profile ? 'Perbarui Profil' : 'Simpan Profil' }}</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -120,32 +187,37 @@ onMounted(fetchProfile);
               <h4>Tambahan</h4>
             </div>
             <div class="row mt-3">
-              <div class="col-md-12">
-                <label class="labels">Email Baru</label>
-                <input type="text" class="form-control shadow-sm mb-2" placeholder="Email Baru" />
-              </div>
-              <div class="mt-3 text-end">
-                <button @click="startEditEmail" class="btn btn-outline-primary shadow-sm" v-if="!isEditEmail">Edit</button>
-                <button @click="saveEmail" class="btn btn-outline-primary shadow-sm" v-else>Simpan Email</button>
-              </div>
+              <form @submit.prevent="saveEmail">
+                <div class="col-md-12">
+                  <label class="labels">Email</label>
+                  <input type="text" class="form-control shadow-sm mb-2" :placeholder="user.email" required />
+                </div>
+                <div class="mt-3 text-end">
+                  <button type="submit" class="btn btn-primary shadow-sm"><i class="bi bi-save"></i> Perbarui Email</button>
+                </div>
+              </form>
             </div>
-            <div class="row mt-3">
-              <div class="col-md-12">
-                <label class="labels">Password</label>
-                <input type="password" class="form-control shadow-sm mb-2" placeholder="Password" />
-              </div>
-              <div class="col-md-12">
-                <label class="labels">Password Baru</label>
-                <input type="password" class="form-control shadow-sm mb-2" placeholder="Password Baru" />
-              </div>
-              <div class="mt-3 text-end">
-                <button @click="startEditPassword" class="btn btn-outline-primary shadow-sm" v-if="!isEditPassword">Edit</button>
-                <button @click="savePassword" class="btn btn-outline-primary shadow-sm" v-else>Simpan Password</button>
-              </div>
+            <div class="row mt-4">
+              <form @submit.prevent="savePassword">
+                <div class="col-md-12">
+                  <label class="labels">Password</label>
+                  <input type="password" class="form-control shadow-sm mb-2" placeholder="Password" required />
+                </div>
+                <div class="col-md-12">
+                  <label class="labels">Konfirmasi Password</label>
+                  <input type="password" class="form-control shadow-sm mb-2" placeholder="Konfirmasi Password" required />
+                </div>
+                <div class="mt-3 text-end">
+                  <button type="submit" class="btn btn-danger shadow-sm"><i class="bi bi-save"></i> Perbarui Password</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="profile" v-else>
+    <h2 class="mb-4">Loading...</h2>
   </div>
 </template>
