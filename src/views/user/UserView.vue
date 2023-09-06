@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { useRouter } from 'vue-router';
 
 const store = useUserStore();
+const router = useRouter();
 const users = ref([]);
+const searchQuery = ref([]);
 const startNumber = 1;
 
 const fetchUsers = async () => {
@@ -14,12 +17,8 @@ const fetchUsers = async () => {
   }
 };
 
-const fetchUserById = async (userId) => {
-  try {
-    users.value = await store.fetchUserById(userId);
-  } catch (error) {
-    console.error('Kesalahan dalam menghapus data users:', error);
-  }
+const navigateLivestocksByIdProfile = (profileId) => {
+  router.push({ name: 'livestocks-profile', params: { id: profileId } });
 };
 
 const deleteUserById = async (userId) => {
@@ -31,6 +30,10 @@ const deleteUserById = async (userId) => {
   }
 };
 
+const goBack = () => {
+  router.back();
+};
+
 const autoNumber = (i) => {
   return startNumber * i + 1;
 };
@@ -40,7 +43,18 @@ onMounted(fetchUsers);
 
 <template>
   <div class="users" v-if="users[0] && users[0].profile && users[0].roles[0]">
-    <h2 class="mb-4">Pengguna</h2>
+    <div class="row">
+      <div class="col-md-9">
+        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      </div>
+      <div class="col-md-3 text-end">
+        <h2 class="mb-4">Pengguna</h2>
+      </div>
+      <div class="col-md-12">
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+      </div>
+    </div>
+
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table align-middle table-sm">
@@ -50,6 +64,7 @@ onMounted(fetchUsers);
               <th>Nama</th>
               <th>Email</th>
               <th>Peran</th>
+              <th class="text-center">Hewan Ternak</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
@@ -60,8 +75,14 @@ onMounted(fetchUsers);
               <td>{{ user.email }}</td>
               <td>{{ user.roles[0].name }}</td>
               <td class="text-truncate text-center">
-                <button data-bs-toggle="modal" :data-bs-target="'#showModalDetail-' + user.id" class="btn btn-primary me-2"><i class="bi bi-person-badge"></i> Detail</button>
-                <div :id="'showModalDetail-' + user.id" class="modal" tabindex="-1" role="dialog">
+                <button v-if="user.roles && user.roles[0].name === 'seller'" @click="navigateLivestocksByIdProfile(user.profile.id)" class="btn btn-secondary"><i class="bi bi-box-seam-fill"></i> Lihat</button>
+                <span v-else class="text-info">Tidak Ada</span>
+              </td>
+              <td class="text-truncate text-center">
+                <button v-if="user.profile ? user.profile.id : null" data-bs-toggle="modal" :data-bs-target="'#showModalDetail-' + user.id" class="btn btn-primary me-2"><i class="bi bi-person-badge"></i> Detail</button>
+                <button v-else class="btn btn-warning me-2" disabled><i class="bi bi-person-fill-exclamation"></i> Profile</button>
+
+                <div v-if="user.profile ? user.profile.id : null" :id="'showModalDetail-' + user.id" class="modal" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
@@ -110,9 +131,6 @@ onMounted(fetchUsers);
                     </div>
                   </div>
                 </div>
-
-                <button v-if="user.profile ? user.profile.id : null" @click="fetchLivestocksByIdProfile(user.profile.id)" class="btn btn-secondary me-2"><i class="bi bi-box-seam-fill"></i> Produk</button>
-                <button v-else class="btn btn-warning me-2"><i class="bi bi-person-fill-exclamation"></i> Profile</button>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + user.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + user.id" class="modal" tabindex="-1" role="dialog">

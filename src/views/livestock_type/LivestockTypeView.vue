@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useLivestockTypeStore } from '@/stores/livestockTypeStore';
+import { useRouter, useRoute } from 'vue-router';
 
 const store = useLivestockTypeStore();
+const router = useRouter();
 const livestockTypes = ref([]);
+const searchQuery = ref([]);
 const startNumber = 1;
 
 const fetchLivestockTypes = async () => {
@@ -12,6 +15,10 @@ const fetchLivestockTypes = async () => {
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestockTypes:', error);
   }
+};
+
+const goBack = () => {
+  router.back();
 };
 
 const autoNumber = (i) => {
@@ -23,7 +30,17 @@ onMounted(fetchLivestockTypes);
 
 <template>
   <div class="livestock-type" v-if="livestockTypes[0] && livestockTypes[0].livestock_species">
-    <h2 class="mb-4">Jenis Hewan Ternak</h2>
+    <div class="row">
+      <div class="col-md-8">
+        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      </div>
+      <div class="col-md-4 text-end">
+        <h2 class="mb-4">Jenis Hewan Ternak</h2>
+      </div>
+      <div class="col-md-12">
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+      </div>
+    </div>
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table text-truncate">

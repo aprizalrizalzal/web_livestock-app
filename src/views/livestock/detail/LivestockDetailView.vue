@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
-import { useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const store = useLivestockStore();
+const router = useRouter();
 const route = useRoute();
 const livestockId = route.params.id;
 
@@ -17,12 +18,23 @@ const fetchLivestockById = async () => {
   }
 };
 
+const goBack = () => {
+  router.back();
+};
+
 onMounted(fetchLivestockById);
 </script>
 
 <template>
   <div class="livestock-detail" v-if="livestock && livestock.livestock_photos && livestock.profile && livestock.livestock_type && livestock.livestock_species">
-    <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
+    <div class="row">
+      <div class="col-md-9">
+        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      </div>
+      <div class="col-md-3 text-end">
+        <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
+      </div>
+    </div>
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table align-middle table-borderless table-sm">

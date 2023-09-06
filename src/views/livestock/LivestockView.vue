@@ -1,9 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
+import { useRouter, useRoute } from 'vue-router';
 
 const store = useLivestockStore();
+const router = useRouter();
+const route = useRoute();
+const profileId = route.params.id;
 const livestocks = ref([]);
+const searchQuery = ref([]);
 const startNumber = 1;
 
 const fetchLivestocks = async () => {
@@ -14,16 +19,53 @@ const fetchLivestocks = async () => {
   }
 };
 
+const fetchLivestocksByIdProfile = async () => {
+  try {
+    livestocks.value = await store.fetchLivestocksByIdProfile(profileId);
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data livestocks:', error);
+  }
+};
+
+const navigateToAdd = () => {
+  router.push({ name: 'livestocks-add' });
+};
+
+const navigateToEdit = (livestockId) => {
+  router.push({ name: 'livestocks-edit', params: { id: livestockId } });
+};
+
+const goBack = () => {
+  router.back();
+};
+
 const autoNumber = (i) => {
   return startNumber * i + 1;
 };
 
-onMounted(fetchLivestocks);
+onMounted(() => {
+  if (profileId) {
+    fetchLivestocksByIdProfile();
+  } else {
+    fetchLivestocks();
+  }
+});
 </script>
 
 <template>
   <div class="livestock" v-if="livestocks[0] && livestocks[0].profile && livestocks[0].livestock_type && livestocks[0].livestock_species">
-    <h2 class="mb-4">Hewan Ternak</h2>
+    <div class="row">
+      <div class="col-md-9">
+        <button @click="goBack" class="btn btn-secondary my-2 me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+        <button @click="navigateToAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
+      </div>
+      <div class="col-md-3 text-end">
+        <h2 class="mb-4">Hewan Ternak</h2>
+      </div>
+      <div class="col-md-12">
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+      </div>
+    </div>
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table align-middle table-sm">
@@ -55,7 +97,7 @@ onMounted(fetchLivestocks);
               <td v-else class="text-info">Tersedia</td>
               <td class="text-truncate text-center">
                 <button @click="detailLivestockById(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
-                <button v-if="livestock.sold === 0" @click="editLivestockById(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button v-if="livestock.sold === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestock.id" class="btn btn-danger me-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + livestock.id" class="modal" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">

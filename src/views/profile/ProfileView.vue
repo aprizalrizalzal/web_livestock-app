@@ -2,8 +2,10 @@
 import { ref, watch, onMounted } from 'vue';
 import { useProfileStore } from '@/stores/profileStore';
 import { useUserStore } from '@/stores/userStore';
+import { useRouter, useRoute } from 'vue-router';
 
 const storeProfile = useProfileStore();
+const router = useRouter();
 const storeUser = useUserStore();
 
 const profile = ref({
@@ -103,11 +105,22 @@ const saveEmail = () => {};
 
 const savePassword = () => {};
 
+const goBack = () => {
+  router.back();
+};
+
 onMounted(fetchProfile);
 </script>
 <template>
   <div class="profile" v-if="profile && user && user.roles && user.permissions">
-    <h2 class="mb-4">Profile</h2>
+    <div class="row">
+      <div class="col-md-9">
+        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      </div>
+      <div class="col-md-3 text-end">
+        <h2 class="mb-4">Profile</h2>
+      </div>
+    </div>
     <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
     <div id="showModalMessage" class="modal" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -164,7 +177,6 @@ onMounted(fetchProfile);
                       <label class="form-check-label" for="female">Perempuan</label>
                     </div>
                   </div>
-                  <!-- <input type="text" class="form-control shadow-sm mb-2" placeholder="Jenis Kelamin" v-model="profile.gender" required /> -->
                 </div>
                 <div class="col-md-12">
                   <label class="labels">Nomer Telpon</label>

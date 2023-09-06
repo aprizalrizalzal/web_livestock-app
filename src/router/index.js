@@ -39,6 +39,21 @@ const router = createRouter({
       component: () => import('@/views/livestock/LivestockView.vue'),
     },
     {
+      path: '/livestocks/tambah',
+      name: 'livestocks-add',
+      component: () => import('@/views/livestock/add_edit/LivestockAddEditView.vue'),
+    },
+    {
+      path: '/livestocks/:id/edit',
+      name: 'livestocks-edit',
+      component: () => import('@/views/livestock/add_edit/LivestockAddEditView.vue'),
+    },
+    {
+      path: '/livestocks/:id/profile',
+      name: 'livestocks-profile',
+      component: () => import('@/views/livestock/LivestockView.vue'),
+    },
+    {
       path: '/livestocks/:id/detail',
       name: 'livestocks-detail',
       component: () => import('@/views/livestock/detail/LivestockDetailView.vue'),
