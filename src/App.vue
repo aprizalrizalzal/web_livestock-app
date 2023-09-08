@@ -1,31 +1,45 @@
 <script setup>
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, watch } from 'vue';
 
-import navbar from '@/views/layouts/Navbar.vue';
-import navbarGuest from '@/views/layouts/NavbarGuest.vue';
-import offcanvas from '@/views/layouts/Offcanvas.vue';
+import navbarAuth from '@/views/layouts/navbar/NavbarAuth.vue';
+import navbarGuest from '@/views/layouts/navbar/NavbarGuest.vue';
 
-const isLoggedIn = computed(() => {
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
-  const token = localStorage.getItem('token');
-  return isLoggedIn === 'true' && token;
+import offcanvasAdmin from '@/views/layouts/offcanvas/OffcanvasAdmin.vue';
+import offcanvasSeller from '@/views/layouts/offcanvas/offcanvasSeller.vue';
+import offcanvasBuyer from '@/views/layouts/offcanvas/offcanvasBuyer.vue';
+
+const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+const role = localStorage.getItem('role');
+const token = localStorage.getItem('token');
+
+const login = computed(() => {
+  return isLoggedIn === 'true' && token !== null;
+});
+
+watch(login, (newLogin) => {
+  if (newLogin) {
+  } else {
+  }
 });
 </script>
 
 <template>
   <header>
-    <navbar v-if="isLoggedIn" />
+    <navbarAuth v-if="login" />
     <navbarGuest v-else />
   </header>
 
-  <offcanvas />
-
   <main class="container" style="padding-top: 5rem">
+    <div class="offcanvas" v-if="login">
+      <offcanvasAdmin v-if="role === 'admin'" />
+      <offcanvasSeller v-if="role === 'seller'" />
+      <offcanvasBuyer v-if="role === 'buyer'" />
+    </div>
     <router-view />
   </main>
 
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 120">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1220 122">
     <path
       fill="#0d6efd"
       fill-opacity="1"

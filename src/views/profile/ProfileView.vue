@@ -22,7 +22,6 @@ const modalTrigger = ref(null);
 watch(message, (newMessage) => {
   if (newMessage) {
     showModal();
-  } else {
   }
 });
 
@@ -81,7 +80,16 @@ const handleFileUpload = async (event) => {
   }
 };
 
-const deletePhoto = () => {};
+const deletePhoto = async () => {
+  try {
+    const response = await storeProfile.putProfilePhoto();
+    if (response) {
+      fetchProfile();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus gambar profile:', error);
+  }
+};
 
 const saveProfile = async () => {
   try {
@@ -142,7 +150,7 @@ onMounted(fetchProfile);
       <div class="row">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center pt-5">
-            <img src="../../../public/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-if="!profile.photo_url" />
+            <img src="../../../assets/image/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-if="!profile.photo_url" />
             <img :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-else />
             <span>{{ user.name }}</span>
             <span>{{ user.email }}</span>

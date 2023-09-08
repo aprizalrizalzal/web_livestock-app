@@ -96,6 +96,30 @@ export const useProfileStore = defineStore({
       });
     },
 
+    putProfilePhoto() {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await this.fetchCsrfToken();
+
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await axios.put('/api/profile-photo', {
+            headers,
+          });
+
+          this.profile = response.data.profile;
+          resolve(this.profile);
+        } catch (error) {
+          console.error('Error in postProfile ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
     putProfile(profileData) {
       return new Promise(async (resolve, reject) => {
         try {

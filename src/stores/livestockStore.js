@@ -94,6 +94,30 @@ export const useLivestockStore = defineStore({
       });
     },
 
+    postLivestockPhotoById(livestockId, livestockPhoto) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await this.fetchCsrfToken();
+
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          };
+
+          const response = await axios.post(`/api/livestock-photo/${livestockId}`, livestockPhoto, {
+            headers,
+          });
+
+          this.livestockPhoto = response.data.livestockPhoto;
+          resolve(this.livestockPhoto);
+        } catch (error) {
+          console.error('Error in postLivestockPhoto ', error);
+          reject(error);
+        }
+      });
+    },
+
     fetchLivestockById(id) {
       return new Promise(async (resolve, reject) => {
         try {

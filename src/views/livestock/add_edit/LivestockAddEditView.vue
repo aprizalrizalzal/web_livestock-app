@@ -1,17 +1,22 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
+import { useLivestockPhotoStore } from '@/stores/livestockPhotoStore';
 import { useLivestockTypeStore } from '@/stores/livestockTypeStore';
 import { useLivestockSpeciesStore } from '@/stores/livestockSpeciesStore';
 import { useRouter, useRoute } from 'vue-router';
 
 const storeLivestock = useLivestockStore();
+const storeLivestockPhoto = useLivestockPhotoStore();
 const storeLivestockType = useLivestockTypeStore();
 const storeLivestockSpecies = useLivestockSpeciesStore();
 const router = useRouter();
 const route = useRoute();
+
 const livestockId = route.params.id;
+
 const livestock = ref([]);
+const livestockPhotos = ref([]);
 const livestockTypes = ref([]);
 const livestocksSpecies = ref([]);
 const selectedLivestockTypeId = ref({});
@@ -53,6 +58,53 @@ const updateLivestock = async () => {};
 
 const saveLivestock = async () => {};
 
+const fetchLivestockPhotosByIdLivestock = async () => {
+  try {
+    livestockPhotos.value = await storeLivestockPhoto.fetchLivestockPhotosByIdLivestock(livestockId);
+    if (livestockPhotos.value) {
+      fetchLivestockById();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil gambar livestockPhotos:', error);
+  }
+};
+
+const handleSampulFileUpload = async (event) => {
+  const selectedFile = event.target.files[0];
+
+  if (selectedFile) {
+    try {
+      const formData = new FormData();
+      formData.append('photo', selectedFile);
+
+      livestock.value = await storeLivestock.postLivestockPhotoById(livestockId, formData);
+      if (livestock.value) {
+        fetchLivestockById();
+      }
+    } catch (error) {
+      console.error('Kesalahan dalam mengunggah gambar livestock:', error);
+    }
+  }
+};
+
+const handleDetailFileUpload = async (event) => {
+  const selectedFile = event.target.files[0];
+
+  if (selectedFile) {
+    try {
+      const formData = new FormData();
+      formData.append('photo', selectedFile);
+
+      livestockPhotos.value = await storeLivestockPhoto.postLivestockPhotosByIdLivestock(livestockId, formData);
+      if (livestockPhotos.value) {
+        fetchLivestockById();
+      }
+    } catch (error) {
+      console.error('Kesalahan dalam mengunggah gambar livestockPhoto:', error);
+    }
+  }
+};
+
 const goBack = () => {
   router.back();
 };
@@ -64,7 +116,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="livestocks-edit">
+  <div class="livestocks-add-edit" v-if="livestock && livestock.profile && livestock.livestock_type && livestock.livestock_species">
     <div class="row">
       <div class="col-md-8">
         <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
@@ -78,22 +130,30 @@ onMounted(() => {
       <div class="row px-3 py-4">
         <div class="col-md-4">
           <h4 class="mb-4">Foto Sampul</h4>
-          <form @submit.prevent="">
-            <div class="col-md-12"></div>
-            <div class="mt-3 text-center">
-              <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
-              <button @click="deleteLivestockPhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
-            </div>
-          </form>
+          <div class="col-md-12"></div>
+          <div class="text-center">
+            <img src="../../../assets/image/card-image.svg" alt="Livestock Photo" width="200" class="img-thumbnail mb-3" v-if="!livestock.photo_url" />
+            <img :src="livestock.photo_url" alt="Livestock Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-else />
+          </div>
+          <div class="mt-3 text-center">
+            <input type="file" @change="handleSampulFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
+            <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
+            <button @click="deleteLivestockPhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
+          </div>
           <h4 class="mt-4">Foto Detail</h4>
-          <form @submit.prevent="">
-            <div class="col-md-12">
-              <button @click="deleteLivestockPhotoById()" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i></button>
+          <div class="col-md-12">
+            <div class="row text-center">
+              <div class="col-md-6">
+                <img src="../../../assets/image/card-image.svg" alt="Livestock Photos" width="150" class="img-thumbnail mb-3" v-if="!livestock.photo_url" />
+                <img :src="livestock.photo_url" alt="Livestock Photos" width="150" class="rounded-circle img-thumbnail mb-3" v-else />
+                <button @click="deleteLivestockPhotoById()" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus</button>
+              </div>
             </div>
-            <div class="mt-3 text-center">
-              <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
-            </div>
-          </form>
+          </div>
+          <div class="mt-3 text-center">
+            <input type="file" @change="handleDetailFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
+            <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
+          </div>
         </div>
         <div class="col-md-8">
           <h4 class="mb-4">Hewan</h4>
@@ -146,5 +206,8 @@ onMounted(() => {
         </div>
       </div>
     </div>
+  </div>
+  <div class="livestock-add-edit" v-else>
+    <h2 class="mb-4">Loading...</h2>
   </div>
 </template>
