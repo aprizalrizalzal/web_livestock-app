@@ -35,7 +35,7 @@ export const useLivestockPhotoStore = defineStore({
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.get(`/api/livestock-photo/${livestockId}`, {
+          const response = await axios.get(`/api/livestock/livestock-photos/${livestockId}`, {
             headers,
           });
 
@@ -43,7 +43,8 @@ export const useLivestockPhotoStore = defineStore({
           resolve(this.livestockPhotos);
         } catch (error) {
           console.error('Error in fetchLivestockPhotosByIdProfile ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -59,7 +60,7 @@ export const useLivestockPhotoStore = defineStore({
             'Content-Type': 'multipart/form-data',
           };
 
-          const response = await axios.post(`/api/livestock-photo/${livestockId}`, livestockPhoto, {
+          const response = await axios.post(`/api/livestock/livestock-photo/${livestockId}`, livestockPhoto, {
             headers,
           });
 
@@ -67,7 +68,8 @@ export const useLivestockPhotoStore = defineStore({
           resolve(this.livestockPhoto);
         } catch (error) {
           console.error('Error in postLivestockPhoto ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -82,7 +84,7 @@ export const useLivestockPhotoStore = defineStore({
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.delete(`/api/livestock-photo/${livestockPhotoId}`, {
+          const response = await axios.delete(`/api/livestock/livestock-photo/${livestockPhotoId}`, {
             headers,
           });
 
@@ -91,7 +93,8 @@ export const useLivestockPhotoStore = defineStore({
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deleteLivestockPhotoById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },

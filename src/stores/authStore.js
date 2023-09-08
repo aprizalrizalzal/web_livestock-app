@@ -32,20 +32,19 @@ export const useAuthStore = defineStore({
           await this.fetchCsrfToken();
 
           const response = await axios.post('/api/register', userData);
-          const user = response.data.user;
-          const token = response.data.token;
 
-          this.user = user;
-          this.token = token;
+          this.user = response.data.user;
+          this.token = response.data.token;
 
           localStorage.setItem('isLoggedIn', 'true');
-          localStorage.setItem('role', user.roles[0].name);
-          localStorage.setItem('token', token);
+          localStorage.setItem('role', this.user.roles[0].name);
+          localStorage.setItem('token', this.token);
 
-          resolve(user);
+          resolve(this.user);
         } catch (error) {
           console.error('Error in post register ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -56,20 +55,19 @@ export const useAuthStore = defineStore({
           await this.fetchCsrfToken();
 
           const response = await axios.post('/api/login', userData);
-          const user = response.data.user;
-          const token = response.data.token;
 
-          this.user = user;
-          this.token = token;
+          this.user = response.data.user;
+          this.token = response.data.token;
 
           localStorage.setItem('isLoggedIn', 'true');
-          localStorage.setItem('role', user.roles[0].name);
-          localStorage.setItem('token', token);
+          localStorage.setItem('role', this.user.roles[0].name);
+          localStorage.setItem('token', this.token);
 
-          resolve(user);
+          resolve(this.user);
         } catch (error) {
           console.error('Error in post login ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -94,7 +92,7 @@ export const useAuthStore = defineStore({
           const response = await axios.post('/api/logout', null, {
             headers,
           });
-          const message = response.data.message;
+          this.message = response.data.message;
 
           this.user = null;
           this.token = null;
@@ -103,10 +101,11 @@ export const useAuthStore = defineStore({
           localStorage.removeItem('role');
           localStorage.removeItem('token');
 
-          resolve(message);
+          resolve(this.message);
         } catch (error) {
           console.error('Error in post logout ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },

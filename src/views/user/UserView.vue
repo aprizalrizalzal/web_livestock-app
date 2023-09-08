@@ -82,7 +82,7 @@ onMounted(fetchUsers);
                 <button v-if="user.profile ? user.profile.id : null" data-bs-toggle="modal" :data-bs-target="'#showModalDetail-' + user.id" class="btn btn-primary me-2"><i class="bi bi-person-badge"></i> Detail</button>
                 <button v-else class="btn btn-warning me-2" disabled><i class="bi bi-person-fill-exclamation"></i> Profile</button>
 
-                <div v-if="user.profile ? user.profile.id : null" :id="'showModalDetail-' + user.id" class="modal" tabindex="-1" role="dialog">
+                <div v-if="user.profile ? user.profile.id : null" :id="'showModalDetail-' + user.id" class="modal modal-xl" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">

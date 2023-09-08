@@ -35,6 +35,23 @@ const navigateToEdit = (livestockId) => {
   router.push({ name: 'livestocks-edit', params: { id: livestockId } });
 };
 
+const navigateToDetail = (livestockId) => {
+  router.push({ name: 'livestocks-detail', params: { id: livestockId } });
+};
+
+const deleteLivestockById = async (livestockId) => {
+  try {
+    livestocks.value = await store.deleteLivestockById(livestockId);
+    if (profileId) {
+      fetchLivestocksByIdProfile();
+    } else {
+      fetchLivestocks();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus data livestock:', error);
+  }
+};
+
 const goBack = () => {
   router.back();
 };
@@ -96,7 +113,7 @@ onMounted(() => {
               <td v-if="livestock.sold === 1" class="text-success">Terjual</td>
               <td v-else class="text-info">Tersedia</td>
               <td class="text-truncate text-center">
-                <button @click="detailLivestockById(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
+                <button @click="navigateToDetail(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
                 <button v-if="livestock.sold === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestock.id" class="btn btn-danger me-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + livestock.id" class="modal" tabindex="-1" role="dialog">
@@ -118,7 +135,7 @@ onMounted(() => {
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deletelivestockById(livestock.id)">Ya</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteLivestockById(livestock.id)">Ya</button>
                       </div>
                     </div>
                   </div>

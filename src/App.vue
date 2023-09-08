@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 
 import navbarAuth from '@/views/layouts/navbar/NavbarAuth.vue';
 import navbarGuest from '@/views/layouts/navbar/NavbarGuest.vue';
@@ -14,13 +14,7 @@ const role = localStorage.getItem('role');
 const token = localStorage.getItem('token');
 
 const login = computed(() => {
-  return isLoggedIn === 'true' && token !== null;
-});
-
-watch(login, (newLogin) => {
-  if (newLogin) {
-  } else {
-  }
+  return isLoggedIn === 'true' && role !== null && token !== null;
 });
 </script>
 

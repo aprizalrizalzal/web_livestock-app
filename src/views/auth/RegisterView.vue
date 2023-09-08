@@ -1,4 +1,5 @@
 <script setup>
+import { ref, watch, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
@@ -14,8 +15,7 @@ const router = useRouter();
 
 const registerUser = async () => {
   try {
-    const user = await store.register(userData);
-    console.log('Register berhasil:', user);
+    await store.register(userData);
     if (store.isLoggedIn) {
       router.push({ name: 'home' });
     } else {

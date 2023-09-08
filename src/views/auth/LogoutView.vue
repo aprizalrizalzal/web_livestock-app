@@ -8,10 +8,9 @@ const router = useRouter();
 const logoutUser = async () => {
   try {
     await store.logout();
-    console.log('Logout berhasil:');
     router.push({ name: 'login' });
   } catch (error) {
-    console.error('Kesalahan dalam login:', error);
+    console.error('Kesalahan dalam logout:', error);
   }
 };
 </script>

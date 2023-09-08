@@ -43,7 +43,8 @@ export const useLivestockStore = defineStore({
           resolve(this.livestocks);
         } catch (error) {
           console.error('Error in fetchLivestocks ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -66,7 +67,8 @@ export const useLivestockStore = defineStore({
           resolve(this.livestocks);
         } catch (error) {
           console.error('Error in fetchLivestocksByIdProfile ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -89,7 +91,8 @@ export const useLivestockStore = defineStore({
           resolve(this.livestock);
         } catch (error) {
           console.error('Error in postLivestock ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -109,11 +112,36 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
-          this.livestockPhoto = response.data.livestockPhoto;
-          resolve(this.livestockPhoto);
+          this.livestock = response.data.livestock;
+          resolve(this.livestock);
         } catch (error) {
           console.error('Error in postLivestockPhoto ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
+    putLivestockPhotoById(livestockId) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await this.fetchCsrfToken();
+
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await axios.post(`/api/livestock-photo/${livestockId}`, {
+            headers,
+          });
+
+          this.livestock = response.data.livestock;
+          resolve(this.livestock);
+        } catch (error) {
+          console.error('Error in putLivestockPhotoById ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -136,7 +164,8 @@ export const useLivestockStore = defineStore({
           resolve(this.livestock);
         } catch (error) {
           console.error('Error in fetchLivestockById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -159,7 +188,8 @@ export const useLivestockStore = defineStore({
           resolve(this.livestock);
         } catch (error) {
           console.error('Error in putLivestockById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -178,12 +208,12 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
-          // Assuming you want to reset to null after a successful delete.
           this.livestock = null;
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deleteLivestockById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },

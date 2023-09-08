@@ -58,6 +58,7 @@ const fetchUserById = async (userId) => {
     user.value = await storeUser.fetchUserById(userId);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data user:', error);
+    message.value = error;
   }
 };
 
@@ -76,11 +77,12 @@ const handleFileUpload = async (event) => {
       }
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar profil:', error);
+      message.value = error;
     }
   }
 };
 
-const deletePhoto = async () => {
+const putProfilePhoto = async () => {
   try {
     const response = await storeProfile.putProfilePhoto();
     if (response) {
@@ -88,6 +90,7 @@ const deletePhoto = async () => {
     }
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar profile:', error);
+    message.value = error;
   }
 };
 
@@ -97,6 +100,7 @@ const saveProfile = async () => {
     profile.value = response;
   } catch (error) {
     console.error('Kesalahan dalam mengirim data profile:', error);
+    message.value = error;
   }
 };
 
@@ -106,6 +110,7 @@ const updateProfile = async () => {
     profile.value = response;
   } catch (error) {
     console.error('Kesalahan dalam mengirim data profile:', error);
+    message.value = error;
   }
 };
 
@@ -158,7 +163,7 @@ onMounted(fetchProfile);
             <div class="mt-5 text-center">
               <input type="file" @change="handleFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
               <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
-              <button @click="deletePhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
+              <button @click="putProfilePhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
             </div>
           </div>
         </div>

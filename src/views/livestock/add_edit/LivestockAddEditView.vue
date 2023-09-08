@@ -15,12 +15,22 @@ const route = useRoute();
 
 const livestockId = route.params.id;
 
-const livestock = ref([]);
+const selectedLivestockTypeId = ref({});
+const selectedLivestockSpeciesId = ref({});
+
+const livestock = ref({
+  livestock_type_id: selectedLivestockTypeId,
+  livestock_species_id: selectedLivestockSpeciesId,
+  age: '',
+  gender: '',
+  price: '',
+  detail: '',
+});
+const message = ref({});
+
 const livestockPhotos = ref([]);
 const livestockTypes = ref([]);
 const livestocksSpecies = ref([]);
-const selectedLivestockTypeId = ref({});
-const selectedLivestockSpeciesId = ref({});
 
 const fetchLivestockById = async () => {
   try {
@@ -32,6 +42,7 @@ const fetchLivestockById = async () => {
     }
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
+    message.value = error;
   }
 };
 
@@ -43,6 +54,7 @@ const fetchLivestockTypes = async () => {
     }
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
+    message.value = error;
   }
 };
 
@@ -51,12 +63,33 @@ const fetchLivestockSpeciesByIdLivestockType = async () => {
     livestocksSpecies.value = await storeLivestockSpecies.fetchLivestockSpeciesByIdLivestockType(selectedLivestockTypeId.value);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
+    message.value = error;
   }
 };
 
-const updateLivestock = async () => {};
+const saveLivestock = async () => {
+  try {
+    livestock.value = await storeLivestock.postLivestock(livestock.value);
+    if (livestock.value) {
+      goBack();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data livestock:', error);
+    message.value = error;
+  }
+};
 
-const saveLivestock = async () => {};
+const updateLivestock = async () => {
+  try {
+    livestock.value = await storeLivestock.putLivestockById(livestockId, livestock.value);
+    if (livestock.value) {
+      goBack();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data livestock:', error);
+    message.value = error;
+  }
+};
 
 const fetchLivestockPhotosByIdLivestock = async () => {
   try {
@@ -66,6 +99,7 @@ const fetchLivestockPhotosByIdLivestock = async () => {
     }
   } catch (error) {
     console.error('Kesalahan dalam mengambil gambar livestockPhotos:', error);
+    message.value = error;
   }
 };
 
@@ -83,7 +117,20 @@ const handleSampulFileUpload = async (event) => {
       }
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestock:', error);
+      message.value = error;
     }
+  }
+};
+
+const putLivestockPhotoById = async (livestockId) => {
+  try {
+    livestock.value = await storeLivestock.putLivestockPhotoById(livestockId);
+    if (livestock.value) {
+      fetchLivestockById();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus gambar livestock:', error);
+    message.value = error;
   }
 };
 
@@ -95,13 +142,26 @@ const handleDetailFileUpload = async (event) => {
       const formData = new FormData();
       formData.append('photo', selectedFile);
 
-      livestockPhotos.value = await storeLivestockPhoto.postLivestockPhotosByIdLivestock(livestockId, formData);
+      livestockPhotos.value = await storeLivestockPhoto.postLivestockPhotoByIdLivestock(livestockId, formData);
       if (livestockPhotos.value) {
-        fetchLivestockById();
+        fetchLivestockPhotosByIdLivestock();
       }
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestockPhoto:', error);
+      message.value = error;
     }
+  }
+};
+
+const deleteLivestockPhotoById = async (livestockPhotoId) => {
+  try {
+    message.value = await storeLivestockPhoto.deleteLivestockPhotoById(livestockPhotoId);
+    if (message.value) {
+      fetchLivestockPhotosByIdLivestock();
+    }
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus gambar livestock:', error);
+    message.value = error;
   }
 };
 
@@ -112,11 +172,14 @@ const goBack = () => {
 onMounted(() => {
   if (livestockId) {
     fetchLivestockById();
+    fetchLivestockPhotosByIdLivestock();
+  } else {
+    fetchLivestockTypes();
   }
 });
 </script>
 <template>
-  <div class="livestocks-add-edit" v-if="livestock && livestock.profile && livestock.livestock_type && livestock.livestock_species">
+  <div class="livestocks-add-edit" v-if="(livestock && livestock.profile && livestock.livestock_type_id && livestock.livestock_species_id) || (livestockTypes && livestocksSpecies)">
     <div class="row">
       <div class="col-md-8">
         <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
@@ -128,7 +191,7 @@ onMounted(() => {
     </div>
     <div class="container rounded bg-white mt-3 mb-5 shadow-sm">
       <div class="row px-3 py-4">
-        <div class="col-md-4">
+        <div class="col-md-4" v-if="livestockId">
           <h4 class="mb-4">Foto Sampul</h4>
           <div class="col-md-12"></div>
           <div class="text-center">
@@ -136,23 +199,23 @@ onMounted(() => {
             <img :src="livestock.photo_url" alt="Livestock Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-else />
           </div>
           <div class="mt-3 text-center">
-            <input type="file" @change="handleSampulFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
-            <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
-            <button @click="deleteLivestockPhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
+            <input type="file" @change="handleSampulFileUpload" class="form-control" id="inputGroupSampulFile" style="display: none" />
+            <label class="btn btn-primary shadow-sm me-2" for="inputGroupSampulFile"><i class="bi bi-upload"></i> Unggah</label>
+            <button @click="putLivestockPhotoById(livestock.id)" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
           </div>
           <h4 class="mt-4">Foto Detail</h4>
           <div class="col-md-12">
             <div class="row text-center">
-              <div class="col-md-6">
-                <img src="../../../assets/image/card-image.svg" alt="Livestock Photos" width="150" class="img-thumbnail mb-3" v-if="!livestock.photo_url" />
-                <img :src="livestock.photo_url" alt="Livestock Photos" width="150" class="rounded-circle img-thumbnail mb-3" v-else />
-                <button @click="deleteLivestockPhotoById()" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus</button>
+              <div class="col-md-6" v-for="livestockPhoto in livestockPhotos" :key="livestockPhoto.id">
+                <img src="../../../assets/image/card-image.svg" alt="Livestock Photos" width="150" class="img-thumbnail mb-3" v-if="!livestockPhoto.photo_url" />
+                <img :src="livestockPhoto.photo_url" alt="Livestock Photos" width="150" class="rounded-circle img-thumbnail mb-3" v-else />
+                <button @click="deleteLivestockPhotoById(livestockPhoto.id)" class="btn btn-danger shadow-sm mx-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
               </div>
             </div>
           </div>
           <div class="mt-3 text-center">
-            <input type="file" @change="handleDetailFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
-            <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
+            <input type="file" @change="handleDetailFileUpload" class="form-control" id="inputGroupDetailFile" style="display: none" />
+            <label class="btn btn-primary shadow-sm me-2" for="inputGroupDetailFile"><i class="bi bi-upload"></i> Unggah</label>
           </div>
         </div>
         <div class="col-md-8">
