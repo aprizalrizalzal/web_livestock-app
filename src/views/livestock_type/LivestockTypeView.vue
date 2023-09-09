@@ -47,7 +47,7 @@ const deleteLivestockType = async (livestockTypeId) => {
     livestockTypes.value = await store.deleteLivestockTypeById(livestockTypeId);
     fetchLivestockTypes();
   } catch (error) {
-    console.error('Kesalahan dalam merubah data livestockTypes:', error);
+    console.error('Kesalahan dalam menghapus data livestockTypes:', error);
   }
 };
 
@@ -168,7 +168,7 @@ onMounted(fetchLivestockTypes);
                   <div class="row mb-3">
                     <label for="farm-animal" class="col-md-5 col-form-label">Tambah Jenis Hewan Ternak</label>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" id="farm-animal" v-model="_livestockType.name" placeholder="Sapi, Kambing, Dll." required />
+                      <input type="text" class="form-control" id="farm-animal" v-model="_livestockType.name" placeholder="Jenis Hewan Ternak" required />
                     </div>
                   </div>
                 </div>

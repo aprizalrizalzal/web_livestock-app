@@ -1,21 +1,51 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useLivestockTypeStore } from '@/stores/livestockTypeStore';
+import { useLivestockSpeciesStore } from '@/stores/livestockSpeciesStore';
 import { useRouter, useRoute } from 'vue-router';
 
-const store = useLivestockTypeStore();
+const store = useLivestockSpeciesStore();
 const router = useRouter();
 const route = useRoute();
-const livestockTypes = ref([]);
+const livestocksSpecies = ref([]);
+const _livestockSpecies = ref({
+  name: '',
+});
 const livestockTypeId = route.params.id;
 const searchQuery = ref([]);
 const startNumber = 1;
 
-const fetchLivestockTypeById = async () => {
+const fetchLivestockSpecies = async () => {
   try {
-    livestockTypes.value = await store.fetchLivestockTypeById(livestockTypeId);
+    livestocksSpecies.value = await store.fetchLivestockSpeciesByIdLivestockType(livestockTypeId);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestocksType:', error);
+  }
+};
+
+const addLivestockSpecies = async () => {
+  try {
+    livestocksSpecies.value = await store.postLivestockSpeciesByIdLivestockType(livestockTypeId, _livestockSpecies.value);
+    fetchLivestockSpecies();
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data livestockSpecies:', error);
+  }
+};
+
+const updateLivestockSpecies = async (livestockSpeciesId) => {
+  try {
+    livestocksSpecies.value = await store.putLivestockSpeciesById(livestockSpeciesId, _livestockSpecies.value);
+    fetchLivestockSpecies();
+  } catch (error) {
+    console.error('Kesalahan dalam merubah data livestockSpecies:', error);
+  }
+};
+
+const deleteLivestockSpecies = async (livestockSpeciesId) => {
+  try {
+    livestocksSpecies.value = await store.deleteLivestockSpeciesById(livestockSpeciesId);
+    fetchLivestockSpecies();
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus data livestockSpecies:', error);
   }
 };
 
@@ -27,21 +57,20 @@ const goBack = () => {
   router.back();
 };
 
-onMounted(fetchLivestockTypeById);
+onMounted(fetchLivestockSpecies);
 </script>
 
 <template>
-  <div class="livestock-species-detail" v-if="livestockTypes && livestockTypes.livestock_species">
+  <div class="livestock-species-detail" v-if="livestocksSpecies">
     <div class="row">
       <div class="col-md-9">
         <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-        <button class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
       </div>
       <div class="col-md-3 text-end">
-        <h2 class="mb-4">Spesies dari Jenis Hewan Ternak {{ livestockTypes.name }}</h2>
+        <h2 class="mb-4">Spesies Hewan Ternak</h2>
       </div>
       <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Spesies dari Jenis Hewan Ternak" aria-label="Search" />
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Spesies Hewan Ternak" aria-label="Search" />
       </div>
     </div>
     <div class="bg-body rounded shadow-sm">
@@ -54,7 +83,7 @@ onMounted(fetchLivestockTypeById);
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody v-for="(livestockSpecies, i) in livestockTypes.livestock_species" :key="livestockSpecies.id">
+          <tbody v-for="(livestockSpecies, i) in livestocksSpecies" :key="livestockSpecies.id">
             <tr>
               <td>{{ autoNumber(i) }}</td>
               <td>{{ livestockSpecies.name }}</td>
@@ -79,18 +108,17 @@ onMounted(fetchLivestockTypeById);
                         <div class="row mb-3">
                           <label for="farm-animal" class="col-md-5 col-form-label">Ubah Spesies Hewan Ternak</label>
                           <div class="col-md-7">
-                            <input type="text" class="form-control" id="farm-animal" v-model="livestockSpecies.name" placeholder="Bali, Boer, Dll." required />
+                            <input type="text" class="form-control" id="farm-animal" v-model="_livestockSpecies.name" placeholder="Spesies Hewan Ternak" required />
                           </div>
                         </div>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" @click="updateLivestockTypeById(livestockSpecies.id)" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+                        <button type="button" @click="updateLivestockSpecies(livestockSpecies.id)" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestockSpecies.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + livestockSpecies.id" class="modal modal-xl" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -99,16 +127,16 @@ onMounted(fetchLivestockTypeById);
                         <h5 class="modal-title">Konfirmasi Hapus</h5>
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="modal-body">
-                        <p>Anda yakin ingin menghapus</p>
+                      <div class="modal-body text-start">
+                        <p>Anda yakin ingin menghapus spesies hewan</p>
                         <p>
-                          Jenis hewan <b>{{ livestockSpecies.name }}</b
+                          <b>{{ livestockSpecies.name }}</b
                           >?
                         </p>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteLivestockTypeById(livestockSpecies.id)">Ya</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteLivestockSpecies(livestockSpecies.id)">Ya</button>
                       </div>
                     </div>
                   </div>
@@ -118,6 +146,31 @@ onMounted(fetchLivestockTypeById);
           </tbody>
           <tfoot></tfoot>
         </table>
+        <div class="row m-1">
+          <button data-bs-toggle="modal" data-bs-target="#showModalAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
+          <div id="showModalAdd" class="modal modal-xl" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header bg-light">
+                  <h5 class="modal-title">Tambah</h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-start">
+                  <div class="row mb-3">
+                    <label for="farm-animal" class="col-md-5 col-form-label">Tambah Spesies Hewan Ternak</label>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control" id="farm-animal" v-model="_livestockSpecies.name" placeholder="Spesies Hewan Ternak" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                  <button type="button" @click="addLivestockSpecies()" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -47,7 +47,7 @@ export const useLivestockSpeciesStore = defineStore('livestockSpeciesStore', {
       });
     },
 
-    postLivestockSpecies(livestockSpeciesData) {
+    postLivestockSpeciesByIdLivestockType(livestockTypeId, livestockSpeciesData) {
       return new Promise(async (resolve, reject) => {
         try {
           await this.fetchCsrfToken();
@@ -57,7 +57,7 @@ export const useLivestockSpeciesStore = defineStore('livestockSpeciesStore', {
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.post('/api/livestock-species', livestockSpeciesData, {
+          const response = await axios.post(`/api/livestock-species/${livestockTypeId}`, livestockSpeciesData, {
             headers,
           });
 
