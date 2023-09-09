@@ -18,7 +18,7 @@ const goBack = () => {
         <h2 class="mb-4">Pembayaran</h2>
       </div>
       <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau No. Telepon" aria-label="Search" />
       </div>
     </div>
   </div>

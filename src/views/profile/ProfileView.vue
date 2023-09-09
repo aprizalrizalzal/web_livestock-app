@@ -135,7 +135,7 @@ onMounted(fetchProfile);
       </div>
     </div>
     <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
-    <div id="showModalMessage" class="modal" tabindex="-1" role="dialog">
+    <div id="showModalMessage" class="modal modal-xl" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header bg-light">

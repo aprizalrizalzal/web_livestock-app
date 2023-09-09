@@ -80,7 +80,7 @@ onMounted(() => {
         <h2 class="mb-4">Hewan Ternak</h2>
       </div>
       <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan Ternak atau Jenis" aria-label="Search" />
       </div>
     </div>
     <div class="bg-body rounded shadow-sm">
@@ -116,7 +116,7 @@ onMounted(() => {
                 <button @click="navigateToDetail(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
                 <button v-if="livestock.sold === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestock.id" class="btn btn-danger me-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + livestock.id" class="modal" tabindex="-1" role="dialog">
+                <div :id="'showModalDelete-' + livestock.id" class="modal modal-xl" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">

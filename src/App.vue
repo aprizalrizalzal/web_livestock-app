@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 
-import navbarAuth from '@/views/layouts/navbar/NavbarAuth.vue';
+import navbarAdmin from '@/views/layouts/navbar/NavbarAdmin.vue';
+import navbarUser from '@/views/layouts/navbar/NavbarUser.vue';
 import navbarGuest from '@/views/layouts/navbar/NavbarGuest.vue';
 
 import offcanvasAdmin from '@/views/layouts/offcanvas/OffcanvasAdmin.vue';
@@ -20,7 +21,8 @@ const login = computed(() => {
 
 <template>
   <header>
-    <navbarAuth v-if="login" />
+    <navbarAdmin v-if="login && role === 'admin'" />
+    <navbarUser v-else-if="(login && role === 'seller') || (login && role === 'buyer')" />
     <navbarGuest v-else />
   </header>
 

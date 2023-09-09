@@ -181,10 +181,10 @@ onMounted(() => {
 <template>
   <div class="livestocks-add-edit" v-if="(livestock && livestock.profile && livestock.livestock_type_id && livestock.livestock_species_id) || (livestockTypes && livestocksSpecies)">
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-9">
         <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
       </div>
-      <div class="col-md-4 text-end">
+      <div class="col-md-3 text-end">
         <h2 v-if="livestockId" class="mb-4">Edit Hewan Ternak</h2>
         <h2 v-else class="mb-4">Tambah Hewan Ternak</h2>
       </div>

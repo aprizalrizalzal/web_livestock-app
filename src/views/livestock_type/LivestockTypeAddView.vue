@@ -1,28 +1,25 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import { useLivestockTypeStore } from '@/stores/livestockTypeStore';
 import { useRouter, useRoute } from 'vue-router';
 
+const store = useLivestockTypeStore();
 const router = useRouter();
-const searchQuery = ref([]);
+const livestockTypes = ref([]);
 
 const goBack = () => {
   router.back();
 };
 </script>
 <template>
-  <div class="transactions">
+  <div class="livestock-types-add">
     <div class="row">
       <div class="col-md-9">
         <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
       </div>
       <div class="col-md-3 text-end">
-        <h2 class="mb-4">Transaksi</h2>
-      </div>
-      <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau No. Telepon" aria-label="Search" />
+        <h2 class="mb-4">Tambah Jenis Hewan Ternak</h2>
       </div>
     </div>
-  </div>
-  <div class="transactions">
-    <h2 class="mb-4">Loading...</h2>
   </div>
 </template>

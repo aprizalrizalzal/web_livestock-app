@@ -2,7 +2,6 @@
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
-const searchQuery = ref([]);
 
 const goBack = () => {
   router.back();
@@ -16,9 +15,6 @@ const goBack = () => {
       </div>
       <div class="col-md-3 text-end">
         <h2 class="mb-4">Laporan</h2>
-      </div>
-      <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
       </div>
     </div>
   </div>

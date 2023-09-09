@@ -27,7 +27,7 @@ onMounted(fetchLivestocks);
   <div class="home" v-if="livestocks[0] && livestocks[0].profile && livestocks[0].livestock_type && livestocks[0].livestock_species">
     <h2 class="mb-4">Beranda</h2>
     <div class="col-md-12">
-      <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+      <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan, Jenis, Alamat" aria-label="Search" />
     </div>
     <div class="row justify-content-center">
       <div class="col-md-4 mb-2" v-for="livestock in livestocks" :key="livestock.id">

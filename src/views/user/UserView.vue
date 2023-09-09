@@ -133,7 +133,7 @@ onMounted(fetchUsers);
                 </div>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + user.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + user.id" class="modal" tabindex="-1" role="dialog">
+                <div :id="'showModalDelete-' + user.id" class="modal modal-xl" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
