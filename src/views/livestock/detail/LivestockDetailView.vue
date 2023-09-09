@@ -11,6 +11,7 @@ const route = useRoute();
 const livestockId = route.params.id;
 
 const livestock = ref([]);
+const transaction = ref([]);
 
 const fetchLivestockById = async () => {
   try {
@@ -22,7 +23,8 @@ const fetchLivestockById = async () => {
 
 const addTransaction = async () => {
   try {
-    livestock.value = await storeTransaction.post(livestockId);
+    transaction.value = await storeTransaction.postTransactionByIdLivestok(livestockId);
+    router.push({ name: 'transactions' });
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
   }
@@ -66,7 +68,7 @@ onMounted(fetchLivestockById);
       <div class="col-md-3 text-end">
         <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
       </div>
-      <div class="col-md-12 mb-3">
+      <div class="col-md-12 mb-4">
         <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
           <ol class="carousel-indicators">
             <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>

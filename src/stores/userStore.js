@@ -43,7 +43,8 @@ export const useUserStore = defineStore({
           resolve(this.users);
         } catch (error) {
           console.error('Error in getUsers ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -66,7 +67,8 @@ export const useUserStore = defineStore({
           resolve(this.user);
         } catch (error) {
           console.error('Error in getUserById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -90,7 +92,8 @@ export const useUserStore = defineStore({
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deleteUserById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },

@@ -42,7 +42,8 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(this.livestockTypes);
         } catch (error) {
           console.error('Error in getLivestockTypes ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -65,7 +66,8 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(this.livestockType);
         } catch (error) {
           console.error('Error in postLivestockType ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -88,7 +90,8 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(this.livestockType);
         } catch (error) {
           console.error('Error in getLivestockTypeById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -111,7 +114,8 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(this.livestockType);
         } catch (error) {
           console.error('Error in putLivestockTypeById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
@@ -135,7 +139,8 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deleteLivestockTypeById ', error);
-          reject(error);
+          this.message = error.response.data.message;
+          reject(this.message);
         }
       });
     },
