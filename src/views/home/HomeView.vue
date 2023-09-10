@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 const store = useLivestockStore();
 const router = useRouter();
 const livestocks = ref([]);
-const searchQuery = ref([]);
+const searchQuery = ref('');
 
 const fetchLivestocks = async () => {
   try {

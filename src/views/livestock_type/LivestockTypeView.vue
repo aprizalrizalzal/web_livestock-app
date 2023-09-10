@@ -9,7 +9,7 @@ const livestockTypes = ref([]);
 const _livestockType = ref({
   name: '',
 });
-const searchQuery = ref([]);
+const searchQuery = ref('');
 const startNumber = 1;
 
 const fetchLivestockTypes = async () => {
@@ -30,7 +30,7 @@ const addLivestockType = async () => {
 };
 
 const navigateToLivestockSpeciesById = (livestockTypeId) => {
-  router.push({ name: 'livestock-species-detail', params: { id: livestockTypeId } });
+  router.push({ name: 'livestock-species', params: { id: livestockTypeId } });
 };
 
 const updateLivestockType = async (livestockTypeId) => {

@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 const store = useUserStore();
 const router = useRouter();
 const users = ref([]);
-const searchQuery = ref([]);
+const searchQuery = ref('');
 const startNumber = 1;
 
 const fetchUsers = async () => {

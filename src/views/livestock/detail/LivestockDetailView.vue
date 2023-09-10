@@ -10,8 +10,8 @@ const router = useRouter();
 const route = useRoute();
 const livestockId = route.params.id;
 
-const livestock = ref([]);
-const transaction = ref([]);
+const livestock = ref({});
+const transaction = ref({});
 
 const fetchLivestockById = async () => {
   try {

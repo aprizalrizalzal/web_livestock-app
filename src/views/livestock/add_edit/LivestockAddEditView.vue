@@ -29,7 +29,7 @@ const livestock = ref({
 const message = ref({});
 
 const livestockPhotos = ref([]);
-const livestockTypes = ref([]);
+const livestockTypes = ref({});
 const livestocksSpecies = ref([]);
 
 const fetchLivestockById = async () => {

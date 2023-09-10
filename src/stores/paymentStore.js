@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
 import axios from '@/services/api';
 
-export const useTransactionStore = defineStore('transactionStore', {
+export const usePaymentStore = defineStore('paymentStore', {
   state: () => ({
-    transactions: null,
-    transaction: null,
+    payments: null,
+    payment: null,
     message: null,
   }),
 
   getters: {
-    getTransactions: (state) => state.transactions,
-    getTransaction: (state) => state.transaction,
+    getPayments: (state) => state.payments,
+    getPayment: (state) => state.payment,
     getMessage: (state) => state.message,
   },
 
@@ -24,7 +24,7 @@ export const useTransactionStore = defineStore('transactionStore', {
       }
     },
 
-    fetchTransactions() {
+    fetchPayments() {
       return new Promise(async (resolve, reject) => {
         try {
           await this.fetchCsrfToken();
@@ -34,21 +34,21 @@ export const useTransactionStore = defineStore('transactionStore', {
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.get('/api/transactions', {
+          const response = await axios.get('/api/payments', {
             headers,
           });
 
-          this.transactions = response.data.transactions;
-          resolve(this.transactions);
+          this.payments = response.data.payments;
+          resolve(this.payments);
         } catch (error) {
-          console.error('Error in getTransaction ', error);
+          console.error('Error in getPayment ', error);
           this.message = error.response.data.message;
           reject(this.message);
         }
       });
     },
 
-    postTransactionByIdLivestok(livestockId) {
+    postPaymentByIdTransaction(transactionId) {
       return new Promise(async (resolve, reject) => {
         try {
           await this.fetchCsrfToken();
@@ -58,21 +58,21 @@ export const useTransactionStore = defineStore('transactionStore', {
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.post(`/api/transaction/${livestockId}`, null, {
+          const response = await axios.post(`/api/payment/${transactionId}`, null, {
             headers,
           });
 
-          this.transaction = response.data.transaction;
-          resolve(this.transaction);
+          this.payment = response.data.payment;
+          resolve(this.payment);
         } catch (error) {
-          console.error('Error in postTransaction ', error);
+          console.error('Error in postPayment ', error);
           this.message = error.response.data.message;
           reject(this.message);
         }
       });
     },
 
-    fetchTransactionById(id) {
+    fetchPaymentById(id) {
       return new Promise(async (resolve, reject) => {
         try {
           await this.fetchCsrfToken();
@@ -82,21 +82,21 @@ export const useTransactionStore = defineStore('transactionStore', {
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.get(`/api/transaction/${id}`, {
+          const response = await axios.get(`/api/payment/${id}`, {
             headers,
           });
 
-          this.transaction = response.data.transaction;
-          resolve(this.transaction);
+          this.payment = response.data.payment;
+          resolve(this.payment);
         } catch (error) {
-          console.error('Error in getTransactionById ', error);
+          console.error('Error in getPaymentById ', error);
           this.message = error.response.data.message;
           reject(this.message);
         }
       });
     },
 
-    putTransactionById(id, transactionData) {
+    putPaymentById(id, paymentData) {
       return new Promise(async (resolve, reject) => {
         try {
           await this.fetchCsrfToken();
@@ -106,21 +106,21 @@ export const useTransactionStore = defineStore('transactionStore', {
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.put(`/api/transaction/${id}`, transactionData, {
+          const response = await axios.put(`/api/payment/${id}`, paymentData, {
             headers,
           });
 
-          this.transaction = response.data.transaction;
-          resolve(this.transaction);
+          this.payment = response.data.payment;
+          resolve(this.payment);
         } catch (error) {
-          console.error('Error in putTransactionById ', error);
+          console.error('Error in putPaymentById ', error);
           this.message = error.response.data.message;
           reject(this.message);
         }
       });
     },
 
-    deleteTransactionById(id) {
+    deletePaymentById(id) {
       return new Promise(async (resolve, reject) => {
         try {
           await this.fetchCsrfToken();
@@ -130,7 +130,7 @@ export const useTransactionStore = defineStore('transactionStore', {
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.delete(`/api/transaction/${id}`, {
+          const response = await axios.delete(`/api/payment/${id}`, {
             headers,
           });
 
@@ -138,7 +138,7 @@ export const useTransactionStore = defineStore('transactionStore', {
           this.transaction = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteTransactionById ', error);
+          console.error('Error in deletePaymentById ', error);
           this.message = error.response.data.message;
           reject(this.message);
         }

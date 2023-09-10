@@ -1,20 +1,25 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useTransactionStore } from '@/stores/transactionStore';
-// import { usePaymentStore } from '@/stores/paymentStore';
-import { useRouter, useRoute } from 'vue-router';
+import { usePaymentStore } from '@/stores/paymentStore';
+import { useRouter } from 'vue-router';
 
 const storeTransaction = useTransactionStore();
-// const storePayment = usePaymentStore();
+const storePayment = usePaymentStore();
 const router = useRouter();
-const route = useRoute();
-const transactionId = route.params.id;
-const searchQuery = ref([]);
+const role = localStorage.getItem('role');
+const searchQuery = ref('');
 const startNumber = 1;
 
 const transactions = ref([]);
-const transaction = ref([]);
-const payment = ref([]);
+const transaction = ref({});
+const payment = ref({});
+const transactionMethod = ref(['Bayar di tempat', 'Transfer']);
+const selectedTransactionMethod = ref({});
+const _transaction = ref({
+  status: true,
+  method: selectedTransactionMethod,
+});
 
 const fetchTransactions = async () => {
   try {
@@ -24,14 +29,35 @@ const fetchTransactions = async () => {
   }
 };
 
-// const addPayment = async () => {
-//   try {
-//     payment.value = await storePayment.postPaymentByIdTransaction(transactionId);
-//     router.push({ name: 'payments' });
-//   } catch (error) {
-//     console.error('Kesalahan dalam mengirim data payment:', error);
-//   }
-// };
+const processTransaction = async (transactionId) => {
+  try {
+    transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data transaction:', error);
+  }
+};
+
+const processPayment = async (transactionId) => {
+  try {
+    payment.value = await storePayment.postPaymentByIdTransaction(transactionId);
+    router.push({ name: 'payments' });
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data payment:', error);
+  }
+};
+
+const _transactionMethod = computed(() => {
+  return transaction.value.method === null;
+});
+
+const methodTransaction = async (transactionId) => {
+  try {
+    transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
+    processPayment(transactionId);
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data transaction:', error);
+  }
+};
 
 const autoNumber = (i) => {
   return startNumber * i + 1;
@@ -81,8 +107,65 @@ onMounted(fetchTransactions);
               <td>{{ transaction.livestock.profile.name }}</td>
               <td>{{ transaction.livestock.profile.phone_number }}</td>
               <td>{{ transaction.livestock.price }}</td>
-              <td>{{ transaction.status }}</td>
+              <td>
+                <span v-if="transaction.status && transaction.livestock.sold" class="text-success"> Diterima</span>
+                <span v-else-if="!transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'seller'" class="text-info"> Silahkan diproses</span>
+                <span v-else-if="!transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'buyer'" class="text-info"> Sedang diproses penjual</span>
+                <span v-else-if="transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'seller'" class="text-info"> Tunggu pembayaran dari pembeli</span>
+                <span v-else-if="transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'buyer'" class="text-info"> Lanjutkan pembayaran</span>
+                <span v-else class="text-info"> Dalam Proses</span>
+              </td>
               <td class="text-truncate text-center">
+                <button v-if="!transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalTransaction-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Proses</button>
+                <div :id="'showModalTransaction-' + transaction.id" class="modal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Konfirmasi Proses Transaksi</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <p>Anda yakin ingin memproses</p>
+                        <span>
+                          Transaksi <b>{{ transaction.livestock.livestock_type.name }}</b
+                          >?
+                        </span>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="processTransaction(transaction.id, _transaction.status)">Ya</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button v-if="transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalPayment-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Bayar</button>
+                <div :id="'showModalPayment-' + transaction.id" class="modal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Konfirmasi Proses Pembayaran</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <p>Anda yakin ingin memproses transaksi ini?</p>
+                        <div class="mb-3">
+                          <p for="payment" class="form-label">Pilih Metode Pembayaran</p>
+                          <select class="form-select" :id="'transactionMethod-' + transaction.id" v-model="selectedTransactionMethod">
+                            <option v-for="optionPayment in transactionMethod" :value="optionPayment" :key="optionPayment">
+                              {{ optionPayment }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="methodTransaction(transaction.id, _transaction.method)">Ya</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + transaction.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + transaction.id" class="modal modal-xl" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -91,12 +174,12 @@ onMounted(fetchTransactions);
                         <h5 class="modal-title">Konfirmasi Hapus</h5>
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="modal-body">
+                      <div class="modal-body text-start">
                         <p>Anda yakin ingin menghapus</p>
-                        <p>
-                          Transaksi <b>{{ transaction.livestock.name }}</b
+                        <span>
+                          Transaksi <b>{{ transaction.livestock.livestock_type.name }}</b
                           >?
-                        </p>
+                        </span>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

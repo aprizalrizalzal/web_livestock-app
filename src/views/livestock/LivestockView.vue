@@ -8,7 +8,7 @@ const router = useRouter();
 const route = useRoute();
 const profileId = route.params.id;
 const livestocks = ref([]);
-const searchQuery = ref([]);
+const searchQuery = ref('');
 const startNumber = 1;
 
 const fetchLivestocks = async () => {

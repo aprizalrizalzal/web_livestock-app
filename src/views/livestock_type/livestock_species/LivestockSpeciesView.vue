@@ -11,7 +11,7 @@ const _livestockSpecies = ref({
   name: '',
 });
 const livestockTypeId = route.params.id;
-const searchQuery = ref([]);
+const searchQuery = ref('');
 const startNumber = 1;
 
 const fetchLivestockSpecies = async () => {
@@ -61,7 +61,7 @@ onMounted(fetchLivestockSpecies);
 </script>
 
 <template>
-  <div class="livestock-species-detail" v-if="livestocksSpecies">
+  <div class="livestock-species" v-if="livestocksSpecies">
     <div class="row">
       <div class="col-md-9">
         <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
@@ -174,7 +174,7 @@ onMounted(fetchLivestockSpecies);
       </div>
     </div>
   </div>
-  <div class="livestock-species-detail" v-else>
+  <div class="livestock-species" v-else>
     <h2 class="mb-4">Loading...</h2>
   </div>
 </template>

@@ -64,13 +64,8 @@ const router = createRouter({
       component: () => import('@/views/livestock_type/LivestockTypeView.vue'),
     },
     {
-      path: '/livestock/types/tambah',
-      name: 'livestock-types-add',
-      component: () => import('@/views/livestock_type/LivestockTypeAddView.vue'),
-    },
-    {
-      path: '/livestock/species/:id/detail',
-      name: 'livestock-species-detail',
+      path: '/livestock/species/:id',
+      name: 'livestock-species',
       component: () => import('@/views/livestock_type/livestock_species/LivestockSpeciesView.vue'),
     },
     {
