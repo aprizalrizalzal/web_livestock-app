@@ -97,8 +97,8 @@ onMounted(fetchLivestockTypes);
               </td>
               <td class="text-truncate text-center">
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalEdit-' + livestockType.id" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
-                <div :id="'showModalEdit-' + livestockType.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalEdit-' + livestockType.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Edit</h5>
@@ -129,8 +129,8 @@ onMounted(fetchLivestockTypes);
                 </div>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestockType.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + livestockType.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalDelete-' + livestockType.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Konfirmasi Hapus</h5>
@@ -157,8 +157,8 @@ onMounted(fetchLivestockTypes);
         </table>
         <div class="row m-1">
           <button data-bs-toggle="modal" data-bs-target="#showModalAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
-          <div id="showModalAdd" class="modal modal-xl" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+          <div id="showModalAdd" class="modal modal-lg" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
               <div class="modal-content">
                 <div class="modal-header bg-light">
                   <h5 class="modal-title">Tambah</h5>

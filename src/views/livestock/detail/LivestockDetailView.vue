@@ -44,8 +44,8 @@ onMounted(fetchLivestockById);
         <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
         <button data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
       </div>
-      <div :id="'showModal'" class="modal modal-xl" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+      <div :id="'showModal'" class="modal modal-lg" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title">Konfirmasi</h5>

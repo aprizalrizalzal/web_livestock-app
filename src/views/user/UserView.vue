@@ -82,8 +82,8 @@ onMounted(fetchUsers);
                 <button v-if="user.profile ? user.profile.id : null" data-bs-toggle="modal" :data-bs-target="'#showModalDetail-' + user.id" class="btn btn-primary me-2"><i class="bi bi-person-badge"></i> Detail</button>
                 <button v-else class="btn btn-warning me-2" disabled><i class="bi bi-person-fill-exclamation"></i> Profile</button>
 
-                <div v-if="user.profile ? user.profile.id : null" :id="'showModalDetail-' + user.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div v-if="user.profile ? user.profile.id : null" :id="'showModalDetail-' + user.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Detail Pengguna</h5>
@@ -133,8 +133,8 @@ onMounted(fetchUsers);
                 </div>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + user.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + user.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalDelete-' + user.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Konfirmasi Hapus</h5>

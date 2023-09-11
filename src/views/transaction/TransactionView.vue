@@ -127,8 +127,8 @@ onMounted(fetchTransactions);
               </td>
               <td class="text-truncate text-center">
                 <button v-if="!transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalTransaction-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Proses</button>
-                <div :id="'showModalTransaction-' + transaction.id" class="modal" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalTransaction-' + transaction.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title">Konfirmasi Proses Transaksi</h5>
@@ -150,8 +150,8 @@ onMounted(fetchTransactions);
                 </div>
 
                 <button v-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalPayment-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Bayar</button>
-                <div :id="'showModalPayment-' + transaction.id" class="modal" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalPayment-' + transaction.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title">Konfirmasi Proses Pembayaran</h5>
@@ -177,8 +177,8 @@ onMounted(fetchTransactions);
                 </div>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + transaction.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + transaction.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalDelete-' + transaction.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Konfirmasi Hapus</h5>

@@ -116,8 +116,8 @@ onMounted(() => {
                 <button @click="navigateToDetail(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
                 <button v-if="livestock.status === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestock.id" class="btn btn-danger me-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + livestock.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalDelete-' + livestock.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Konfirmasi Hapus</h5>

@@ -123,8 +123,8 @@ onMounted(fetchPayments);
               </td>
               <td class="text-truncate text-center">
                 <button v-if="!payment.status && !payment.transaction.livestock.status && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalpayment-' + payment.id" class="btn btn-secondary me-2"><i class="bi bi-wallet"></i> Konfirmasi</button>
-                <div :id="'showModalpayment-' + payment.id" class="modal" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalpayment-' + payment.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
                         <h5 class="modal-title">Konfirmasi Pembayaran</h5>
@@ -146,8 +146,8 @@ onMounted(fetchPayments);
                 </div>
 
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + payment.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
-                <div :id="'showModalDelete-' + payment.id" class="modal modal-xl" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
+                <div :id="'showModalDelete-' + payment.id" class="modal modal-lg" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                       <div class="modal-header bg-light">
                         <h5 class="modal-title">Konfirmasi Hapus</h5>
