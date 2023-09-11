@@ -37,7 +37,11 @@ onMounted(fetchLivestocks);
             <h5 class="card-title text-center">{{ livestock.livestock_type.name }} ({{ livestock.livestock_species.name }})</h5>
             <p class="card-text m-0"><i class="bi bi-wallet"></i> {{ livestock.price }}</p>
             <p class="card-text m-0"><i class="bi bi-person"></i> {{ livestock.profile.name }}</p>
-            <p class="card-text"><i class="bi bi-geo-alt"></i> {{ livestock.profile.address }}</p>
+            <p class="card-text m-0"><i class="bi bi-geo-alt"></i> {{ livestock.profile.address }}</p>
+            <p class="card-text text-center">
+              <i v-if="livestock.status" class="text-success">Terjual</i>
+              <i v-else class="text-info">Tersedia</i>
+            </p>
             <button @click="navigateToDetail(livestock.id)" class="btn btn-primary"><i class="bi bi-view-list"></i> Lihat Detail</button>
           </div>
         </div>

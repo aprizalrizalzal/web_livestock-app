@@ -32,6 +32,16 @@ const fetchTransactions = async () => {
 const processTransaction = async (transactionId) => {
   try {
     transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
+    fetchTransactions();
+  } catch (error) {
+    console.error('Kesalahan dalam mengirim data transaction:', error);
+  }
+};
+
+const methodTransaction = async (transactionId) => {
+  try {
+    transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
+    processPayment(transactionId);
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
   }
@@ -46,18 +56,18 @@ const processPayment = async (transactionId) => {
   }
 };
 
+const deleteTransaction = async (transactionId) => {
+  try {
+    await storeTransaction.deleteTransactionById(transactionId);
+    fetchTransactions();
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus transaction');
+  }
+};
+
 const _transactionMethod = computed(() => {
   return transaction.value.method === null;
 });
-
-const methodTransaction = async (transactionId) => {
-  try {
-    transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
-    processPayment(transactionId);
-  } catch (error) {
-    console.error('Kesalahan dalam mengirim data transaction:', error);
-  }
-};
 
 const autoNumber = (i) => {
   return startNumber * i + 1;
@@ -108,15 +118,15 @@ onMounted(fetchTransactions);
               <td>{{ transaction.livestock.profile.phone_number }}</td>
               <td>{{ transaction.livestock.price }}</td>
               <td>
-                <span v-if="transaction.status && transaction.livestock.sold" class="text-success"> Diterima</span>
-                <span v-else-if="!transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'seller'" class="text-info"> Silahkan diproses</span>
-                <span v-else-if="!transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'buyer'" class="text-info"> Sedang diproses penjual</span>
-                <span v-else-if="transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'seller'" class="text-info"> Tunggu pembayaran dari pembeli</span>
-                <span v-else-if="transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'buyer'" class="text-info"> Lanjutkan pembayaran</span>
+                <span v-if="transaction.status && transaction.livestock.status" class="text-success"> Diterima</span>
+                <span v-else-if="!transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" class="text-info"> Silahkan diproses</span>
+                <span v-else-if="!transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'buyer'" class="text-info"> Sedang diproses penjual</span>
+                <span v-else-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" class="text-info"> Tunggu pembayaran dari pembeli</span>
+                <span v-else-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'buyer'" class="text-info"> Lanjutkan pembayaran</span>
                 <span v-else class="text-info"> Dalam Proses</span>
               </td>
               <td class="text-truncate text-center">
-                <button v-if="!transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalTransaction-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Proses</button>
+                <button v-if="!transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalTransaction-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Proses</button>
                 <div :id="'showModalTransaction-' + transaction.id" class="modal" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -133,13 +143,13 @@ onMounted(fetchTransactions);
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="processTransaction(transaction.id, _transaction.status)">Ya</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="processTransaction(transaction.id)">Ya</button>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <button v-if="transaction.status && !transaction.livestock.sold && !_transactionMethod && role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalPayment-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Bayar</button>
+                <button v-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalPayment-' + transaction.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Bayar</button>
                 <div :id="'showModalPayment-' + transaction.id" class="modal" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -183,7 +193,7 @@ onMounted(fetchTransactions);
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deletetransaction(transaction.id)">Ya</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteTransaction(transaction.id)">Ya</button>
                       </div>
                     </div>
                   </div>

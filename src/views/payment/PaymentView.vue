@@ -2,16 +2,19 @@
 import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { usePaymentStore } from '@/stores/paymentStore';
+import { useLivestockStore } from '@/stores/livestockStore';
 
 const router = useRouter();
 const searchQuery = ref('');
 
 const storePayment = usePaymentStore();
+const storeLivestock = useLivestockStore();
 const role = localStorage.getItem('role');
 const startNumber = 1;
 
 const payments = ref([]);
 const payment = ref({});
+
 const _payment = ref({
   status: true,
 });
@@ -24,12 +27,43 @@ const fetchPayments = async () => {
   }
 };
 
-const processPayment = async (paymentId) => {
+const processLivestock = async (livestock) => {
   try {
-    payment.value = await storePayment.putPaymentById(paymentId, _payment.value);
+    const _livestock = ref({
+      livestock_type_id: livestock.livestock_type_id,
+      livestock_species_id: livestock.livestock_species_id,
+      gender: livestock.gender,
+      age: livestock.age,
+      price: livestock.price,
+      status: true,
+      detail: livestock.detail,
+    });
+    await storeLivestock.putLivestockById(livestock.id, _livestock.value);
     fetchPayments();
   } catch (error) {
+    console.error('Kesalahan dalam mengirim data livestock:', error);
+  }
+};
+
+const processPaymentLivestock = async (paymentId, livestock) => {
+  try {
+    payment.value = await storePayment.putPaymentById(paymentId, _payment.value);
+    if (role === 'seller') {
+      processLivestock(livestock);
+    } else {
+      fetchPayments();
+    }
+  } catch (error) {
     console.error('Kesalahan dalam mengirim data payment:', error);
+  }
+};
+
+const deletePayment = async (paymentId) => {
+  try {
+    await storePayment.deletePaymentById(paymentId);
+    fetchPayments();
+  } catch (error) {
+    console.error('Kesalahan dalam menghapus payment');
   }
 };
 
@@ -82,82 +116,30 @@ onMounted(fetchPayments);
               <td>{{ payment.transaction.livestock.livestock_type.name }} ({{ payment.transaction.livestock.livestock_species.name }})</td>
               <td>{{ payment.transaction.livestock.price }}</td>
               <td>
-                <span v-if="payment.status && payment.livestock.sold" class="text-success"> Diterima</span>
-                <span v-else-if="!payment.status && !payment.transaction.livestock.sold && role === 'seller'" class="text-info"> Silahkan diproses</span>
-                <span v-else-if="!payment.status && !payment.transaction.livestock.sold && role === 'buyer'" class="text-info"> Sedang diproses penjual</span>
-                <span v-else-if="payment.status && !payment.transaction.livestock.sold && role === 'seller'" class="text-info"> Tunggu pembayaran dari pembeli</span>
-                <span v-else-if="payment.status && !payment.transaction.livestock.sold && role === 'buyer'" class="text-info"> Lanjutkan pembayaran</span>
+                <span v-if="payment.status && payment.transaction.livestock.status" class="text-success"> Diterima</span>
+                <span v-else-if="!payment.status && !payment.transaction.livestock.status && role === 'seller'" class="text-info"> Silahkan di konfirmasi</span>
+                <span v-else-if="payment.status && !payment.transaction.livestock.status && role === 'buyer'" class="text-info"> Silahkan di konfirmasi</span>
                 <span v-else class="text-info"> Dalam Proses</span>
               </td>
               <td class="text-truncate text-center">
-                <button v-if="!payment.status && !payment.transaction.livestock.sold && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalpayment-' + payment.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Diterima</button>
+                <button v-if="!payment.status && !payment.transaction.livestock.status && role === 'seller'" data-bs-toggle="modal" :data-bs-target="'#showModalpayment-' + payment.id" class="btn btn-secondary me-2"><i class="bi bi-wallet"></i> Konfirmasi</button>
                 <div :id="'showModalpayment-' + payment.id" class="modal" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi Proses Transaksi</h5>
+                        <h5 class="modal-title">Konfirmasi Pembayaran</h5>
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body text-start">
-                        <p>Anda yakin ingin memproses</p>
+                        <p>Apakah Anda sudah menerima pembayaran dari {{ payment.transaction.profile.name }}</p>
                         <span>
-                          Transaksi <b>{{ payment.transaction.livestock.livestock_type.name }}</b
+                          <b>{{ payment.transaction.livestock.price }}</b
                           >?
                         </span>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="processPayment(payment.id, _payment.status)">Ya</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <button v-if="!payment.status && !payment.transaction.livestock.sold && role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalpayment-' + payment.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Diterima</button>
-                <div :id="'showModalpayment-' + payment.id" class="modal" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi Proses Transaksi</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body text-start">
-                        <p>Anda yakin ingin memproses</p>
-                        <span>
-                          Transaksi <b>{{ payment.transaction.livestock.livestock_type.name }}</b
-                          >?
-                        </span>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="processPayment(payment.id, _payment.status)">Ya</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <button v-if="payment.status && !payment.livestock.sold && role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalPayment-' + payment.id" class="btn btn-secondary me-2"><i class="bi bi-cart-check-fill"></i> Bayar</button>
-                <div :id="'showModalPayment-' + payment.id" class="modal" tabindex="-1" role="dialog">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi Proses Pembayaran</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body text-start">
-                        <p>Anda yakin ingin memproses transaksi ini?</p>
-                        <div class="mb-3">
-                          <p for="payment" class="form-label">Pilih Metode Pembayaran</p>
-                          <select class="form-select" :id="'paymentMethod-' + payment.id" v-model="selectedPaymentMethod">
-                            <option v-for="optionPayment in paymentMethod" :value="optionPayment" :key="optionPayment">
-                              {{ optionPayment }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="methodPayment(payment.id, _payment.method)">Ya</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="processPaymentLivestock(payment.id, payment.transaction.livestock)">Ya</button>
                       </div>
                     </div>
                   </div>
@@ -174,13 +156,13 @@ onMounted(fetchPayments);
                       <div class="modal-body text-start">
                         <p>Anda yakin ingin menghapus</p>
                         <span>
-                          Transaksi <b>{{ payment.transaction.livestock.livestock_type.name }}</b
+                          Pembayaran <b>{{ payment.transaction.livestock.livestock_type.name }}</b
                           >?
                         </span>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deletepayment(payment.id)">Ya</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deletePayment(payment.id)">Ya</button>
                       </div>
                     </div>
                   </div>

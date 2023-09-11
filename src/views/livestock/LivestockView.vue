@@ -110,11 +110,11 @@ onMounted(() => {
               <td class="text-truncate" style="max-width: 150px">
                 {{ livestock.detail }}
               </td>
-              <td v-if="livestock.sold === 1" class="text-success">Terjual</td>
+              <td v-if="livestock.status === 1" class="text-success">Terjual</td>
               <td v-else class="text-info">Tersedia</td>
               <td class="text-truncate text-center">
                 <button @click="navigateToDetail(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
-                <button v-if="livestock.sold === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button v-if="livestock.status === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestock.id" class="btn btn-danger me-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + livestock.id" class="modal modal-xl" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered" role="document">

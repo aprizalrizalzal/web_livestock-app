@@ -116,7 +116,7 @@ onMounted(fetchLivestockById);
             </tr>
             <tr>
               <td>Status</td>
-              <td>{{ livestock.sold === 0 ? 'Tersedia' : 'Terjual' }}</td>
+              <td>{{ livestock.status === 0 ? 'Tersedia' : 'Terjual' }}</td>
             </tr>
             <tr>
               <td class="text-truncate">Detail</td>
