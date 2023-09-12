@@ -75,7 +75,7 @@ onMounted(fetchLivestockById);
           </ol>
           <div class="carousel-inner">
             <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
-              <img :src="livestockPhoto.photo_url" class="img-thumbnail" width="600" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
+              <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
             </div>
           </div>
           <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">

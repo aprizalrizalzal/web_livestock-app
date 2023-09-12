@@ -25,6 +25,23 @@ export const useLivestockStore = defineStore({
       }
     },
 
+    fetchLivestocksAnonymous() {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await this.fetchCsrfToken();
+
+          const response = await axios.get('/api/livestocks-anonymous');
+
+          this.livestocks = response.data.livestocks;
+          resolve(this.livestocks);
+        } catch (error) {
+          console.error('Error in fetchLivestocks ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
     fetchLivestocks() {
       return new Promise(async (resolve, reject) => {
         try {

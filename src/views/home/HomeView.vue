@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
 import { useRouter } from 'vue-router';
 
@@ -8,9 +8,9 @@ const router = useRouter();
 const livestocks = ref([]);
 const searchQuery = ref('');
 
-const fetchLivestocks = async () => {
+const fetchLivestocksAnonymous = async () => {
   try {
-    livestocks.value = await store.fetchLivestocks();
+    livestocks.value = await store.fetchLivestocksAnonymous();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestocks:', error);
   }
@@ -20,7 +20,7 @@ const navigateToDetail = (livestockId) => {
   router.push({ name: 'livestocks-detail', params: { id: livestockId } });
 };
 
-onMounted(fetchLivestocks);
+onMounted(fetchLivestocksAnonymous);
 </script>
 
 <template>
@@ -32,7 +32,7 @@ onMounted(fetchLivestocks);
     <div class="row justify-content-center">
       <div class="col-md-4 mb-2" v-for="livestock in livestocks" :key="livestock.id">
         <div class="card shadow-sm">
-          <img :src="livestock.photo_url" class="card-img-top" :alt="livestock.livestock_type.name" />
+          <img :src="livestock.photo_url" class="card-img-top" style="height: 250px; object-fit: cover" :alt="livestock.livestock_type.name" />
           <div class="card-body m-0">
             <h5 class="card-title text-center">{{ livestock.livestock_type.name }} ({{ livestock.livestock_species.name }})</h5>
             <p class="card-text m-0"><i class="bi bi-wallet"></i> {{ livestock.price }}</p>

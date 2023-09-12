@@ -51,7 +51,7 @@ onMounted(fetchUsers);
         <h2 class="mb-4">Pengguna</h2>
       </div>
       <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama, Email atau Pengguna" aria-label="Search" />
+        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau Email" aria-label="Search" />
       </div>
     </div>
 
@@ -64,6 +64,7 @@ onMounted(fetchUsers);
               <th>Nama</th>
               <th>Email</th>
               <th>Peran</th>
+              <th>Izin</th>
               <th class="text-center">Hewan Ternak</th>
               <th class="text-center">Aksi</th>
             </tr>
@@ -74,6 +75,7 @@ onMounted(fetchUsers);
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.roles[0].name }}</td>
+              <td>{{ user.permissions[0].name }}</td>
               <td class="text-truncate text-center">
                 <button v-if="user.roles && user.roles[0].name === 'seller'" @click="navigateLivestocksByIdProfile(user.profile.id)" class="btn btn-secondary"><i class="bi bi-box-seam-fill"></i> Lihat</button>
                 <span v-else class="text-info">Tidak Ada</span>
@@ -89,44 +91,50 @@ onMounted(fetchUsers);
                         <h5 class="modal-title">Detail Pengguna</h5>
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="row ms-0 me-2">
-                        <div class="modal-body text-start">
-                          <div class="row g-2">
-                            <div class="col-sm-6">
-                              <p><b>Nama</b></p>
-                            </div>
-                            <div class="col-sm-3">
-                              <p>{{ user.profile.name }}</p>
-                            </div>
+                      <div class="modal-body text-start">
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <img src="../../assets/image/person-circle.svg" alt="Profile Photo" width="150" class="rounded" v-if="!user.profile.photo_url" />
+                            <img :src="user.profile.photo_url" alt="Profile Photo" width="150" class="rounded" v-else />
                           </div>
-                          <div class="row g-2">
-                            <div class="col-sm-6">
-                              <p><b>Jenis Kelamin</b></p>
+                          <div class="col-sm-9">
+                            <div class="row">
+                              <div class="col-sm-6 ms-auto">
+                                <p><b>Nama</b></p>
+                              </div>
+                              <div class="col-sm-6">
+                                <p>{{ user.profile.name }}</p>
+                              </div>
                             </div>
-                            <div class="col-sm-3">
-                              <p>{{ user.profile.gender === 'Male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                            <div class="row">
+                              <div class="col-sm-6 ms-auto">
+                                <p><b>Jenis Kelamin</b></p>
+                              </div>
+                              <div class="col-sm-6">
+                                <p>{{ user.profile.gender === 'Male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                              </div>
                             </div>
-                          </div>
-                          <div class="row g-2">
-                            <div class="col-sm-6">
-                              <p><b>Nomor Telepon</b></p>
+                            <div class="row">
+                              <div class="col-sm-6 ms-auto">
+                                <p><b>Nomor Telepon</b></p>
+                              </div>
+                              <div class="col-sm-6">
+                                <p>{{ user.profile.phone_number }}</p>
+                              </div>
                             </div>
-                            <div class="col-sm-3">
-                              <p>{{ user.profile.phone_number }}</p>
-                            </div>
-                          </div>
-                          <div class="row g-2">
-                            <div class="col-sm-6">
-                              <p><b>Alamat</b></p>
-                            </div>
-                            <div class="col-sm-3">
-                              <p>{{ user.profile.address }}</p>
+                            <div class="row">
+                              <div class="col-sm-6 ms-auto">
+                                <p><b>Alamat</b></p>
+                              </div>
+                              <div class="col-sm-6">
+                                <p>{{ user.profile.address }}</p>
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <div class="modal-footer ms-1">
-                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
-                        </div>
+                      </div>
+                      <div class="modal-footer ms-1">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
                       </div>
                     </div>
                   </div>

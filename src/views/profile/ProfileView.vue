@@ -44,7 +44,7 @@ const isEditPhoto = ref(false);
 const fetchProfile = async () => {
   try {
     profile.value = await storeProfile.fetchProfile();
-    if (profile.value && profile.value.user_id) {
+    if (profile.value.user_id) {
       fetchUserById(profile.value.user_id);
     }
   } catch (error) {
@@ -70,11 +70,9 @@ const handleFileUpload = async (event) => {
       const formData = new FormData();
       formData.append('photo', selectedFile);
 
-      const response = await storeProfile.postProfilePhoto(formData);
-      if (response) {
-        isEditPhoto.value = false;
-        fetchProfile();
-      }
+      await storeProfile.postProfilePhoto(formData);
+      isEditPhoto.value = false;
+      fetchProfile();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar profil:', error);
       message.value = error;
@@ -84,10 +82,8 @@ const handleFileUpload = async (event) => {
 
 const putProfilePhoto = async () => {
   try {
-    const response = await storeProfile.putProfilePhoto();
-    if (response) {
-      fetchProfile();
-    }
+    profile.value = await storeProfile.putProfilePhoto();
+    fetchProfile();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar profile:', error);
     message.value = error;
@@ -96,8 +92,7 @@ const putProfilePhoto = async () => {
 
 const saveProfile = async () => {
   try {
-    const response = await storeProfile.postProfile(profile.value);
-    profile.value = response;
+    profile.value = await storeProfile.postProfile(profile.value);
   } catch (error) {
     console.error('Kesalahan dalam mengirim data profile:', error);
     message.value = error;
@@ -106,8 +101,7 @@ const saveProfile = async () => {
 
 const updateProfile = async () => {
   try {
-    const response = await storeProfile.putProfile(profile.value);
-    profile.value = response;
+    profile.value = await storeProfile.putProfile(profile.value);
   } catch (error) {
     console.error('Kesalahan dalam mengirim data profile:', error);
     message.value = error;
@@ -155,15 +149,15 @@ onMounted(fetchProfile);
       <div class="row">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center pt-5">
-            <img src="../../../assets/image/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-if="!profile.photo_url" />
-            <img :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-else />
+            <img src="../../assets/image/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle mb-3" v-if="!profile.photo_url" />
+            <img :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle mb-3" v-else />
             <span>{{ user.name }}</span>
             <span>{{ user.email }}</span>
             <span>{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
             <div class="mt-5 text-center">
               <input type="file" @change="handleFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
-              <label class="btn btn-primary shadow-sm me-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
-              <button @click="putProfilePhoto" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
+              <label class="btn btn-primary shadow-sm mx-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
+              <button @click="putProfilePhoto" class="btn btn-danger shadow-sm my-2"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
             </div>
           </div>
         </div>
@@ -180,7 +174,7 @@ onMounted(fetchProfile);
                 </div>
                 <div class="col-md-12">
                   <label class="labels">Jenis Kelamin</label>
-                  <div class="mt-2 mb-2">
+                  <div class="my-2">
                     <div class="form-check form-check-inline">
                       <input class="form-check-input shadow-sm" type="radio" name="inlineRadioOptions" id="male" value="Male" v-model="profile.gender" />
                       <label class="form-check-label" for="male">Laki-laki</label>
@@ -199,7 +193,7 @@ onMounted(fetchProfile);
                   <label class="labels">Alamat</label>
                   <input type="text" class="form-control shadow-sm mb-2" placeholder="Alamat" v-model="profile.address" required />
                 </div>
-                <div class="mt-3 text-end">
+                <div class="mt-4 text-end">
                   <button type="submit" :class="profile ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ profile ? 'Perbarui Profil' : 'Simpan Profil' }}</button>
                 </div>
               </form>
@@ -215,27 +209,57 @@ onMounted(fetchProfile);
               <form @submit.prevent="saveEmail">
                 <div class="col-md-12">
                   <label class="labels">Email</label>
-                  <input type="text" class="form-control shadow-sm mb-2" :placeholder="user.email" required />
+                  <input type="text" class="form-control shadow-sm mb-2" disabled :placeholder="user.email" required />
                 </div>
-                <div class="mt-3 text-end">
-                  <button type="submit" class="btn btn-primary shadow-sm"><i class="bi bi-save"></i> Perbarui Email</button>
+                <div class="mt-4 text-end">
+                  <button data-bs-toggle="modal" data-bs-target="#showModal" class="btn btn-primary me-2"><i class="bi bi-info-circle"></i> Perbarui Email</button>
+                  <!-- <button type="submit" class="btn btn-primary shadow-sm"><i class="bi bi-info-circle"></i> Perbarui Email</button> -->
                 </div>
               </form>
             </div>
-            <div class="row mt-4">
+            <div class="row mt-2">
               <form @submit.prevent="savePassword">
                 <div class="col-md-12">
                   <label class="labels">Password</label>
-                  <input type="password" class="form-control shadow-sm mb-2" placeholder="Password" required />
+                  <input type="password" class="form-control shadow-sm mb-2" disabled placeholder="Password" required />
                 </div>
                 <div class="col-md-12">
                   <label class="labels">Konfirmasi Password</label>
-                  <input type="password" class="form-control shadow-sm mb-2" placeholder="Konfirmasi Password" required />
+                  <input type="password" class="form-control shadow-sm mb-2" disabled placeholder="Konfirmasi Password" required />
                 </div>
-                <div class="mt-3 text-end">
-                  <button type="submit" class="btn btn-danger shadow-sm"><i class="bi bi-save"></i> Perbarui Password</button>
+                <div class="mt-4 text-end">
+                  <button data-bs-toggle="modal" data-bs-target="#showModal" class="btn btn-danger me-2"><i class="bi bi-info-circle"></i> Perbarui Password</button>
+                  <!-- <button type="submit" class="btn btn-danger shadow-sm"><i class="bi bi-info-circle"></i> Perbarui Password</button> -->
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+        <div id="showModal" class="modal modal-lg" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Pesan</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-start">
+                <p>Hai Pengguna <b>Sistem Informasi Penjualan Hewan Ternak NTB</b>,</p>
+                <p>Terima kasih sudah menggunakan aplikasi <b>Sistem Informasi Penjualan Hewan Ternak NTB</b>! Mau kami kasih tahu nih, aplikasi kami masih digarap dengan semangat biar makin asyik buat kalian.</p>
+                <p>Nah, buat bantuin <b>Sistem Informasi Penjualan Hewan Ternak NTB</b> bikin semua aman dan makin oke, kami butuh bantuan kalian juga nih. Kalau kalian mau ganti email atau kata sandi, Sistem Informasi Penjualan Hewan Ternak Nusa Tenggara Barat minta kalian hubungin tim kami yang super ramah.</p>
+                <p>Langkahnya simpel, nih:</p>
+                <ol>
+                  <li>Kirim pesan ke tim dukungan kami lewat email di email@email.com atau lewat nomor telepon nomor telepon dukungan.</li>
+                  <li>Tim dukungan bakal kasih tahu cara ganti email atau kata sandi kalian.</li>
+                  <li>Ikutin aja petunjuk dari tim dukungan kami, pasti bakal jadi deh!</li>
+                </ol>
+                <p>Dengan begini, kalian ikut menjaga keamanan data kalian dan pasti bisa tetep nikmatin fitur-fitur seru yang bakal kami tambahin ke aplikasi ini.</p>
+                <p>Makasih banget ya udah dukung dan pake aplikasi <b>Sistem Informasi Penjualan Hewan Ternak NTB</b>. Kalau ada pertanyaan atau masalah, langsung aja kontak tim dukungan kami di email@email.com atau nomor telepon dukungan.</p>
+                <p>Terus stay cool, ya!</p>
+                <p class="m-0">Salam, Tim Pengembang Aplikasi</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+              </div>
             </div>
           </div>
         </div>

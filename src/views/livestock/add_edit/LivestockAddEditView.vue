@@ -35,11 +35,8 @@ const livestocksSpecies = ref([]);
 const fetchLivestockById = async () => {
   try {
     livestock.value = await storeLivestock.fetchLivestockById(livestockId);
-    if (livestock.value) {
-      selectedLivestockTypeId.value = livestock.value.livestock_type.id;
-      selectedLivestockSpeciesId.value = livestock.value.livestock_species.id;
-      fetchLivestockTypes();
-    }
+    selectedLivestockTypeId.value = livestock.value.livestock_type_id;
+    fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
     message.value = error;
@@ -49,9 +46,8 @@ const fetchLivestockById = async () => {
 const fetchLivestockTypes = async () => {
   try {
     livestockTypes.value = await storeLivestockType.fetchLivestockTypes();
-    if (livestockTypes.value) {
-      fetchLivestockSpeciesByIdLivestockType();
-    }
+    selectedLivestockSpeciesId.value = livestock.value.livestock_species_id;
+    fetchLivestockSpeciesByIdLivestockType();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
     message.value = error;
@@ -70,9 +66,7 @@ const fetchLivestockSpeciesByIdLivestockType = async () => {
 const saveLivestock = async () => {
   try {
     livestock.value = await storeLivestock.postLivestock(livestock.value);
-    if (livestock.value) {
-      goBack();
-    }
+    goBack();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestock:', error);
     message.value = error;
@@ -82,9 +76,7 @@ const saveLivestock = async () => {
 const updateLivestock = async () => {
   try {
     livestock.value = await storeLivestock.putLivestockById(livestockId, livestock.value);
-    if (livestock.value) {
-      goBack();
-    }
+    goBack();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestock:', error);
     message.value = error;
@@ -94,9 +86,7 @@ const updateLivestock = async () => {
 const fetchLivestockPhotosByIdLivestock = async () => {
   try {
     livestockPhotos.value = await storeLivestockPhoto.fetchLivestockPhotosByIdLivestock(livestockId);
-    if (livestockPhotos.value) {
-      fetchLivestockById();
-    }
+    fetchLivestockById();
   } catch (error) {
     console.error('Kesalahan dalam mengambil gambar livestockPhotos:', error);
     message.value = error;
@@ -112,9 +102,7 @@ const handleSampulFileUpload = async (event) => {
       formData.append('photo', selectedFile);
 
       livestock.value = await storeLivestock.postLivestockPhotoById(livestockId, formData);
-      if (livestock.value) {
-        fetchLivestockById();
-      }
+      fetchLivestockById();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestock:', error);
       message.value = error;
@@ -125,9 +113,7 @@ const handleSampulFileUpload = async (event) => {
 const putLivestockPhotoById = async (livestockId) => {
   try {
     livestock.value = await storeLivestock.putLivestockPhotoById(livestockId);
-    if (livestock.value) {
-      fetchLivestockById();
-    }
+    fetchLivestockById();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar livestock:', error);
     message.value = error;
@@ -143,9 +129,7 @@ const handleDetailFileUpload = async (event) => {
       formData.append('photo', selectedFile);
 
       livestockPhotos.value = await storeLivestockPhoto.postLivestockPhotoByIdLivestock(livestockId, formData);
-      if (livestockPhotos.value) {
-        fetchLivestockPhotosByIdLivestock();
-      }
+      fetchLivestockPhotosByIdLivestock();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestockPhoto:', error);
       message.value = error;
@@ -156,9 +140,7 @@ const handleDetailFileUpload = async (event) => {
 const deleteLivestockPhotoById = async (livestockPhotoId) => {
   try {
     message.value = await storeLivestockPhoto.deleteLivestockPhotoById(livestockPhotoId);
-    if (message.value) {
-      fetchLivestockPhotosByIdLivestock();
-    }
+    fetchLivestockPhotosByIdLivestock();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar livestock:', error);
     message.value = error;
@@ -195,10 +177,10 @@ onMounted(() => {
           <h4 class="mb-4">Foto Sampul</h4>
           <div class="col-md-12"></div>
           <div class="text-center">
-            <img src="../../../assets/image/card-image.svg" alt="Livestock Photo" width="200" class="img-thumbnail mb-3" v-if="!livestock.photo_url" />
-            <img :src="livestock.photo_url" alt="Livestock Photo" width="200" class="rounded-circle img-thumbnail mb-3" v-else />
+            <img v-if="!livestock.photo_url" src="../../../assets/image/card-image.svg" alt="Livestock Photo" class="rounded mx-auto d-block" />
+            <img v-else :src="livestock.photo_url" alt="Livestock Photo" style="width: 300px; height: 200px; object-fit: cover" class="rounded mx-auto d-block" />
           </div>
-          <div class="mt-3 text-center">
+          <div class="my-3 text-center">
             <input type="file" @change="handleSampulFileUpload" class="form-control" id="inputGroupSampulFile" style="display: none" />
             <label class="btn btn-primary shadow-sm me-2" for="inputGroupSampulFile"><i class="bi bi-upload"></i> Unggah</label>
             <button @click="putLivestockPhotoById(livestock.id)" class="btn btn-danger shadow-sm"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
@@ -207,18 +189,18 @@ onMounted(() => {
           <div class="col-md-12">
             <div class="row text-center">
               <div class="col-md-6" v-for="livestockPhoto in livestockPhotos" :key="livestockPhoto.id">
-                <img src="../../../assets/image/card-image.svg" alt="Livestock Photos" width="150" class="img-thumbnail mb-3" v-if="!livestockPhoto.photo_url" />
-                <img :src="livestockPhoto.photo_url" alt="Livestock Photos" width="150" class="rounded-circle img-thumbnail mb-3" v-else />
-                <button @click="deleteLivestockPhotoById(livestockPhoto.id)" class="btn btn-danger shadow-sm mx-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
+                <img v-if="!livestockPhoto.photo_url" src="../../../assets/image/card-image.svg" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
+                <img v-else :src="livestockPhoto.photo_url" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
+                <button @click="deleteLivestockPhotoById(livestockPhoto.id)" class="btn btn-danger shadow-sm my-3"><i class="bi bi-eraser-fill"></i> Hapus</button>
               </div>
             </div>
           </div>
-          <div class="mt-3 text-center">
+          <div class="text-center">
             <input type="file" @change="handleDetailFileUpload" class="form-control" id="inputGroupDetailFile" style="display: none" />
-            <label class="btn btn-primary shadow-sm me-2" for="inputGroupDetailFile"><i class="bi bi-upload"></i> Unggah</label>
+            <label class="btn btn-primary shadow-sm" for="inputGroupDetailFile"><i class="bi bi-upload"></i> Unggah</label>
           </div>
         </div>
-        <div class="col-md-8">
+        <div :class="{ 'col-md-12': !livestockId, 'col-md-8': livestockId }">
           <h4 class="mb-4">Hewan</h4>
           <form @submit.prevent="livestockId ? updateLivestock() : saveLivestock()">
             <div class="col-md-12">
