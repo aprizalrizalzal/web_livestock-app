@@ -75,8 +75,6 @@ export const useAuthStore = defineStore({
     async logout() {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = this.token;
           if (!token) {
             this.user = null;

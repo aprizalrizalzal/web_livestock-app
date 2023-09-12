@@ -27,8 +27,6 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
     fetchLivestockTypes() {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,
@@ -75,8 +73,6 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
     fetchLivestockTypeById(id) {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,

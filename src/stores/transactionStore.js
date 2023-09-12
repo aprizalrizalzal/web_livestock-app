@@ -27,8 +27,6 @@ export const useTransactionStore = defineStore('transactionStore', {
     fetchTransactions() {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,
@@ -75,8 +73,6 @@ export const useTransactionStore = defineStore('transactionStore', {
     fetchTransactionById(id) {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,

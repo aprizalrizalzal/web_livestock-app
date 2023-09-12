@@ -28,8 +28,6 @@ export const useLivestockStore = defineStore({
     fetchLivestocksAnonymous() {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const response = await axios.get('/api/livestocks-anonymous');
 
           this.livestocks = response.data.livestocks;
@@ -45,8 +43,6 @@ export const useLivestockStore = defineStore({
     fetchLivestocks() {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,
@@ -69,8 +65,6 @@ export const useLivestockStore = defineStore({
     fetchLivestocksByIdProfile(profileId) {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,
@@ -166,8 +160,6 @@ export const useLivestockStore = defineStore({
     fetchLivestockById(id) {
       return new Promise(async (resolve, reject) => {
         try {
-          await this.fetchCsrfToken();
-
           const token = localStorage.getItem('token');
           const headers = {
             Authorization: `Bearer ${token}`,
