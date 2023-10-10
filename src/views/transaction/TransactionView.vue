@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import { useRouter } from 'vue-router';
@@ -14,18 +14,38 @@ const startNumber = 1;
 const transactions = ref([]);
 const transaction = ref({});
 const payment = ref({});
-const transactionMethod = ref(['Bayar di tempat', 'Transfer']);
+const transactionMethod = ref(['Bayar di tempat', 'Lain-nya']);
 const selectedTransactionMethod = ref({});
 const _transaction = ref({
   status: true,
   method: selectedTransactionMethod,
 });
 
+const message = ref({});
+const modalTrigger = ref(null);
+
+watch(message, (newMessage) => {
+  if (newMessage) {
+    showModal();
+  }
+});
+
+const triggerModalClick = () => {
+  if (modalTrigger.value) {
+    modalTrigger.value.click();
+  }
+};
+
+const showModal = () => {
+  triggerModalClick();
+};
+
 const fetchTransactions = async () => {
   try {
     transactions.value = await storeTransaction.fetchTransactions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data transactions:', error);
+    message.value = error;
   }
 };
 
@@ -35,6 +55,7 @@ const processTransaction = async (transactionId) => {
     fetchTransactions();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
+    message.value = error;
   }
 };
 
@@ -44,6 +65,7 @@ const methodTransaction = async (transactionId) => {
     processPayment(transactionId);
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
+    message.value = error;
   }
 };
 
@@ -53,6 +75,7 @@ const processPayment = async (transactionId) => {
     router.push({ name: 'payments' });
   } catch (error) {
     console.error('Kesalahan dalam mengirim data payment:', error);
+    message.value = error;
   }
 };
 
@@ -62,6 +85,7 @@ const deleteTransaction = async (transactionId) => {
     fetchTransactions();
   } catch (error) {
     console.error('Kesalahan dalam menghapus transaction');
+    message.value = error;
   }
 };
 
@@ -77,7 +101,10 @@ const goBack = () => {
   router.back();
 };
 
-onMounted(fetchTransactions);
+onMounted(() => {
+  fetchTransactions();
+  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
 </script>
 <template>
   <div class="transactions" v-if="transactions[0] && transactions[0].profile && transactions[0].livestock && transactions[0].livestock.livestock_type && transactions[0].livestock.livestock_species && transactions[0].livestock.profile">
@@ -208,5 +235,22 @@ onMounted(fetchTransactions);
   </div>
   <div class="transactions" v-else>
     <h2 class="mb-4">Loading...</h2>
+  </div>
+  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
+  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">Pesan</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ message }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

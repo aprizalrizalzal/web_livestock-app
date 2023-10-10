@@ -104,7 +104,7 @@ export const useProfileStore = defineStore({
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.put('/api/profile-photo', {
+          const response = await axios.put('/api/profile-photo', null, {
             headers,
           });
 

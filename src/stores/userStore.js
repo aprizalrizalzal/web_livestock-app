@@ -6,6 +6,8 @@ export const useUserStore = defineStore({
   state: () => ({
     users: null,
     user: null,
+    roles: null,
+    permissions: null,
     message: null,
   }),
 
@@ -39,6 +41,50 @@ export const useUserStore = defineStore({
 
           this.users = response.data.users;
           resolve(this.users);
+        } catch (error) {
+          console.error('Error in getUsers ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
+    fetchRoles() {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await axios.get('/api/roles', {
+            headers,
+          });
+
+          this.roles = response.data.roles;
+          resolve(this.roles);
+        } catch (error) {
+          console.error('Error in getUsers ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
+    fetchPermissions() {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await axios.get('/api/permissions', {
+            headers,
+          });
+
+          this.permissions = response.data.permissions;
+          resolve(this.permissions);
         } catch (error) {
           console.error('Error in getUsers ', error);
           this.message = error.response.data.message;

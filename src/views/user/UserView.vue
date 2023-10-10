@@ -1,19 +1,65 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 
 const store = useUserStore();
 const router = useRouter();
 const users = ref([]);
+const selectedRoles = ref([]);
+const selectedPermissions = ref([]);
+const roles = ref([]);
+const permissions = ref([]);
 const searchQuery = ref('');
 const startNumber = 1;
+
+const message = ref({});
+const modalTrigger = ref(null);
+
+watch(message, (newMessage) => {
+  if (newMessage) {
+    showModal();
+  }
+});
+
+const triggerModalClick = () => {
+  if (modalTrigger.value) {
+    modalTrigger.value.click();
+  }
+};
+
+const showModal = () => {
+  triggerModalClick();
+};
 
 const fetchUsers = async () => {
   try {
     users.value = await store.fetchUsers();
+    selectedRoles.value = user.roles[0].name;
+    fetchRoles();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
+    message.value = error;
+  }
+};
+
+const fetchRoles = async () => {
+  try {
+    roles.value = await store.fetchRoles();
+    selectedPermissions.value = user.permission[0].name;
+    fetchPermissions();
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data roles:', error);
+    message.value = error;
+  }
+};
+
+const fetchPermissions = async () => {
+  try {
+    permissions.value = await store.fetchPermissions();
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data permissions:', error);
+    message.value = error;
   }
 };
 
@@ -27,6 +73,7 @@ const deleteUserById = async (userId) => {
     fetchUsers();
   } catch (error) {
     console.error('Kesalahan dalam menghapus data users:', error);
+    message.value = error;
   }
 };
 
@@ -38,7 +85,10 @@ const autoNumber = (i) => {
   return startNumber * i + 1;
 };
 
-onMounted(fetchUsers);
+onMounted(() => {
+  fetchUsers();
+  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
 </script>
 
 <template>
@@ -63,8 +113,7 @@ onMounted(fetchUsers);
               <th>No.</th>
               <th>Nama</th>
               <th>Email</th>
-              <th>Peran</th>
-              <th>Izin</th>
+              <th class="text-center">Peran</th>
               <th class="text-center">Hewan Ternak</th>
               <th class="text-center">Aksi</th>
             </tr>
@@ -74,8 +123,7 @@ onMounted(fetchUsers);
               <td>{{ autoNumber(i) }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
-              <td>{{ user.roles[0].name }}</td>
-              <td>{{ user.permissions[0].name }}</td>
+              <td class="text-center">{{ user.roles[0].name }}</td>
               <td class="text-truncate text-center">
                 <button v-if="user.roles && user.roles[0].name === 'seller'" @click="navigateLivestocksByIdProfile(user.profile.id)" class="btn btn-secondary"><i class="bi bi-box-seam-fill"></i> Lihat</button>
                 <span v-else class="text-info">Tidak Ada</span>
@@ -130,6 +178,30 @@ onMounted(fetchUsers);
                                 <p>{{ user.profile.address }}</p>
                               </div>
                             </div>
+                            <div class="row mb-2">
+                              <div class="col-sm-6">
+                                <b>Peran</b>
+                              </div>
+                              <div class="col-sm-3">
+                                <select class="form-select" v-model="selectedRoles" @change="fetchRoles(selectedRoles)">
+                                  <option v-for="role in roles" :value="role.id" :key="role.id">
+                                    {{ role.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <b>Izin</b>
+                              </div>
+                              <div class="col-sm-3">
+                                <select class="form-select" v-model="selectedPermissions" @change="fetchPermissions(selectedPermissions)">
+                                  <option v-for="permission in permissions" :value="permission.id" :key="permission.id">
+                                    {{ permission.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -168,5 +240,22 @@ onMounted(fetchUsers);
   </div>
   <div class="users" v-else>
     <h2 class="mb-4">Loading...</h2>
+  </div>
+  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
+  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">Pesan</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ message }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

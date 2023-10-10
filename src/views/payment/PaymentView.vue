@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, watch, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { usePaymentStore } from '@/stores/paymentStore';
 import { useLivestockStore } from '@/stores/livestockStore';
@@ -19,11 +19,31 @@ const _payment = ref({
   status: true,
 });
 
+const message = ref({});
+const modalTrigger = ref(null);
+
+watch(message, (newMessage) => {
+  if (newMessage) {
+    showModal();
+  }
+});
+
+const triggerModalClick = () => {
+  if (modalTrigger.value) {
+    modalTrigger.value.click();
+  }
+};
+
+const showModal = () => {
+  triggerModalClick();
+};
+
 const fetchPayments = async () => {
   try {
     payments.value = await storePayment.fetchPayments();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data payments:', error);
+    message.value = error;
   }
 };
 
@@ -42,6 +62,7 @@ const processLivestock = async (livestock) => {
     fetchPayments();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestock:', error);
+    message.value = error;
   }
 };
 
@@ -55,6 +76,7 @@ const processPaymentLivestock = async (paymentId, livestock) => {
     }
   } catch (error) {
     console.error('Kesalahan dalam mengirim data payment:', error);
+    message.value = error;
   }
 };
 
@@ -64,6 +86,7 @@ const deletePayment = async (paymentId) => {
     fetchPayments();
   } catch (error) {
     console.error('Kesalahan dalam menghapus payment');
+    message.value = error;
   }
 };
 
@@ -75,7 +98,10 @@ const goBack = () => {
   router.back();
 };
 
-onMounted(fetchPayments);
+onMounted(() => {
+  fetchPayments();
+  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
 </script>
 <template>
   <div class="payments" v-if="payments[0] && payments[0].transaction.profile && payments[0].transaction.livestock && payments[0].transaction.livestock.livestock_type && payments[0].transaction.livestock.livestock_species && payments[0].transaction.livestock.profile">
@@ -177,5 +203,22 @@ onMounted(fetchPayments);
   </div>
   <div class="payments" v-else>
     <h2 class="mb-4">Loading...</h2>
+  </div>
+  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
+  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">Pesan</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ message }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
