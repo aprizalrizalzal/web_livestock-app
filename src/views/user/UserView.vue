@@ -13,12 +13,12 @@ const permissions = ref([]);
 const searchQuery = ref('');
 const startNumber = 1;
 
-const message = ref({});
+const message = ref('');
 
 const fetchUsers = async () => {
   try {
     users.value = await store.fetchUsers();
-    selectedRoles.value = user.roles[0].name;
+    // selectedRoles.value = users.roles[0].name;
     fetchRoles();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
@@ -29,7 +29,7 @@ const fetchUsers = async () => {
 const fetchRoles = async () => {
   try {
     roles.value = await store.fetchRoles();
-    selectedPermissions.value = user.permission[0].name;
+    // selectedPermissions.value = users.permission[0].name;
     fetchPermissions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data roles:', error);
@@ -96,6 +96,11 @@ const filteredUsers = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau Email" aria-label="Search" />
+    </div>
+    <div v-if="message" class="mt-3 text-center">
+      <div class="alert alert-danger">
+        <small>{{ message }}</small>
+      </div>
     </div>
   </div>
   <div class="users" v-if="filteredUsers[0] && filteredUsers[0].profile && filteredUsers[0].roles[0]">

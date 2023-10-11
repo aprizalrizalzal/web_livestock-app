@@ -31,7 +31,13 @@ const livestockPhotos = ref([]);
 const livestockTypes = ref({});
 const livestocksSpecies = ref([]);
 
-const message = ref({});
+const message = ref('');
+
+const messagePhoto = ref('');
+const messageDetailPhoto = ref('');
+
+const messageType = ref('');
+const messageSpecies = ref('');
 
 const fetchLivestockById = async () => {
   try {
@@ -50,8 +56,8 @@ const fetchLivestockTypes = async () => {
     selectedLivestockSpeciesId.value = livestock.value.livestock_species_id;
     fetchLivestockSpeciesByIdLivestockType();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestock:', error);
-    message.value = error;
+    console.error('Kesalahan dalam mengambil data livestockType:', error);
+    messageType.value = error;
   }
 };
 
@@ -59,8 +65,8 @@ const fetchLivestockSpeciesByIdLivestockType = async () => {
   try {
     livestocksSpecies.value = await storeLivestockSpecies.fetchLivestockSpeciesByIdLivestockType(selectedLivestockTypeId.value);
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestock:', error);
-    message.value = error;
+    console.error('Kesalahan dalam mengambil data livestockSpecies:', error);
+    messageSpecies.value = error;
   }
 };
 
@@ -90,7 +96,7 @@ const fetchLivestockPhotosByIdLivestock = async () => {
     fetchLivestockById();
   } catch (error) {
     console.error('Kesalahan dalam mengambil gambar livestockPhotos:', error);
-    message.value = error;
+    messagePhoto.value = error;
   }
 };
 
@@ -106,7 +112,7 @@ const handleSampulFileUpload = async (event) => {
       fetchLivestockById();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestock:', error);
-      message.value = error;
+      messagePhoto.value = error;
     }
   }
 };
@@ -117,7 +123,7 @@ const putLivestockPhotoById = async (livestockId) => {
     fetchLivestockById();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar livestock:', error);
-    message.value = error;
+    messagePhoto.value = error;
   }
 };
 
@@ -133,7 +139,7 @@ const handleDetailFileUpload = async (event) => {
       fetchLivestockPhotosByIdLivestock();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestockPhoto:', error);
-      message.value = error;
+      messageDetailPhoto.value = error;
     }
   }
 };
@@ -144,7 +150,7 @@ const deleteLivestockPhotoById = async (livestockPhotoId) => {
     fetchLivestockPhotosByIdLivestock();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar livestock:', error);
-    message.value = error;
+    messageDetailPhoto.value = error;
   }
 };
 
@@ -162,24 +168,28 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="livestocks-add-edit" v-if="(livestock && livestock.profile && livestock.livestock_type_id && livestock.livestock_species_id) || (livestockTypes && livestocksSpecies)">
-    <div class="row">
-      <div class="col-md-9">
-        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-      </div>
-      <div class="col-md-3 text-end">
-        <h2 v-if="livestockId" class="mb-4">Edit Hewan Ternak</h2>
-        <h2 v-else class="mb-4">Tambah Hewan Ternak</h2>
-      </div>
+  <div class="row">
+    <div class="col-md-9">
+      <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
     </div>
+    <div class="col-md-3 text-end">
+      <h2 v-if="livestockId" class="mb-4">Edit Hewan Ternak</h2>
+      <h2 v-else class="mb-4">Tambah Hewan Ternak</h2>
+    </div>
+  </div>
+  <div class="livestocks-add-edit" v-if="(livestock && livestock.profile && livestock.livestock_type_id && livestock.livestock_species_id) || (livestockTypes && livestocksSpecies)">
     <div class="container rounded bg-white mt-3 mb-5 shadow-sm">
       <div class="row px-3 py-4">
         <div class="col-md-4" v-if="livestockId">
           <h4 class="mb-4">Foto Sampul</h4>
-          <div class="col-md-12"></div>
           <div class="text-center">
             <img v-if="!livestock.photo_url" src="../../../assets/image/card-image.svg" alt="Livestock Photo" class="rounded mx-auto d-block" />
             <img v-else :src="livestock.photo_url" alt="Livestock Photo" style="width: 300px; height: 200px; object-fit: cover" class="rounded mx-auto d-block" />
+            <div v-if="messagePhoto" class="mt-3 text-center">
+              <div class="alert alert-danger p-2">
+                <small>{{ messagePhoto }}</small>
+              </div>
+            </div>
           </div>
           <div class="my-3 text-center">
             <input type="file" @change="handleSampulFileUpload" class="form-control" id="inputGroupSampulFile" style="display: none" />
@@ -193,6 +203,11 @@ onMounted(() => {
                 <img v-if="!livestockPhoto.photo_url" src="../../../assets/image/card-image.svg" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
                 <img v-else :src="livestockPhoto.photo_url" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
                 <button @click="deleteLivestockPhotoById(livestockPhoto.id)" class="btn btn-danger shadow-sm my-3"><i class="bi bi-eraser-fill"></i> Hapus</button>
+              </div>
+            </div>
+            <div v-if="messageDetailPhoto" class="mt-3 text-center">
+              <div class="alert alert-danger p-2">
+                <small>{{ messageDetailPhoto }}</small>
               </div>
             </div>
           </div>
@@ -211,6 +226,11 @@ onMounted(() => {
                   {{ livestockType.name }}
                 </option>
               </select>
+              <div v-if="messageType" class="mt-3 text-center">
+                <div class="alert alert-danger p-2">
+                  <small>{{ messageType }}</small>
+                </div>
+              </div>
             </div>
             <div class="col-md-12">
               <label class="labels">Jenis</label>
@@ -219,6 +239,11 @@ onMounted(() => {
                   {{ livestockSpecies.name }}
                 </option>
               </select>
+              <div v-if="messageSpecies" class="mt-3 text-center">
+                <div class="alert alert-danger p-2">
+                  <small>{{ messageSpecies }}</small>
+                </div>
+              </div>
             </div>
             <div class="col-md-12">
               <label class="labels">Jenis Kelamin</label>
@@ -244,6 +269,11 @@ onMounted(() => {
             <div class="col-md-12">
               <label class="labels">Detail</label>
               <textarea type="text" class="form-control shadow-sm mb-2" rows="3" placeholder="Detail" v-model="livestock.detail" required></textarea>
+            </div>
+            <div v-if="message" class="mt-3 text-center">
+              <div class="alert alert-danger">
+                <small>{{ message }}</small>
+              </div>
             </div>
             <div class="mt-3 text-end">
               <button type="submit" :class="livestockId ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ livestockId ? 'Perbarui' : 'Simpan' }}</button>

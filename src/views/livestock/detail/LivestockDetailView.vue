@@ -13,7 +13,8 @@ const livestockId = route.params.id;
 const livestock = ref({});
 const transaction = ref({});
 
-const message = ref({});
+const message = ref('');
+const messageTransaction = ref('');
 
 const fetchLivestockById = async () => {
   try {
@@ -30,7 +31,7 @@ const addTransaction = async () => {
     router.push({ name: 'transactions' });
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
-    message.value = error;
+    messageTransaction.value = error;
   }
 };
 
@@ -48,6 +49,11 @@ onMounted(() => {
     <div class="col-md-9">
       <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
       <button data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
+    </div>
+    <div v-if="messageTransaction" class="mt-3 text-center">
+      <div class="alert alert-danger">
+        <small>{{ messageTransaction }}</small>
+      </div>
     </div>
   </div>
   <div class="livestock-detail" v-if="livestock && livestock.livestock_photos && livestock.profile && livestock.livestock_type && livestock.livestock_species">
@@ -72,27 +78,12 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="col-md-3 text-end">
+    <div class="col-md-12 text-center">
       <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
     </div>
-    <div class="col-md-12 mb-4">
-      <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
-        <ol class="carousel-indicators">
-          <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
-            <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
-          </div>
-        </div>
-        <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </a>
-        <a class="carousel-control-next" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </a>
+    <div v-if="message" class="mt-3 text-center">
+      <div class="alert alert-danger">
+        <small>{{ message }}</small>
       </div>
     </div>
     <div class="bg-body rounded shadow-sm">
@@ -150,6 +141,26 @@ onMounted(() => {
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+    <div class="col-md-12 pt-4 mt-4">
+      <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
+        <ol class="carousel-indicators">
+          <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
+            <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
+          </div>
+        </div>
+        <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </a>
       </div>
     </div>
   </div>

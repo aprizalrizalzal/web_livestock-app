@@ -19,7 +19,7 @@ const _payment = ref({
   status: true,
 });
 
-const message = ref({});
+const message = ref('');
 
 const fetchPayments = async () => {
   try {
@@ -108,6 +108,11 @@ const filteredPayments = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Pembeli atau No. Telepon" aria-label="Search" />
+    </div>
+    <div v-if="message" class="mt-3 text-center">
+      <div class="alert alert-danger">
+        <small>{{ message }}</small>
+      </div>
     </div>
   </div>
   <div class="payments" v-if="filteredPayments[0] && filteredPayments[0].transaction.profile && filteredPayments[0].transaction.livestock && filteredPayments[0].transaction.livestock.livestock_type && filteredPayments[0].transaction.livestock.livestock_species && filteredPayments[0].transaction.livestock.profile">

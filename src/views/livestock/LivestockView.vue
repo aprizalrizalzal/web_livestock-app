@@ -11,7 +11,7 @@ const livestocks = ref([]);
 const searchQuery = ref('');
 const startNumber = 1;
 
-const message = ref({});
+const message = ref('');
 
 const fetchLivestocks = async () => {
   try {
@@ -98,6 +98,11 @@ const filteredLivestocks = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan Ternak atau Jenis" aria-label="Search" />
+    </div>
+    <div v-if="message" class="mt-3 text-center">
+      <div class="alert alert-danger">
+        <small>{{ message }}</small>
+      </div>
     </div>
   </div>
   <div class="livestock" v-if="filteredLivestocks[0] && filteredLivestocks[0].profile && filteredLivestocks[0].livestock_type && filteredLivestocks[0].livestock_species">

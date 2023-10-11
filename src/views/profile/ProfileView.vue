@@ -17,7 +17,8 @@ const profile = ref({
 
 const user = ref({});
 
-const message = ref({});
+const message = ref('');
+const messagePhoto = ref('');
 
 onMounted(() => {});
 
@@ -57,7 +58,7 @@ const handleFileUpload = async (event) => {
       fetchProfile();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar profil:', error);
-      message.value = error;
+      messagePhoto.value = error;
     }
   }
 };
@@ -68,7 +69,7 @@ const putProfilePhoto = async () => {
     fetchProfile();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar profile:', error);
-    message.value = error;
+    messagePhoto.value = error;
   }
 };
 
@@ -120,6 +121,11 @@ onMounted(fetchProfile);
             <span>{{ user.email }}</span>
             <span>{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
             <div class="mt-5 text-center">
+              <div v-if="messagePhoto" class="mt-3 text-center">
+                <div class="alert alert-danger">
+                  <small>{{ messagePhoto }}</small>
+                </div>
+              </div>
               <input type="file" @change="handleFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
               <label class="btn btn-primary shadow-sm mx-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
               <button @click="putProfilePhoto" class="btn btn-danger shadow-sm my-2"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
@@ -157,6 +163,11 @@ onMounted(fetchProfile);
                 <div class="col-md-12">
                   <label class="labels">Alamat</label>
                   <input type="text" class="form-control shadow-sm mb-2" placeholder="Alamat" v-model="profile.address" required />
+                </div>
+                <div v-if="message" class="mt-3 text-center">
+                  <div class="alert alert-danger">
+                    <small>{{ message }}</small>
+                  </div>
                 </div>
                 <div class="mt-4 text-end">
                   <button type="submit" :class="profile ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ profile ? 'Perbarui Profil' : 'Simpan Profil' }}</button>

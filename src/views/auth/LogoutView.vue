@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 const store = useAuthStore();
 const router = useRouter();
 
-const message = ref({});
+const message = ref('');
 
 const logoutUser = async () => {
   try {

@@ -53,6 +53,11 @@ const registerUser = async () => {
             <input class="form-check-input shadow-sm" type="checkbox" v-model="userData.agree" id="flexCheckChecked" checked />
             <label class="form-check-label" for="flexCheckChecked"> Setuju dengan syarat dan ketentuan </label>
           </div>
+          <div v-if="message" class="mt-3 text-center">
+            <div class="alert alert-danger">
+              <small>{{ message }}</small>
+            </div>
+          </div>
           <div class="d-flex justify-content-end">
             <button type="submit" class="btn btn-primary shadow-sm mt-2"><i class="bi bi-box-arrow-in-left"></i> Daftar</button>
           </div>

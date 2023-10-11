@@ -14,7 +14,7 @@ const livestockTypeId = route.params.id;
 const searchQuery = ref('');
 const startNumber = 1;
 
-const message = ref({});
+const message = ref('');
 
 const fetchLivestockSpecies = async () => {
   try {
@@ -90,6 +90,11 @@ const filteredLivestockSpecies = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Spesies Hewan Ternak" aria-label="Search" />
+    </div>
+    <div v-if="message" class="mt-3 text-center">
+      <div class="alert alert-danger">
+        <small>{{ message }}</small>
+      </div>
     </div>
   </div>
   <div class="livestock-species" v-if="filteredLivestockSpecies">

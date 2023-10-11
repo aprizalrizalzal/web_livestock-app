@@ -143,7 +143,7 @@ export const useLivestockStore = defineStore({
             Authorization: `Bearer ${token}`,
           };
 
-          const response = await axios.post(`/api/livestock-photo/${livestockId}`, {
+          const response = await axios.post(`/api/livestock-photo/${livestockId}`, null, {
             headers,
           });
 

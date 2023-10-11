@@ -156,7 +156,6 @@ export const useProfileStore = defineStore({
             headers,
           });
 
-          // Assuming you want to reset to null after a successful delete.
           this.profile = null;
           resolve(response.data.message);
         } catch (error) {
