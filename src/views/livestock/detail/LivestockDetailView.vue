@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { useRouter, useRoute } from 'vue-router';
@@ -14,23 +14,6 @@ const livestock = ref({});
 const transaction = ref({});
 
 const message = ref({});
-const modalTrigger = ref(null);
-
-watch(message, (newMessage) => {
-  if (newMessage) {
-    showModal();
-  }
-});
-
-const triggerModalClick = () => {
-  if (modalTrigger.value) {
-    modalTrigger.value.click();
-  }
-};
-
-const showModal = () => {
-  triggerModalClick();
-};
 
 const fetchLivestockById = async () => {
   try {
@@ -57,60 +40,59 @@ const goBack = () => {
 
 onMounted(() => {
   fetchLivestockById();
-  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
 });
 </script>
 
 <template>
+  <div class="row">
+    <div class="col-md-9">
+      <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      <button data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
+    </div>
+  </div>
   <div class="livestock-detail" v-if="livestock && livestock.livestock_photos && livestock.profile && livestock.livestock_type && livestock.livestock_species">
-    <div class="row">
-      <div class="col-md-9">
-        <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-        <button data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
-      </div>
-      <div :id="'showModal'" class="modal modal-lg" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Konfirmasi</h5>
-              <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p>
-                Anda yakin ingin memesan hewan <b>{{ livestock.livestock_type.name }}</b> Jenis <b>{{ livestock.livestock_species.name }}</b
-                >?
-              </p>
-              <p>Harga {{ livestock.price }}</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addTransaction">Ya</button>
-            </div>
+    <div :id="'showModal'" class="modal modal-lg" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Konfirmasi</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Anda yakin ingin memesan hewan <b>{{ livestock.livestock_type.name }}</b> Jenis <b>{{ livestock.livestock_species.name }}</b
+              >?
+            </p>
+            <p>Harga {{ livestock.price }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addTransaction">Ya</button>
           </div>
         </div>
       </div>
-      <div class="col-md-3 text-end">
-        <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
-      </div>
-      <div class="col-md-12 mb-4">
-        <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
-          <ol class="carousel-indicators">
-            <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>
-          </ol>
-          <div class="carousel-inner">
-            <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
-              <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
-            </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
+    </div>
+    <div class="col-md-12 mb-4">
+      <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
+        <ol class="carousel-indicators">
+          <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
+            <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
           </div>
-          <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </a>
-          <a class="carousel-control-next" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </a>
         </div>
+        <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </a>
       </div>
     </div>
     <div class="bg-body rounded shadow-sm">
@@ -173,22 +155,5 @@ onMounted(() => {
   </div>
   <div class="livestock-detail" v-else>
     <h2>Loading...</h2>
-  </div>
-  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
-  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Pesan</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
 import { useRouter, useRoute } from 'vue-router';
 
@@ -12,23 +12,6 @@ const searchQuery = ref('');
 const startNumber = 1;
 
 const message = ref({});
-const modalTrigger = ref(null);
-
-watch(message, (newMessage) => {
-  if (newMessage) {
-    showModal();
-  }
-});
-
-const triggerModalClick = () => {
-  if (modalTrigger.value) {
-    modalTrigger.value.click();
-  }
-};
-
-const showModal = () => {
-  triggerModalClick();
-};
 
 const fetchLivestocks = async () => {
   try {
@@ -88,24 +71,36 @@ onMounted(() => {
   } else {
     fetchLivestocks();
   }
-  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
+
+const filteredLivestocks = computed(() => {
+  if (searchQuery.value === '') {
+    return livestocks.value;
+  } else {
+    const query = searchQuery.value.toLowerCase();
+    return livestocks.value.filter((livestock) => {
+      const livestockName = livestock.livestock_type.name.toLowerCase();
+      const livestockSpecies = livestock.livestock_species.name.toLowerCase();
+      return livestockName.includes(query) || livestockSpecies.includes(query);
+    });
+  }
 });
 </script>
 
 <template>
-  <div class="livestock" v-if="livestocks[0] && livestocks[0].profile && livestocks[0].livestock_type && livestocks[0].livestock_species">
-    <div class="row">
-      <div class="col-md-9">
-        <button @click="goBack" class="btn btn-secondary my-2 me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-        <button @click="navigateToAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
-      </div>
-      <div class="col-md-3 text-end">
-        <h2 class="mb-4">Hewan Ternak</h2>
-      </div>
-      <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan Ternak atau Jenis" aria-label="Search" />
-      </div>
+  <div class="row">
+    <div class="col-md-9">
+      <button @click="goBack" class="btn btn-secondary my-2 me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      <button @click="navigateToAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
     </div>
+    <div class="col-md-3 text-end">
+      <h2 class="mb-4">Hewan Ternak</h2>
+    </div>
+    <div class="col-md-12">
+      <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan Ternak atau Jenis" aria-label="Search" />
+    </div>
+  </div>
+  <div class="livestock" v-if="filteredLivestocks[0] && filteredLivestocks[0].profile && filteredLivestocks[0].livestock_type && filteredLivestocks[0].livestock_species">
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table align-middle table-sm">
@@ -122,7 +117,7 @@ onMounted(() => {
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody v-for="(livestock, i) in livestocks" :key="livestock.id">
+          <tbody v-for="(livestock, i) in filteredLivestocks" :key="livestock.id">
             <tr>
               <td>{{ autoNumber(i) }}</td>
               <td>{{ livestock.livestock_type.name }}</td>
@@ -175,22 +170,5 @@ onMounted(() => {
   </div>
   <div class="livestock" v-else>
     <h2 class="mb-4">Loading...</h2>
-  </div>
-  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
-  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Pesan</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
@@ -27,27 +27,8 @@ const loginUser = async () => {
 };
 
 const message = ref({});
-const modalTrigger = ref(null);
 
-watch(message, (newMessage) => {
-  if (newMessage) {
-    showModal();
-  }
-});
-
-const triggerModalClick = () => {
-  if (modalTrigger.value) {
-    modalTrigger.value.click();
-  }
-};
-
-const showModal = () => {
-  triggerModalClick();
-};
-
-onMounted(() => {
-  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
-});
+onMounted(() => {});
 </script>
 
 <template>

@@ -1,12 +1,12 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useLivestockSpeciesStore } from '@/stores/livestockSpeciesStore';
 import { useRouter, useRoute } from 'vue-router';
 
 const store = useLivestockSpeciesStore();
 const router = useRouter();
 const route = useRoute();
-const livestocksSpecies = ref([]);
+const livestockSpecies = ref([]);
 const _livestockSpecies = ref({
   name: '',
 });
@@ -15,27 +15,10 @@ const searchQuery = ref('');
 const startNumber = 1;
 
 const message = ref({});
-const modalTrigger = ref(null);
-
-watch(message, (newMessage) => {
-  if (newMessage) {
-    showModal();
-  }
-});
-
-const triggerModalClick = () => {
-  if (modalTrigger.value) {
-    modalTrigger.value.click();
-  }
-};
-
-const showModal = () => {
-  triggerModalClick();
-};
 
 const fetchLivestockSpecies = async () => {
   try {
-    livestocksSpecies.value = await store.fetchLivestockSpeciesByIdLivestockType(livestockTypeId);
+    livestockSpecies.value = await store.fetchLivestockSpeciesByIdLivestockType(livestockTypeId);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestocksType:', error);
     message.value = error;
@@ -44,7 +27,7 @@ const fetchLivestockSpecies = async () => {
 
 const addLivestockSpecies = async () => {
   try {
-    livestocksSpecies.value = await store.postLivestockSpeciesByIdLivestockType(livestockTypeId, _livestockSpecies.value);
+    livestockSpecies.value = await store.postLivestockSpeciesByIdLivestockType(livestockTypeId, _livestockSpecies.value);
     fetchLivestockSpecies();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestockSpecies:', error);
@@ -54,7 +37,7 @@ const addLivestockSpecies = async () => {
 
 const updateLivestockSpecies = async (livestockSpeciesId) => {
   try {
-    livestocksSpecies.value = await store.putLivestockSpeciesById(livestockSpeciesId, _livestockSpecies.value);
+    livestockSpecies.value = await store.putLivestockSpeciesById(livestockSpeciesId, _livestockSpecies.value);
     fetchLivestockSpecies();
   } catch (error) {
     console.error('Kesalahan dalam merubah data livestockSpecies:', error);
@@ -64,7 +47,7 @@ const updateLivestockSpecies = async (livestockSpeciesId) => {
 
 const deleteLivestockSpecies = async (livestockSpeciesId) => {
   try {
-    livestocksSpecies.value = await store.deleteLivestockSpeciesById(livestockSpeciesId);
+    livestockSpecies.value = await store.deleteLivestockSpeciesById(livestockSpeciesId);
     fetchLivestockSpecies();
   } catch (error) {
     console.error('Kesalahan dalam menghapus data livestockSpecies:', error);
@@ -82,23 +65,34 @@ const goBack = () => {
 
 onMounted(() => {
   fetchLivestockSpecies();
-  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
+
+const filteredLivestockSpecies = computed(() => {
+  if (searchQuery.value === '') {
+    return livestockSpecies.value;
+  } else {
+    const query = searchQuery.value.toLowerCase();
+    return livestockSpecies.value.filter((livestockSpecies) => {
+      const livestockSpeciesName = livestockSpecies.name.toLowerCase();
+      return livestockSpeciesName.includes(query);
+    });
+  }
 });
 </script>
 
 <template>
-  <div class="livestock-species" v-if="livestocksSpecies">
-    <div class="row">
-      <div class="col-md-9">
-        <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-      </div>
-      <div class="col-md-3 text-end">
-        <h2 class="mb-4">Spesies Hewan Ternak</h2>
-      </div>
-      <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Spesies Hewan Ternak" aria-label="Search" />
-      </div>
+  <div class="row">
+    <div class="col-md-9">
+      <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
     </div>
+    <div class="col-md-3 text-end">
+      <h2 class="mb-4">Spesies Hewan Ternak</h2>
+    </div>
+    <div class="col-md-12">
+      <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Spesies Hewan Ternak" aria-label="Search" />
+    </div>
+  </div>
+  <div class="livestock-species" v-if="filteredLivestockSpecies">
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table text-truncate">
@@ -109,7 +103,7 @@ onMounted(() => {
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody v-for="(livestockSpecies, i) in livestocksSpecies" :key="livestockSpecies.id">
+          <tbody v-for="(livestockSpecies, i) in filteredLivestockSpecies" :key="livestockSpecies.id">
             <tr>
               <td>{{ autoNumber(i) }}</td>
               <td>{{ livestockSpecies.name }}</td>
@@ -202,22 +196,5 @@ onMounted(() => {
   </div>
   <div class="livestock-species" v-else>
     <h2 class="mb-4">Loading...</h2>
-  </div>
-  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
-  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Pesan</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 
@@ -14,23 +14,6 @@ const searchQuery = ref('');
 const startNumber = 1;
 
 const message = ref({});
-const modalTrigger = ref(null);
-
-watch(message, (newMessage) => {
-  if (newMessage) {
-    showModal();
-  }
-});
-
-const triggerModalClick = () => {
-  if (modalTrigger.value) {
-    modalTrigger.value.click();
-  }
-};
-
-const showModal = () => {
-  triggerModalClick();
-};
 
 const fetchUsers = async () => {
   try {
@@ -87,24 +70,35 @@ const autoNumber = (i) => {
 
 onMounted(() => {
   fetchUsers();
-  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
+
+const filteredUsers = computed(() => {
+  if (searchQuery.value === '') {
+    return users.value;
+  } else {
+    const query = searchQuery.value.toLowerCase();
+    return users.value.filter((user) => {
+      const userName = user.name.toLowerCase();
+      const userEmail = user.email.toLowerCase();
+      return userName.includes(query) || userEmail.includes(query);
+    });
+  }
 });
 </script>
 
 <template>
-  <div class="users" v-if="users[0] && users[0].profile && users[0].roles[0]">
-    <div class="row">
-      <div class="col-md-9">
-        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-      </div>
-      <div class="col-md-3 text-end">
-        <h2 class="mb-4">Pengguna</h2>
-      </div>
-      <div class="col-md-12">
-        <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau Email" aria-label="Search" />
-      </div>
+  <div class="row">
+    <div class="col-md-9">
+      <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
     </div>
-
+    <div class="col-md-3 text-end">
+      <h2 class="mb-4">Pengguna</h2>
+    </div>
+    <div class="col-md-12">
+      <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau Email" aria-label="Search" />
+    </div>
+  </div>
+  <div class="users" v-if="filteredUsers[0] && filteredUsers[0].profile && filteredUsers[0].roles[0]">
     <div class="bg-body rounded shadow-sm">
       <div class="table-responsive px-3 pt-4">
         <table class="table align-middle table-sm">
@@ -118,7 +112,7 @@ onMounted(() => {
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody v-for="(user, i) in users" :key="user.id">
+          <tbody v-for="(user, i) in filteredUsers" :key="user.id">
             <tr>
               <td>{{ autoNumber(i) }}</td>
               <td>{{ user.name }}</td>
@@ -240,22 +234,5 @@ onMounted(() => {
   </div>
   <div class="users" v-else>
     <h2 class="mb-4">Loading...</h2>
-  </div>
-  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
-  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Pesan</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>

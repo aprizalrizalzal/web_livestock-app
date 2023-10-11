@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
 import { useRouter } from 'vue-router';
 
@@ -9,23 +9,6 @@ const livestocks = ref([]);
 const searchQuery = ref('');
 
 const message = ref({});
-const modalTrigger = ref(null);
-
-watch(message, (newMessage) => {
-  if (newMessage) {
-    showModal();
-  }
-});
-
-const triggerModalClick = () => {
-  if (modalTrigger.value) {
-    modalTrigger.value.click();
-  }
-};
-
-const showModal = () => {
-  triggerModalClick();
-};
 
 const fetchLivestocksAnonymous = async () => {
   try {
@@ -42,18 +25,31 @@ const navigateToDetail = (livestockId) => {
 
 onMounted(() => {
   fetchLivestocksAnonymous();
-  modalTrigger.value = document.querySelector('[data-bs-toggle="modal"][data-bs-target="#showModalMessage"]');
+});
+
+const filteredLivestocks = computed(() => {
+  if (searchQuery.value === '') {
+    return livestocks.value;
+  } else {
+    const query = searchQuery.value.toLowerCase();
+    return livestocks.value.filter((livestock) => {
+      const livestockName = livestock.livestock_type.name.toLowerCase();
+      const livestockSpecies = livestock.livestock_species.name.toLowerCase();
+      const livestockAddress = livestock.profile.address.toLowerCase();
+      return livestockName.includes(query) || livestockSpecies.includes(query) || livestockAddress.includes(query);
+    });
+  }
 });
 </script>
 
 <template>
-  <div class="home" v-if="livestocks[0] && livestocks[0].profile && livestocks[0].livestock_type && livestocks[0].livestock_species">
-    <h2 class="mb-4">Beranda</h2>
-    <div class="col-md-12">
-      <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan, Jenis, Alamat" aria-label="Search" />
-    </div>
+  <h2 class="mb-4">Beranda</h2>
+  <div class="col-md-12">
+    <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan, Jenis, Alamat" aria-label="Search" />
+  </div>
+  <div class="home" v-if="filteredLivestocks[0] && filteredLivestocks[0].profile && filteredLivestocks[0].livestock_type && filteredLivestocks[0].livestock_species">
     <div class="row justify-content-center">
-      <div class="col-md-4 mb-2" v-for="livestock in livestocks" :key="livestock.id">
+      <div class="col-md-4 mb-2" v-for="livestock in filteredLivestocks" :key="livestock.id">
         <div class="card shadow-sm">
           <img :src="livestock.photo_url" class="card-img-top" style="height: 250px; object-fit: cover" :alt="livestock.livestock_type.name" />
           <div class="card-body m-0">
@@ -73,22 +69,5 @@ onMounted(() => {
   </div>
   <div class="home" v-else>
     <h2 class="mb-4">Loading...</h2>
-  </div>
-  <a ref="modalTrigger" data-bs-toggle="modal" data-bs-target="#showModalMessage" class="btn btn-warning me-2" style="display: none"><i class="bi bi-view-list"></i> Message</a>
-  <div id="showModalMessage" class="modal modal-lg" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Pesan</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>{{ message }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
