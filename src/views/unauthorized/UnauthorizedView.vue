@@ -18,7 +18,7 @@ const goBack = () => {
         <p class="lead">Silakan kembali ke halaman sebelumnya atau navigasikan ke halaman lain.</p>
       </div>
       <div class="d-flex justify-content-center align-items-center">
-        <button @click="goBack" class="btn btn-outline-secondary"><i class="bi bi-back"></i> Kembali</button>
+        <button @click="goBack" class="btn btn-secondary"><i class="bi bi-back"></i> Kembali</button>
       </div>
     </main>
   </div>
