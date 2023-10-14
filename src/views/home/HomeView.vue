@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeMount } from 'vue';
 import { useLivestockStore } from '@/stores/livestockStore';
 import { useRouter } from 'vue-router';
 
@@ -9,6 +9,7 @@ const livestocks = ref([]);
 const searchQuery = ref('');
 
 const message = ref('');
+const reload = localStorage.getItem('reloaded');
 
 const fetchLivestocksAnonymous = async () => {
   try {
@@ -24,6 +25,10 @@ const navigateToDetail = (livestockId) => {
 };
 
 onMounted(() => {
+  if (reload === 'false') {
+    window.location.reload();
+    localStorage.setItem('reloaded', true);
+  }
   fetchLivestocksAnonymous();
 });
 
@@ -59,7 +64,7 @@ const filteredLivestocks = computed(() => {
           <img :src="livestock.photo_url" class="card-img-top" style="height: 250px; object-fit: cover" :alt="livestock.livestock_type.name" />
           <div class="card-body m-0">
             <h5 class="card-title text-center">{{ livestock.livestock_type.name }} ({{ livestock.livestock_species.name }})</h5>
-            <p class="card-text m-0"><i class="bi bi-wallet"></i> {{ livestock.price }}</p>
+            <p class="card-text m-0"><i class="bi bi-wallet"></i> {{ $n(livestock.price, 'currency', 'id-ID') }}</p>
             <p class="card-text m-0"><i class="bi bi-person"></i> {{ livestock.profile.name }}</p>
             <p class="card-text m-0"><i class="bi bi-geo-alt"></i> {{ livestock.profile.address }}</p>
             <p class="card-text text-center">

@@ -129,7 +129,7 @@ const filteredLivestocks = computed(() => {
               <td>{{ livestock.livestock_species.name }}</td>
               <td>{{ livestock.age }} Tahun</td>
               <td>{{ livestock.gender === 'Male' ? 'Jantan' : 'Betina' }}</td>
-              <td>{{ livestock.price }}</td>
+              <td>{{ $n(livestock.price, 'currency', 'id-ID') }}</td>
               <td class="text-truncate" style="max-width: 150px">
                 {{ livestock.detail }}
               </td>

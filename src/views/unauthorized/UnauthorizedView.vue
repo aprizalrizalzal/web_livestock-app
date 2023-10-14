@@ -1,4 +1,12 @@
-<script setup></script>
+<script setup>
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+
+const goBack = () => {
+  router.back();
+};
+</script>
 <template>
   <div class="unauthorized">
     <main class="mb-3">

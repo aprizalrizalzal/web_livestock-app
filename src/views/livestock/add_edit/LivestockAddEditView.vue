@@ -43,6 +43,7 @@ const fetchLivestockById = async () => {
   try {
     livestock.value = await storeLivestock.fetchLivestockById(livestockId);
     selectedLivestockTypeId.value = livestock.value.livestock_type_id;
+    selectedLivestockSpeciesId.value = livestock.value.livestock_species_id;
     fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
@@ -53,7 +54,6 @@ const fetchLivestockById = async () => {
 const fetchLivestockTypes = async () => {
   try {
     livestockTypes.value = await storeLivestockType.fetchLivestockTypes();
-    selectedLivestockSpeciesId.value = livestock.value.livestock_species_id;
     fetchLivestockSpeciesByIdLivestockType();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestockType:', error);
@@ -80,7 +80,7 @@ const saveLivestock = async () => {
   }
 };
 
-const updateLivestock = async () => {
+const updateLivestock = async (livestockId) => {
   try {
     livestock.value = await storeLivestock.putLivestockById(livestockId, livestock.value);
     goBack();
@@ -218,7 +218,7 @@ onMounted(() => {
         </div>
         <div :class="{ 'col-md-12': !livestockId, 'col-md-8': livestockId }">
           <h4 class="mb-4">Hewan</h4>
-          <form @submit.prevent="livestockId ? updateLivestock() : saveLivestock()">
+          <form @submit.prevent="livestockId ? updateLivestock(livestockId) : saveLivestock()">
             <div class="col-md-12">
               <label class="labels">Hewan Ternak</label>
               <select class="form-select mb-2" v-model="selectedLivestockTypeId" @change="fetchLivestockSpeciesByIdLivestockType(selectedLivestockTypeId)">
@@ -240,7 +240,7 @@ onMounted(() => {
                 </option>
               </select>
               <div v-if="messageSpecies" class="mt-3 text-center">
-                <div class="alert alert-danger p-2">
+                <div class="alert alert-primary p-2">
                   <small>{{ messageSpecies }}</small>
                 </div>
               </div>

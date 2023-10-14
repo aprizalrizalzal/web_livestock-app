@@ -13,6 +13,9 @@ const userData = {
 
 const router = useRouter();
 
+const message = ref('');
+const reload = localStorage.getItem('reloaded');
+
 const registerUser = async () => {
   try {
     await store.register(userData);
@@ -23,8 +26,16 @@ const registerUser = async () => {
     }
   } catch (error) {
     console.error('Kesalahan dalam register:', error);
+    message.value = error;
   }
 };
+
+onMounted(() => {
+  if (reload === 'false') {
+    window.location.reload();
+    localStorage.setItem('reloaded', true);
+  }
+});
 </script>
 <template>
   <div class="register">

@@ -11,6 +11,7 @@ const userData = {
 };
 
 const message = ref('');
+const reload = localStorage.getItem('reloaded');
 
 const loginUser = async () => {
   try {
@@ -27,7 +28,12 @@ const loginUser = async () => {
   }
 };
 
-onMounted(() => {});
+onMounted(() => {
+  if (reload === 'false') {
+    window.location.reload();
+    localStorage.setItem('reloaded', true);
+  }
+});
 </script>
 
 <template>

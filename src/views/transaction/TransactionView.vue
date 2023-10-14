@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue';
 import { useTransactionStore } from '@/stores/transactionStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import { useRouter } from 'vue-router';
@@ -31,6 +31,16 @@ const fetchTransactions = async () => {
     message.value = error;
   }
 };
+
+const autoReload = () => {
+  fetchTransactions();
+};
+
+const reloadInterval = setInterval(autoReload, 10000);
+
+onBeforeUnmount(() => {
+  clearInterval(reloadInterval);
+});
 
 const processTransaction = async (transactionId) => {
   try {
@@ -143,12 +153,12 @@ const filteredTransactions = computed(() => {
               <td>{{ transaction.livestock.livestock_type.name }} ({{ transaction.livestock.livestock_species.name }})</td>
               <td>{{ transaction.livestock.profile.name }}</td>
               <td>{{ transaction.livestock.profile.phone_number }}</td>
-              <td>{{ transaction.livestock.price }}</td>
+              <td>{{ $n(transaction.livestock.price, 'currency', 'id-ID') }}</td>
               <td>
                 <span v-if="transaction.status && transaction.livestock.status" class="text-success"> Diterima</span>
                 <span v-else-if="!transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" class="text-info"> Silahkan diproses</span>
                 <span v-else-if="!transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'buyer'" class="text-info"> Sedang diproses penjual</span>
-                <span v-else-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" class="text-info"> Tunggu pembayaran dari pembeli</span>
+                <router-link v-else-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'seller'" class="text-info" :to="{ name: 'payments' }"> Lihat pembayaran dari pembeli</router-link>
                 <span v-else-if="transaction.status && !transaction.livestock.status && !_transactionMethod && role === 'buyer'" class="text-info"> Lanjutkan pembayaran</span>
                 <span v-else class="text-info"> Dalam Proses</span>
               </td>

@@ -88,6 +88,11 @@ const router = createRouter({
       name: 'about',
       component: () => import('@/views/about/AboutView.vue'),
     },
+    {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: () => import('@/views/unauthorized/UnauthorizedView.vue'),
+    },
   ],
 });
 
@@ -104,7 +109,18 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else {
-    next();
+    const authorizedRoutes = {
+      admin: ['dashboard', 'profile', 'home', 'users', 'livestocks', 'livestocks-profile', 'livestocks-detail', 'livestock-types', 'livestock-species', 'transactions', 'payments', 'reports', 'about', 'unauthorized'],
+      seller: ['profile', 'home', 'livestocks', 'livestocks-add', 'livestocks-edit', 'livestocks-detail', 'transactions', 'payments', 'reports', 'about', 'unauthorized'],
+      buyer: ['profile', 'home', 'livestocks-detail', 'transactions', 'payments', 'about', 'unauthorized'],
+    };
+    const requiredRoleRoutes = authorizedRoutes[role];
+
+    if (requiredRoleRoutes && requiredRoleRoutes.includes(to.name)) {
+      next();
+    } else {
+      next({ name: 'unauthorized' });
+    }
   }
 });
 

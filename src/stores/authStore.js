@@ -5,6 +5,7 @@ export const useAuthStore = defineStore({
   id: 'authStore',
   state: () => ({
     user: null,
+    reloaded: localStorage.getItem('reloaded') || null,
     role: localStorage.getItem('role') || null,
     token: localStorage.getItem('token') || null,
     message: null,
@@ -12,6 +13,7 @@ export const useAuthStore = defineStore({
 
   getters: {
     isLoggedIn: (state) => !!state.token,
+    getReloaded: (state) => state.reloaded,
     getRole: (state) => state.role,
     getMessage: (state) => state.message,
   },
@@ -37,6 +39,7 @@ export const useAuthStore = defineStore({
           this.token = response.data.token;
 
           localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('reloaded', 'false');
           localStorage.setItem('role', this.user.roles[0].name);
           localStorage.setItem('token', this.token);
 
@@ -60,6 +63,7 @@ export const useAuthStore = defineStore({
           this.token = response.data.token;
 
           localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('reloaded', 'false');
           localStorage.setItem('role', this.user.roles[0].name);
           localStorage.setItem('token', this.token);
 
@@ -96,6 +100,7 @@ export const useAuthStore = defineStore({
           this.token = null;
 
           localStorage.removeItem('isLoggedIn');
+          localStorage.setItem('reloaded', 'false');
           localStorage.removeItem('role');
           localStorage.removeItem('token');
 

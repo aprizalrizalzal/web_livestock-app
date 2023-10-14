@@ -14,11 +14,12 @@ const searchQuery = ref('');
 const startNumber = 1;
 
 const message = ref('');
+const messageRoles = ref('');
+const messagePermissions = ref('');
 
 const fetchUsers = async () => {
   try {
     users.value = await store.fetchUsers();
-    // selectedRoles.value = users.roles[0].name;
     fetchRoles();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
@@ -29,11 +30,10 @@ const fetchUsers = async () => {
 const fetchRoles = async () => {
   try {
     roles.value = await store.fetchRoles();
-    // selectedPermissions.value = users.permission[0].name;
     fetchPermissions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data roles:', error);
-    message.value = error;
+    messageRoles.value = error;
   }
 };
 
@@ -42,7 +42,7 @@ const fetchPermissions = async () => {
     permissions.value = await store.fetchPermissions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data permissions:', error);
-    message.value = error;
+    messagePermissions.value = error;
   }
 };
 
@@ -138,13 +138,13 @@ const filteredUsers = computed(() => {
                         <h5 class="modal-title">Detail Pengguna</h5>
                         <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="modal-body text-start">
-                        <div class="row">
-                          <div class="col-sm-3">
-                            <img src="../../assets/image/person-circle.svg" alt="Profile Photo" width="150" class="rounded" v-if="!user.profile.photo_url" />
-                            <img :src="user.profile.photo_url" alt="Profile Photo" width="150" class="rounded" v-else />
+                      <div class="modal-body text-start m-2">
+                        <div class="row m-0">
+                          <div class="col-sm-5">
+                            <img src="../../assets/image/person-circle.svg" alt="Profile Photo" width="300" class="rounded" v-if="!user.profile.photo_url" />
+                            <img :src="user.profile.photo_url" alt="Profile Photo" width="300" class="rounded" v-else />
                           </div>
-                          <div class="col-sm-9">
+                          <div class="col-sm-7">
                             <div class="row">
                               <div class="col-sm-6 ms-auto">
                                 <p><b>Nama</b></p>
@@ -181,31 +181,36 @@ const filteredUsers = computed(() => {
                               <div class="col-sm-6">
                                 <b>Peran</b>
                               </div>
-                              <div class="col-sm-3">
-                                <select class="form-select" v-model="selectedRoles" @change="fetchRoles(selectedRoles)">
+                              <div class="col-sm-6">
+                                <p>{{ user.roles[0].name }}</p>
+                                <!-- <select class="form-select" v-model="selectedRoles" @change="fetchRoles(selectedRoles)">
                                   <option v-for="role in roles" :value="role.id" :key="role.id">
                                     {{ role.name }}
                                   </option>
-                                </select>
+                                </select> -->
                               </div>
                             </div>
                             <div class="row">
                               <div class="col-sm-6">
                                 <b>Izin</b>
                               </div>
-                              <div class="col-sm-3">
-                                <select class="form-select" v-model="selectedPermissions" @change="fetchPermissions(selectedPermissions)">
+                              <div class="col-sm-6">
+                                <p>{{ user.permissions[0].name }}</p>
+                                <!-- <select class="form-select" v-model="selectedPermissions" @change="fetchPermissions(selectedPermissions)">
                                   <option v-for="permission in permissions" :value="permission.id" :key="permission.id">
                                     {{ permission.name }}
                                   </option>
-                                </select>
+                                </select> -->
                               </div>
+                            </div>
+                            <div class="row">
+                              <button type="button" class="btn btn-primary mt-3 m-2">Simpan</button>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="modal-footer ms-1">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                       </div>
                     </div>
                   </div>

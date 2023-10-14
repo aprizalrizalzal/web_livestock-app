@@ -69,7 +69,7 @@ onMounted(() => {
               Anda yakin ingin memesan hewan <b>{{ livestock.livestock_type.name }}</b> Jenis <b>{{ livestock.livestock_species.name }}</b
               >?
             </p>
-            <p>Harga {{ livestock.price }}</p>
+            <p>Harga {{ $n(livestock.price, 'currency', 'id-ID') }}</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -109,7 +109,7 @@ onMounted(() => {
             </tr>
             <tr>
               <td>Harga</td>
-              <td>{{ livestock.price }}</td>
+              <td>{{ $n(livestock.price, 'currency', 'id-ID') }}</td>
             </tr>
             <tr>
               <td>Status</td>

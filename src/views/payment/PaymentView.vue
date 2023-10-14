@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { usePaymentStore } from '@/stores/paymentStore';
 import { useLivestockStore } from '@/stores/livestockStore';
@@ -29,6 +29,16 @@ const fetchPayments = async () => {
     message.value = error;
   }
 };
+
+const autoReload = () => {
+  fetchPayments();
+};
+
+const reloadInterval = setInterval(autoReload, 10000);
+
+onBeforeUnmount(() => {
+  clearInterval(reloadInterval);
+});
 
 const processLivestock = async (livestock) => {
   try {
@@ -140,7 +150,7 @@ const filteredPayments = computed(() => {
               <td>{{ payment.transaction.date }}</td>
               <td>{{ payment.transaction.method }}</td>
               <td>{{ payment.transaction.livestock.livestock_type.name }} ({{ payment.transaction.livestock.livestock_species.name }})</td>
-              <td>{{ payment.transaction.livestock.price }}</td>
+              <td>{{ $n(payment.transaction.livestock.price, 'currency', 'id-ID') }}</td>
               <td>
                 <span v-if="payment.status && payment.transaction.livestock.status" class="text-success"> Diterima</span>
                 <span v-else-if="!payment.status && !payment.transaction.livestock.status && role === 'seller'" class="text-info"> Silahkan di konfirmasi</span>
@@ -159,7 +169,7 @@ const filteredPayments = computed(() => {
                       <div class="modal-body text-start">
                         <p>Apakah Anda sudah menerima pembayaran dari {{ payment.transaction.profile.name }}</p>
                         <span>
-                          <b>{{ payment.transaction.livestock.price }}</b
+                          <b>{{ $n(payment.transaction.livestock.price, 'currency', 'id-ID') }}</b
                           >?
                         </span>
                       </div>
