@@ -10,6 +10,7 @@ const selectedRoles = ref([]);
 const selectedPermissions = ref([]);
 const roles = ref([]);
 const permissions = ref([]);
+const isEditing = ref(false);
 const searchQuery = ref('');
 const startNumber = 1;
 
@@ -42,6 +43,14 @@ const fetchPermissions = async () => {
     permissions.value = await store.fetchPermissions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data permissions:', error);
+    messagePermissions.value = error;
+  }
+};
+
+const saveChanges = async (userId) => {
+  try {
+  } catch (error) {
+    console.error('Kesalahan dalam merubah data roles atau permissions:', error);
     messagePermissions.value = error;
   }
 };
@@ -179,32 +188,40 @@ const filteredUsers = computed(() => {
                             </div>
                             <div class="row mb-2">
                               <div class="col-sm-6">
-                                <b>Peran</b>
+                                <b v-if="!isEditing">Peran </b>
+                                <b v-if="isEditing">{{ user.roles[0].name }}</b>
                               </div>
                               <div class="col-sm-6">
-                                <p>{{ user.roles[0].name }}</p>
-                                <!-- <select class="form-select" v-model="selectedRoles" @change="fetchRoles(selectedRoles)">
+                                <p v-if="!isEditing">{{ user.roles[0].name }}</p>
+                                <select v-if="isEditing" class="form-select" v-model="selectedRoles" @change="fetchRoles(selectedRoles)">
                                   <option v-for="role in roles" :value="role.id" :key="role.id">
                                     {{ role.name }}
                                   </option>
-                                </select> -->
+                                </select>
                               </div>
                             </div>
                             <div class="row">
                               <div class="col-sm-6">
-                                <b>Izin</b>
+                                <b v-if="!isEditing">Izin </b>
+                                <b v-if="isEditing">{{ user.permissions[0].name }}</b>
                               </div>
                               <div class="col-sm-6">
-                                <p>{{ user.permissions[0].name }}</p>
-                                <!-- <select class="form-select" v-model="selectedPermissions" @change="fetchPermissions(selectedPermissions)">
+                                <p v-if="!isEditing">{{ user.permissions[0].name }}</p>
+                                <select v-if="isEditing" class="form-select" v-model="selectedPermissions" @change="fetchPermissions(selectedPermissions)">
                                   <option v-for="permission in permissions" :value="permission.id" :key="permission.id">
                                     {{ permission.name }}
                                   </option>
-                                </select> -->
+                                </select>
                               </div>
                             </div>
                             <div class="row">
-                              <button type="button" class="btn btn-primary mt-3 m-2">Simpan</button>
+                              <div class="col-md-6">
+                                <button v-if="!isEditing" @click="isEditing = true" class="btn btn-primary mt-3">Edit Peran</button>
+                              </div>
+                              <div class="col-md-6">
+                                <button v-if="isEditing" @click="isEditing = false" class="btn btn-secondary mt-3">Batal</button>
+                                <button v-if="isEditing" @click="saveChanges(user.id)" class="btn btn-primary mt-3 mx-2">Simpan Peran</button>
+                              </div>
                             </div>
                           </div>
                         </div>

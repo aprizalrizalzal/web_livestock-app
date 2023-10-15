@@ -1,4 +1,130 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted, computed } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { useLivestockStore } from '@/stores/livestockStore';
+import { useTransactionStore } from '@/stores/transactionStore';
+import { usePaymentStore } from '@/stores/paymentStore';
+import { useRouter } from 'vue-router';
+
+import { LineChart } from 'vue-chart-3';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
+
+const storeUser = useUserStore();
+const storeLivestock = useLivestockStore();
+const storeTransaction = useTransactionStore();
+const storePayment = usePaymentStore();
+const router = useRouter();
+
+const messageUser = ref('');
+const messageLivestock = ref('');
+const messageTransaction = ref('');
+const messagePayment = ref('');
+
+const users = ref([]);
+const livestocks = ref([]);
+const transactions = ref([]);
+const payments = ref([]);
+
+const usersLength = ref('');
+const livestocksLength = ref('');
+const transactionsLength = ref('');
+const paymentsLength = ref('');
+
+const goBack = () => {
+  router.back();
+};
+
+const buttonUser = () => {
+  router.push({ name: 'users' });
+};
+
+const fetchUsers = async () => {
+  try {
+    users.value = await storeUser.fetchUsers();
+    usersLength.value = users.value.length;
+    fetchChartData();
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data users:', error);
+    messageUser.value = error;
+  }
+};
+
+const buttonLivestock = () => {
+  router.push({ name: 'livestocks' });
+};
+
+const fetchLivestocks = async () => {
+  try {
+    livestocks.value = await storeLivestock.fetchLivestocks();
+    livestocksLength.value = livestocks.value.length;
+    fetchChartData();
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data livestocks:', error);
+    messageLivestock.value = error;
+  }
+};
+
+const buttonTransaction = () => {
+  router.push({ name: 'transactions' });
+};
+
+const fetchTransactions = async () => {
+  try {
+    transactions.value = await storeTransaction.fetchTransactions();
+    transactionsLength.value = transactions.value.length;
+    fetchChartData();
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data transactions:', error);
+    messageTransaction.value = error;
+  }
+};
+
+const buttonPayment = () => {
+  router.push({ name: 'payments' });
+};
+
+const fetchPayments = async () => {
+  try {
+    payments.value = await storePayment.fetchPayments();
+    paymentsLength.value = payments.value.length;
+    fetchChartData();
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data payments:', error);
+    messagePayment.value = error;
+  }
+};
+
+const chartData = ref({
+  labels: ['Pengguna', 'Hewan Ternak', 'Transaksi', 'Pembayaran'],
+  datasets: [
+    {
+      label: 'Data',
+      data: [],
+      backgroundColor: ['#77CEFF', '#0079AF', '#123E6B', '#97B0C4'],
+      borderColor: 'rgb(75, 192, 192)',
+      fill: false,
+      tension: 0.1,
+    },
+  ],
+});
+
+const fetchChartData = async () => {
+  try {
+    chartData.value.datasets[0].data = [parseInt(usersLength.value), parseInt(livestocksLength.value), parseInt(transactionsLength.value), parseInt(paymentsLength.value)];
+  } catch (error) {
+    console.error('Kesalahan dalam mengambil data:', error);
+  }
+};
+
+onMounted(() => {
+  fetchUsers();
+  fetchLivestocks();
+  fetchTransactions();
+  fetchPayments();
+});
+</script>
 <template>
   <div class="dashboard">
     <main class="mb-3">
@@ -15,15 +141,22 @@
         <div class="col">
           <div class="card btn btn-primary shadow-sm" @click="buttonUser">
             <div class="row g-0">
-              <div class="col-md-2">
-                <i class="btn bi bi-person-fill"></i>
+              <div class="col-md-2 g-2">
+                <i class="bi bi-person-fill"></i>
               </div>
               <div class="col-md-10">
                 <div class="card-body">
                   <h5 class="card-title">Pengguna</h5>
                   <p class="card-text">
-                    <!-- <small class="text-body-secondary">Jumlah pengguna <b>{{ usersLength || 0 }}</b></small> -->
+                    <small
+                      >Jumlah pengguna <b>{{ usersLength }}</b></small
+                    >
                   </p>
+                </div>
+                <div v-if="messageUser" class="mt-3 text-center">
+                  <div class="alert alert-danger">
+                    <small>{{ messageUser }}</small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -31,17 +164,24 @@
         </div>
 
         <div class="col">
-          <div class="card btn btn-primary shadow-sm" @click="buttonAnimal">
+          <div class="card btn btn-primary shadow-sm" @click="buttonLivestock">
             <div class="row g-0">
-              <div class="col-md-2">
-                <i class="btn bi bi-box-seam-fill"></i>
+              <div class="col-md-2 g-2">
+                <i class="bi bi-box-seam-fill"></i>
               </div>
               <div class="col-md-10">
                 <div class="card-body">
-                  <h5 class="card-title">Hewan</h5>
+                  <h5 class="card-title">Hewan Ternak</h5>
                   <p class="card-text">
-                    <!-- <small class="text-body-secondary">Jumlah Hewan <b>{{ animalsLength || 0 }}</b></small> -->
+                    <small
+                      >Jumlah Hewan <b>{{ livestocksLength }}</b></small
+                    >
                   </p>
+                </div>
+                <div v-if="messageLivestock" class="mt-3 text-center">
+                  <div class="alert alert-danger">
+                    <small>{{ messageLivestock }}</small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -51,15 +191,22 @@
         <div class="col">
           <div class="card btn btn-primary shadow-sm" @click="buttonTransaction">
             <div class="row g-0">
-              <div class="col-md-2">
-                <i class="btn bi bi-clipboard-check-fill"></i>
+              <div class="col-md-2 g-2">
+                <i class="bi bi-clipboard-check-fill"></i>
               </div>
               <div class="col-md-10">
                 <div class="card-body">
                   <h5 class="card-title">Transaksi</h5>
                   <p class="card-text">
-                    <!-- <small class="text-body-secondary">Jumlah Transaksi <b>{{ transactionsLength || 0 }}</b></small> -->
+                    <small
+                      >Jumlah Transaksi <b>{{ transactionsLength }}</b></small
+                    >
                   </p>
+                </div>
+                <div v-if="messageTransaction" class="mt-3 text-center">
+                  <div class="alert alert-danger">
+                    <small>{{ messageTransaction }}</small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -69,15 +216,22 @@
         <div class="col">
           <div class="card btn btn-primary shadow-sm" @click="buttonPayment">
             <div class="row g-0">
-              <div class="col-md-2">
-                <i class="btn bi bi-wallet-fill"></i>
+              <div class="col-md-2 g-2">
+                <i class="bi bi-wallet-fill"></i>
               </div>
               <div class="col-md-10">
                 <div class="card-body">
                   <h5 class="card-title">Pembayaran</h5>
                   <p class="card-text">
-                    <!-- <small class="text-body-secondary">Jumlah pembayaran <b>{{ paymentsLength || 0 }}</b></small> -->
+                    <small
+                      >Jumlah pembayaran <b>{{ paymentsLength }}</b></small
+                    >
                   </p>
+                </div>
+                <div v-if="messagePayment" class="mt-3 text-center">
+                  <div class="alert alert-danger">
+                    <small>{{ messagePayment }}</small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -86,11 +240,8 @@
       </div>
       <hr />
       <div class="my-8">
-        <!-- <line-chart v-if="chartData.datasets[0].data.length > 0" :chart-data="chartData" :options="chartOptions"></line-chart> -->
+        <LineChart :chartData="chartData" />
       </div>
     </main>
-  </div>
-  <div class="dashboard">
-    <h2 class="mb-4">Loading...</h2>
   </div>
 </template>
