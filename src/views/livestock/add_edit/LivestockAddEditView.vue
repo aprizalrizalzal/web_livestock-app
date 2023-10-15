@@ -82,7 +82,12 @@ const saveLivestock = async () => {
 
 const updateLivestock = async (livestockId) => {
   try {
-    livestock.value = await storeLivestock.putLivestockById(livestockId, livestock.value);
+    const _livestock = livestock.value;
+
+    _livestock.livestock_type_id = selectedLivestockTypeId.value;
+    _livestock.livestock_species_id = selectedLivestockSpeciesId.value;
+
+    livestock.value = await storeLivestock.putLivestockById(livestockId, _livestock);
     goBack();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestock:', error);

@@ -224,7 +224,7 @@ onMounted(fetchProfile);
                 <p>Nah, buat bantuin <b>Sistem Informasi Penjualan Hewan Ternak NTB</b> bikin semua aman dan makin oke, kami butuh bantuan kalian juga nih. Kalau kalian mau ganti email atau kata sandi, Sistem Informasi Penjualan Hewan Ternak Nusa Tenggara Barat minta kalian hubungin tim kami yang super ramah.</p>
                 <p>Langkahnya simpel, nih:</p>
                 <ol>
-                  <li>Kirim pesan ke tim dukungan kami lewat email di email@email.com atau lewat nomor telepon nomor telepon dukungan.</li>
+                  <li>Kirim pesan ke tim dukungan kami lewat email di info@contoh.com atau lewat nomor telepon (123) 456-7890.</li>
                   <li>Tim dukungan bakal kasih tahu cara ganti email atau kata sandi kalian.</li>
                   <li>Ikutin aja petunjuk dari tim dukungan kami, pasti bakal jadi deh!</li>
                 </ol>
