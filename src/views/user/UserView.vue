@@ -1,15 +1,11 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
-import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
 const storeUser = useUserStore();
-const storeAuth = useAuthStore();
 const router = useRouter();
 const users = ref([]);
-const roles = ref([]);
-const permissions = ref([]);
 const isEditing = ref(false);
 const searchQuery = ref('');
 const startNumber = 1;
