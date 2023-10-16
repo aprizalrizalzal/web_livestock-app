@@ -87,10 +87,13 @@ function formatCurrency(amount) {
 
 const viewPDF = () => {
   const doc = new jsPDF({
+    format: 'a4',
     orientation: 'landscape',
   });
 
-  doc.text('Sistem Informasi Penjual Hewan Ternak di Nusa Tenggara Barat', doc.internal.pageSize.width / 2, 10, 'center');
+  doc.text('Sistem Informasi Penjual Hewan Ternak di Nusa Tenggara Barat', doc.internal.pageSize.width / 2, 20, 'center');
+  const monthText = selectedMonth.value ? `Laporan Bulan ${selectedMonth.value}` : 'Laporan Semua Bulan';
+  doc.text(monthText, doc.internal.pageSize.width / 2, 30, 'center');
 
   const tableData = [];
   const columns = ['No', 'Hewan Ternak', 'Tanggal Transaksi', 'Pembeli', 'No. Telepon', 'Tanggal Pembayaran', 'Penjual', 'No. Telepon', 'Status', 'Harga'];
@@ -116,7 +119,7 @@ const viewPDF = () => {
   doc.autoTable({
     head: [columns],
     body: tableData,
-    startY: 20,
+    startY: 35,
     styles: { font: 'helvetica', fontSize: 10 },
     columnStyles: { 1: { cellWidth: 'auto' } },
   });
