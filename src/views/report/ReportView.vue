@@ -6,6 +6,9 @@ import { usePaymentStore } from '@/stores/paymentStore';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+
 const pdfData = ref(null);
 
 const storePayment = usePaymentStore();
@@ -66,6 +69,22 @@ const goBack = () => {
   router.back();
 };
 
+const formatDate = (date) => {
+  const formattedDate = format(new Date(date), 'dd MMMM yyyy', { locale: id });
+  return formattedDate;
+};
+
+function formatCurrency(amount) {
+  const formatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  return formatter.format(amount);
+}
+
 const viewPDF = () => {
   const doc = new jsPDF({
     orientation: 'landscape',
@@ -80,17 +99,19 @@ const viewPDF = () => {
     const rowData = [
       i + 1,
       `${payment.transaction.livestock.livestock_type.name} (${payment.transaction.livestock.livestock_species.name})`,
-      payment.transaction.date,
+      formatDate(payment.transaction.date),
       payment.transaction.profile.name,
       payment.transaction.profile.phone_number,
-      payment.date,
+      formatDate(payment.date),
       payment.transaction.livestock.profile.name,
       payment.transaction.livestock.profile.phone_number,
       payment.transaction.livestock.status ? 'Terjual' : 'Dalam Proses',
-      payment.price,
+      formatCurrency(payment.price),
     ];
     tableData.push(rowData);
   });
+
+  tableData.push(['Total', '', '', '', '', '', '', '', '', formatCurrency(totalPaymentPrice.value)]);
 
   doc.autoTable({
     head: [columns],
@@ -100,20 +121,18 @@ const viewPDF = () => {
     columnStyles: { 1: { cellWidth: 'auto' } },
   });
 
-  doc.autoTable({
-    body: [[{ content: 'Total', colSpan: 8, styles: { halign: 'right' } }, totalPaymentPrice.value]],
-    startY: doc.previousAutoTable.finalY + 10,
-  });
-
   const totalPages = doc.internal.getNumberOfPages();
+  const timestamp = new Date().getTime();
 
   doc.setPage(totalPages);
   doc.setFontSize(8);
-  doc.text(`Tanggal ${new Date().toLocaleString('id-ID')}`, doc.internal.pageSize.getWidth() - 20, doc.internal.pageSize.getHeight() - 10, { align: 'right' });
+  doc.text(`Tanggal ${new Date().toLocaleString('id-ID') + ' / ' + timestamp}`, doc.internal.pageSize.getWidth() - 20, doc.internal.pageSize.getHeight() - 10, { align: 'right' });
 
   const pdfOutput = doc.output('datauristring');
+
   const blob = doc.output('blob');
   const pdfURL = URL.createObjectURL(blob);
+
   const newTabPdf = window.open('', '_blank');
   newTabPdf.location.href = pdfURL;
 };
@@ -180,10 +199,10 @@ onMounted(() => {
             <tr>
               <td>{{ autoNumber(i) }}</td>
               <td>{{ payment.transaction.livestock.livestock_type.name }} ({{ payment.transaction.livestock.livestock_species.name }})</td>
-              <td>{{ payment.transaction.date }}</td>
+              <td>{{ formatDate(payment.transaction.date) }}</td>
               <td>{{ payment.transaction.profile.name }}</td>
               <td>{{ payment.transaction.profile.phone_number }}</td>
-              <td>{{ payment.date }}</td>
+              <td>{{ formatDate(payment.date) }}</td>
               <td>{{ payment.transaction.livestock.profile.name }}</td>
               <td>{{ payment.transaction.livestock.profile.phone_number }}</td>
               <td>
@@ -196,7 +215,7 @@ onMounted(() => {
           <tfoot>
             <tr>
               <th colspan="9">Total</th>
-              <th>{{ totalPaymentPrice }}</th>
+              <th>{{ $n(totalPaymentPrice, 'currency', 'id-ID') }}</th>
             </tr>
           </tfoot>
         </table>

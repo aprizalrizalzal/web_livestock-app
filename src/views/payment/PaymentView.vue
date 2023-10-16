@@ -4,6 +4,9 @@ import { useRouter, useRoute } from 'vue-router';
 import { usePaymentStore } from '@/stores/paymentStore';
 import { useLivestockStore } from '@/stores/livestockStore';
 
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+
 const router = useRouter();
 const searchQuery = ref('');
 
@@ -28,6 +31,11 @@ const fetchPayments = async () => {
     console.error('Kesalahan dalam mengambil data payments:', error);
     message.value = error;
   }
+};
+
+const formatDate = (date) => {
+  const formattedDate = format(new Date(date), 'dd MMMM yyyy', { locale: id });
+  return formattedDate;
 };
 
 const autoReload = () => {
@@ -147,7 +155,7 @@ const filteredPayments = computed(() => {
               <td>{{ autoNumber(i) }}</td>
               <td>{{ payment.transaction.profile.name }}</td>
               <td>{{ payment.transaction.profile.phone_number }}</td>
-              <td>{{ payment.transaction.date }}</td>
+              <td>{{ formatDate(payment.transaction.date) }}</td>
               <td>{{ payment.transaction.method }}</td>
               <td>{{ payment.transaction.livestock.livestock_type.name }} ({{ payment.transaction.livestock.livestock_species.name }})</td>
               <td>{{ $n(payment.transaction.livestock.price, 'currency', 'id-ID') }}</td>
