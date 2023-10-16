@@ -15,35 +15,13 @@ const searchQuery = ref('');
 const startNumber = 1;
 
 const message = ref('');
-const messageRoles = ref('');
-const messagePermissions = ref('');
 
 const fetchUsers = async () => {
   try {
     users.value = await storeUser.fetchUsers();
-    fetchRoles();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
     message.value = error;
-  }
-};
-
-const fetchRoles = async () => {
-  try {
-    roles.value = await storeAuth.fetchRoles();
-    fetchPermissions();
-  } catch (error) {
-    console.error('Kesalahan dalam mengambil data roles:', error);
-    messageRoles.value = error;
-  }
-};
-
-const fetchPermissions = async () => {
-  try {
-    permissions.value = await storeAuth.fetchPermissions();
-  } catch (error) {
-    console.error('Kesalahan dalam mengambil data permissions:', error);
-    messagePermissions.value = error;
   }
 };
 
