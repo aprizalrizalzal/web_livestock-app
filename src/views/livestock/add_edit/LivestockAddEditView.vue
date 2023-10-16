@@ -188,8 +188,7 @@ onMounted(() => {
         <div class="col-md-4" v-if="livestockId">
           <h4 class="mb-4">Foto Sampul</h4>
           <div class="text-center">
-            <img v-if="!livestock.photo_url" src="../../../assets/image/card-image.svg" alt="Livestock Photo" class="rounded mx-auto d-block" />
-            <img v-else :src="livestock.photo_url" alt="Livestock Photo" style="width: 300px; height: 200px; object-fit: cover" class="rounded mx-auto d-block" />
+            <img v-if="livestock.photo_url" :src="livestock.photo_url" alt="Livestock Photo" style="width: 300px; height: 200px; object-fit: cover" class="rounded mx-auto d-block" />
             <div v-if="messagePhoto" class="mt-3 text-center">
               <div class="alert alert-danger p-2">
                 <small>{{ messagePhoto }}</small>
@@ -205,8 +204,7 @@ onMounted(() => {
           <div class="col-md-12">
             <div class="row text-center">
               <div class="col-md-6" v-for="livestockPhoto in livestockPhotos" :key="livestockPhoto.id">
-                <img v-if="!livestockPhoto.photo_url" src="../../../assets/image/card-image.svg" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
-                <img v-else :src="livestockPhoto.photo_url" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
+                <img v-if="livestockPhoto.photo_url" :src="livestockPhoto.photo_url" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
                 <button @click="deleteLivestockPhotoById(livestockPhoto.id)" class="btn btn-danger shadow-sm my-3"><i class="bi bi-eraser-fill"></i> Hapus</button>
               </div>
             </div>

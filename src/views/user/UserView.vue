@@ -150,8 +150,7 @@ const filteredUsers = computed(() => {
                       <div class="modal-body text-start m-2">
                         <div class="row m-0">
                           <div class="col-sm-5">
-                            <img src="../../assets/image/person-circle.svg" alt="Profile Photo" width="300" class="rounded" v-if="!user.profile.photo_url" />
-                            <img :src="user.profile.photo_url" alt="Profile Photo" width="300" class="rounded" v-else />
+                            <img v-if="user.profile.photo_url" :src="user.profile.photo_url" alt="Profile Photo" width="300" class="rounded" />
                           </div>
                           <div class="col-sm-7">
                             <div class="row">

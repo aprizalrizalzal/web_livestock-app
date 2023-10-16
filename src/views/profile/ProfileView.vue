@@ -116,8 +116,7 @@ onMounted(fetchProfile);
       <div class="row">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center pt-5">
-            <img v-if="!profile.photo_url" src="../../assets/image/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle mb-3" />
-            <img v-else :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle mb-3" />
+            <img v-if="profile.photo_url" :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle mb-3" />
             <span v-if="user">{{ user.name }}</span>
             <span v-if="user.roles">{{ user.email }}</span>
             <span v-if="user.permissions">{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
