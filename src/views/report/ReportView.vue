@@ -22,7 +22,6 @@ const message = ref('');
 const fetchPayments = async () => {
   try {
     payments.value = await storePayment.fetchPayments();
-    // Set filteredPayments to payments if selectedMonth is empty
     if (!selectedMonth.value) {
       filteredPayments.value = payments.value;
     } else {
