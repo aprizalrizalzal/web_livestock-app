@@ -3,12 +3,14 @@ import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
-const store = useAuthStore();
+const storeAuth = useAuthStore();
+
 const userData = {
   name: '',
   email: '',
   password: '',
   password_confirmation: '',
+  role: '',
 };
 
 const router = useRouter();
@@ -18,8 +20,8 @@ const reload = localStorage.getItem('reloaded');
 
 const registerUser = async () => {
   try {
-    await store.register(userData);
-    if (store.isLoggedIn) {
+    await storeAuth.register(userData);
+    if (storeAuth.isLoggedIn) {
       router.push({ name: 'home' });
     } else {
       router.push({ name: 'login' });
@@ -47,6 +49,17 @@ onMounted(() => {
           <div class="form-floating mb-2">
             <input type="text" class="form-control shadow-sm" id="floatingName" placeholder="Example" v-model="userData.name" required />
             <label for="floatingName">Nama</label>
+          </div>
+          <div class="m-2">
+            <span class="me-2">Peran</span>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input shadow-sm" type="radio" name="inlineRadioOptions" id="seller" value="seller" v-model="userData.role" />
+              <label class="form-check-label" for="seller">Penjual</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input shadow-sm" type="radio" name="inlineRadioOptions" id="buyer" value="buyer" v-model="userData.role" />
+              <label class="form-check-label" for="buyer">Pembeli</label>
+            </div>
           </div>
           <div class="form-floating mb-2">
             <input type="email" class="form-control shadow-sm" id="floatingEmail" placeholder="name@example.com" v-model="userData.email" required />

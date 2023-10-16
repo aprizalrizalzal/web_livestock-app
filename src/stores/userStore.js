@@ -49,50 +49,6 @@ export const useUserStore = defineStore({
       });
     },
 
-    fetchRoles() {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const token = localStorage.getItem('token');
-          const headers = {
-            Authorization: `Bearer ${token}`,
-          };
-
-          const response = await axios.get('/api/roles', {
-            headers,
-          });
-
-          this.roles = response.data.roles;
-          resolve(this.roles);
-        } catch (error) {
-          console.error('Error in getUsers ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
-        }
-      });
-    },
-
-    fetchPermissions() {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const token = localStorage.getItem('token');
-          const headers = {
-            Authorization: `Bearer ${token}`,
-          };
-
-          const response = await axios.get('/api/permissions', {
-            headers,
-          });
-
-          this.permissions = response.data.permissions;
-          resolve(this.permissions);
-        } catch (error) {
-          console.error('Error in getUsers ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
-        }
-      });
-    },
-
     fetchUserById(id) {
       return new Promise(async (resolve, reject) => {
         try {

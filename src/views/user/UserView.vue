@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
-const store = useUserStore();
+const storeUser = useUserStore();
+const storeAuth = useAuthStore();
 const router = useRouter();
 const users = ref([]);
-const selectedRoles = ref([]);
-const selectedPermissions = ref([]);
 const roles = ref([]);
 const permissions = ref([]);
 const isEditing = ref(false);
@@ -20,7 +20,7 @@ const messagePermissions = ref('');
 
 const fetchUsers = async () => {
   try {
-    users.value = await store.fetchUsers();
+    users.value = await storeUser.fetchUsers();
     fetchRoles();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
@@ -30,7 +30,7 @@ const fetchUsers = async () => {
 
 const fetchRoles = async () => {
   try {
-    roles.value = await store.fetchRoles();
+    roles.value = await storeAuth.fetchRoles();
     fetchPermissions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data roles:', error);
@@ -40,17 +40,9 @@ const fetchRoles = async () => {
 
 const fetchPermissions = async () => {
   try {
-    permissions.value = await store.fetchPermissions();
+    permissions.value = await storeAuth.fetchPermissions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data permissions:', error);
-    messagePermissions.value = error;
-  }
-};
-
-const saveChanges = async (userId) => {
-  try {
-  } catch (error) {
-    console.error('Kesalahan dalam merubah data roles atau permissions:', error);
     messagePermissions.value = error;
   }
 };
@@ -61,7 +53,7 @@ const navigateLivestocksByIdProfile = (profileId) => {
 
 const deleteUserById = async (userId) => {
   try {
-    users.value = await store.deleteUserById(userId);
+    users.value = await storeUser.deleteUserById(userId);
     fetchUsers();
   } catch (error) {
     console.error('Kesalahan dalam menghapus data users:', error);
@@ -150,7 +142,7 @@ const filteredUsers = computed(() => {
                       <div class="modal-body text-start m-2">
                         <div class="row m-0">
                           <div class="col-sm-5">
-                            <img v-if="user.profile.photo_url" :src="user.profile.photo_url" alt="Profile Photo" width="300" class="rounded" />
+                            <img v-if="user.profile.photo_url" :src="user.profile.photo_url" alt="Profile Photo" width="250" class="rounded" />
                           </div>
                           <div class="col-sm-7">
                             <div class="row">
@@ -188,38 +180,17 @@ const filteredUsers = computed(() => {
                             <div class="row mb-2">
                               <div class="col-sm-6">
                                 <b v-if="!isEditing">Peran </b>
-                                <b v-if="isEditing">{{ user.roles[0].name }}</b>
                               </div>
                               <div class="col-sm-6">
-                                <p v-if="!isEditing">{{ user.roles[0].name }}</p>
-                                <select v-if="isEditing" class="form-select" v-model="selectedRoles" @change="fetchRoles(selectedRoles)">
-                                  <option v-for="role in roles" :value="role.id" :key="role.id">
-                                    {{ role.name }}
-                                  </option>
-                                </select>
+                                <p>{{ user.roles[0].name }}</p>
                               </div>
                             </div>
                             <div class="row">
                               <div class="col-sm-6">
                                 <b v-if="!isEditing">Izin </b>
-                                <b v-if="isEditing">{{ user.permissions[0].name }}</b>
                               </div>
                               <div class="col-sm-6">
-                                <p v-if="!isEditing">{{ user.permissions[0].name }}</p>
-                                <select v-if="isEditing" class="form-select" v-model="selectedPermissions" @change="fetchPermissions(selectedPermissions)">
-                                  <option v-for="permission in permissions" :value="permission.id" :key="permission.id">
-                                    {{ permission.name }}
-                                  </option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-6">
-                                <button v-if="!isEditing" @click="isEditing = true" class="btn btn-primary mt-3">Edit Peran</button>
-                              </div>
-                              <div class="col-md-6">
-                                <button v-if="isEditing" @click="isEditing = false" class="btn btn-secondary mt-3">Batal</button>
-                                <button v-if="isEditing" @click="saveChanges(user.id)" class="btn btn-primary mt-3 mx-2">Simpan Peran</button>
+                                <p>{{ user.permissions[0].name }}</p>
                               </div>
                             </div>
                           </div>

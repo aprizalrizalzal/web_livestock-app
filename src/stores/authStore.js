@@ -52,6 +52,36 @@ export const useAuthStore = defineStore({
       });
     },
 
+    fetchRoles() {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await axios.get('/api/roles');
+
+          this.roles = response.data.roles;
+          resolve(this.roles);
+        } catch (error) {
+          console.error('Error in getUsers ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
+    fetchPermissions() {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await axios.get('/api/permissions');
+
+          this.permissions = response.data.permissions;
+          resolve(this.permissions);
+        } catch (error) {
+          console.error('Error in getUsers ', error);
+          this.message = error.response.data.message;
+          reject(this.message);
+        }
+      });
+    },
+
     async login(userData) {
       return new Promise(async (resolve, reject) => {
         try {
