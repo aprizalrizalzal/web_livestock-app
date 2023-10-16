@@ -62,7 +62,100 @@ onMounted(() => {
           </div>
           <div class="form-check">
             <input class="form-check-input shadow-sm" type="checkbox" v-model="userData.agree" id="flexCheckChecked" checked />
-            <label class="form-check-label" for="flexCheckChecked"> Setuju dengan syarat dan ketentuan </label>
+            <a href="#" class="form-check-label text-decoration-none" for="flexCheckChecked" data-bs-toggle="modal" data-bs-target="#showModal"> Setuju dengan syarat dan ketentuan </a>
+          </div>
+          <div id="showModal" class="modal modal-lg" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Setuju dengan syarat dan ketentuan</h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-start">
+                  <p>Syarat dan Ketentuan Penggunaan Aplikasi Sistem Informasi Penjualan Hewan Ternak di NTB</p>
+                  <p>Versi: 1.0</p>
+                  <p>
+                    Terakhir diperbarui: <i><b>Tanggal</b></i>
+                  </p>
+                  <p>
+                    Selamat datang di Aplikasi Sistem Informasi Penjualan Hewan Ternak di NTB. Aplikasi ini disediakan oleh <i><b>Nama Perusahaan/Pengembang</b></i
+                    >, dan penggunaan aplikasi ini tunduk pada syarat dan ketentuan berikut. Mohon untuk membaca dengan cermat.
+                  </p>
+                  <ol>
+                    <li>
+                      <b>Definisi</b>
+                      <ol type="a">
+                        <li><b>Aplikasi</b>: Merujuk kepada Aplikasi Sistem Informasi Penjualan Hewan Ternak di NTB.</li>
+                        <li><b>Pengguna</b>: Merujuk kepada individu atau entitas yang menggunakan Aplikasi.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Penerimaan Syarat dan Ketentuan</b>
+                      <ol type="a">
+                        <li>Dengan mengakses atau menggunakan Aplikasi ini, Anda secara tegas setuju untuk terikat oleh syarat dan ketentuan yang tercantum dalam dokumen ini. Jika Anda tidak setuju dengan syarat dan ketentuan ini, harap segera berhenti menggunakan Aplikasi.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Penggunaan Aplikasi</b>
+                      <ol type="a">
+                        <li>Penggunaan Aplikasi ini adalah untuk tujuan penjualan hewan ternak di wilayah NTB.</li>
+                        <li>Pengguna harus memiliki izin dan mematuhi semua hukum dan peraturan yang berlaku yang berkaitan dengan penjualan hewan ternak.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Privasi Pengguna</b>
+                      <ol type="a">
+                        <li>Kami menghormati privasi Anda. Informasi pribadi yang Anda berikan kepada kami akan diatur oleh Kebijakan Privasi yang terpisah. Mohon baca Kebijakan Privasi kami.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Ketentuan Pembayaran</b>
+                      <ol type="a">
+                        <li>a. Jika ada biaya yang terkait dengan penggunaan Aplikasi ini, Anda akan diminta untuk membayar biaya tersebut sesuai dengan ketentuan yang berlaku.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Pembatasan Tanggung Jawab</b>
+                      <ol type="a">
+                        <li>Kami tidak bertanggung jawab atas kerugian atau kerusakan yang disebabkan oleh penggunaan Aplikasi ini.</li>
+                        <li>Kami tidak memberikan jaminan terhadap kelengkapan, akurasi, atau ketersediaan informasi yang diberikan melalui Aplikasi ini.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Pengakhiran Penggunaan</b>
+                      <ol type="a">
+                        <li>Kami berhak untuk mengakhiri akses Anda ke Aplikasi ini kapan saja jika Anda melanggar syarat dan ketentuan ini.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Perubahan Syarat dan Ketentuan</b>
+                      <ol type="a">
+                        <li>Kami dapat mengubah syarat dan ketentuan ini dari waktu ke waktu. Perubahan akan diberitahukan kepada pengguna melalui Aplikasi atau melalui kontak yang diberikan oleh pengguna.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Hukum yang Berlaku</b>
+                      <ol type="a">
+                        <li>Syarat dan ketentuan ini diatur oleh hukum negara Republik Indonesia, khususnya hukum yang berlaku di Provinsi NTB.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <b>Kontak</b>
+                      <ol type="a">
+                        <li>
+                          Jika Anda memiliki pertanyaan atau komentar tentang syarat dan ketentuan ini, harap hubungi kami melalui <i><b>kontak yang disediakan</b></i
+                          >.
+                        </li>
+                      </ol>
+                    </li>
+                  </ol>
+                  <p>Dengan menerima syarat dan ketentuan ini, Anda setuju untuk mematuhi semua ketentuan yang tercantum di atas. Syarat dan ketentuan ini berlaku sejak Anda mulai menggunakan Aplikasi ini.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
+                </div>
+              </div>
+            </div>
           </div>
           <div v-if="message" class="mt-3 text-center">
             <div class="alert alert-danger">

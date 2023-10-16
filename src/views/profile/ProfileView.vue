@@ -76,6 +76,7 @@ const putProfilePhoto = async () => {
 const saveProfile = async () => {
   try {
     profile.value = await storeProfile.postProfile(profile.value);
+    window.location.reload();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data profile:', error);
     message.value = error;
@@ -102,24 +103,24 @@ const goBack = () => {
 onMounted(fetchProfile);
 </script>
 <template>
-  <div class="profile" v-if="profile && user && user.roles && user.permissions">
-    <div class="row">
-      <div class="col-md-9">
-        <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-      </div>
-      <div class="col-md-3 text-end">
-        <h2 class="mb-4">Profile</h2>
-      </div>
+  <div class="row">
+    <div class="col-md-9">
+      <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
     </div>
+    <div class="col-md-3 text-end">
+      <h2 class="mb-4">Profile</h2>
+    </div>
+  </div>
+  <div class="profile">
     <div class="container rounded bg-white mt-3 mb-5 shadow-sm">
       <div class="row">
         <div class="col-md-3 border-right">
           <div class="d-flex flex-column align-items-center text-center pt-5">
-            <img src="../../assets/image/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle mb-3" v-if="!profile.photo_url" />
-            <img :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle mb-3" v-else />
-            <span>{{ user.name }}</span>
-            <span>{{ user.email }}</span>
-            <span>{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
+            <img v-if="!profile.photo_url" src="../../assets/image/person-circle.svg" alt="Profile Photo" width="200" class="rounded-circle mb-3" />
+            <img v-else :src="profile.photo_url" alt="Profile Photo" width="200" class="rounded-circle mb-3" />
+            <span v-if="user">{{ user.name }}</span>
+            <span v-if="user.roles">{{ user.email }}</span>
+            <span v-if="user.permissions">{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
             <div class="mt-5 text-center">
               <div v-if="messagePhoto" class="mt-3 text-center">
                 <div class="alert alert-danger">
@@ -127,8 +128,8 @@ onMounted(fetchProfile);
                 </div>
               </div>
               <input type="file" @change="handleFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
-              <label class="btn btn-primary shadow-sm mx-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
-              <button @click="putProfilePhoto" class="btn btn-danger shadow-sm my-2"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
+              <label v-if="profile.photo_url" class="btn btn-primary shadow-sm mx-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
+              <button v-if="profile.photo_url" @click="putProfilePhoto" class="btn btn-danger shadow-sm my-2"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>
             </div>
           </div>
         </div>
@@ -138,7 +139,7 @@ onMounted(fetchProfile);
               <h4 class="text-right">Pengaturan Profil</h4>
             </div>
             <div class="row mt-3">
-              <form @submit.prevent="profile ? updateProfile() : saveProfile()">
+              <form @submit.prevent="profile.id ? updateProfile() : saveProfile()">
                 <div class="col-md-12">
                   <label class="labels">Nama</label>
                   <input type="text" class="form-control shadow-sm mb-2" placeholder="Nama" v-model="profile.name" required />
@@ -170,7 +171,7 @@ onMounted(fetchProfile);
                   </div>
                 </div>
                 <div class="mt-4 text-end">
-                  <button type="submit" :class="profile ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ profile ? 'Perbarui Profil' : 'Simpan Profil' }}</button>
+                  <button type="submit" :class="profile.id ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ profile.id ? 'Perbarui Profil' : 'Simpan Profil' }}</button>
                 </div>
               </form>
             </div>
@@ -224,12 +225,12 @@ onMounted(fetchProfile);
                 <p>Nah, buat bantuin <b>Sistem Informasi Penjualan Hewan Ternak NTB</b> bikin semua aman dan makin oke, kami butuh bantuan kalian juga nih. Kalau kalian mau ganti email atau kata sandi, Sistem Informasi Penjualan Hewan Ternak Nusa Tenggara Barat minta kalian hubungin tim kami yang super ramah.</p>
                 <p>Langkahnya simpel, nih:</p>
                 <ol>
-                  <li>Kirim pesan ke tim dukungan kami lewat email di info@contoh.com atau lewat nomor telepon (123) 456-7890.</li>
+                  <li>Kirim pesan ke tim dukungan kami lewat email di info@contoh.com atau nomor telepon (123) 456 7890.</li>
                   <li>Tim dukungan bakal kasih tahu cara ganti email atau kata sandi kalian.</li>
                   <li>Ikutin aja petunjuk dari tim dukungan kami, pasti bakal jadi deh!</li>
                 </ol>
                 <p>Dengan begini, kalian ikut menjaga keamanan data kalian dan pasti bisa tetep nikmatin fitur-fitur seru yang bakal kami tambahin ke aplikasi ini.</p>
-                <p>Makasih banget ya udah dukung dan pake aplikasi <b>Sistem Informasi Penjualan Hewan Ternak NTB</b>. Kalau ada pertanyaan atau masalah, langsung aja kontak tim dukungan kami di email@email.com atau nomor telepon dukungan.</p>
+                <p>Makasih banget ya udah dukung dan pake aplikasi <b>Sistem Informasi Penjualan Hewan Ternak NTB</b>. Kalau ada pertanyaan atau masalah, langsung aja kontak tim dukungan kami di info@contoh.com atau nomor telepon (123) 456 7890.</p>
                 <p>Terus stay cool, ya!</p>
                 <p class="m-0">Salam, Tim Pengembang Aplikasi</p>
               </div>
@@ -241,8 +242,5 @@ onMounted(fetchProfile);
         </div>
       </div>
     </div>
-  </div>
-  <div class="profile" v-else>
-    <h2 class="mb-4">Loading...</h2>
   </div>
 </template>
