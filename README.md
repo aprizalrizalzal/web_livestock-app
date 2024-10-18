@@ -27,3 +27,6 @@ npm run dev
 ```sh
 npm run build
 ```
+
+Sebelum menjalankan untuk website nya, terlebih dahulu download api nya pada link
+https://github.com/aprizalrizalzal/api_livestock-app
