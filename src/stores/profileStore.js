@@ -5,12 +5,12 @@ export const useProfileStore = defineStore({
   id: 'profileStore',
   state: () => ({
     profile: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getProfile: (state) => state.profile,
-    getMessage: (state) => state.message,
   },
 
   actions: {
@@ -25,6 +25,8 @@ export const useProfileStore = defineStore({
 
     fetchProfile() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
+
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -38,15 +40,17 @@ export const useProfileStore = defineStore({
           this.profile = response.data.profile;
           resolve(this.profile);
         } catch (error) {
-          console.error('Error in getProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postProfile(profileData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -59,18 +63,22 @@ export const useProfileStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.profile = response.data.profile;
           resolve(this.profile);
         } catch (error) {
-          console.error('Error in postProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postProfilePhoto(profilePhoto) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -84,18 +92,22 @@ export const useProfileStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.profile = response.data.profile;
           resolve(this.profile);
         } catch (error) {
-          console.error('Error in postProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putProfilePhoto() {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -108,18 +120,22 @@ export const useProfileStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.profile = response.data.profile;
           resolve(this.profile);
         } catch (error) {
-          console.error('Error in postProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putProfile(profileData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -132,18 +148,22 @@ export const useProfileStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.profile = response.data.profile;
           resolve(this.profile);
         } catch (error) {
-          console.error('Error in putProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deleteProfile() {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -156,12 +176,13 @@ export const useProfileStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.profile = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

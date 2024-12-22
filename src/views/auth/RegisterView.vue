@@ -13,9 +13,18 @@ const userData = {
   role: '',
 };
 
+const passwordError = ref('');
+
+const validatePassword = () => {
+  if (userData.password.length < 8) {
+    passwordError.value = 'Password harus minimal 8 karakter.';
+  } else {
+    passwordError.value = ''; 
+  }
+};
+
 const router = useRouter();
 
-const message = ref('');
 const reload = localStorage.getItem('reloaded');
 
 const registerUser = async () => {
@@ -27,8 +36,7 @@ const registerUser = async () => {
       router.push({ name: 'login' });
     }
   } catch (error) {
-    console.error('Kesalahan dalam register:', error);
-    message.value = error;
+
   }
 };
 
@@ -66,8 +74,11 @@ onMounted(() => {
             <label for="floatingEmail">Email</label>
           </div>
           <div class="form-floating mb-2">
-            <input type="password" class="form-control shadow-sm" id="floatingPassword" placeholder="Password" v-model="userData.password" required />
+            <input type="password" class="form-control shadow-sm" id="floatingPassword" placeholder="Password" v-model="userData.password" @input="validatePassword" required />
             <label for="floatingPassword">Password</label>
+            <div v-if="passwordError" class="text-danger mt-1">
+              {{ passwordError }}
+            </div>
           </div>
           <div class="form-floating mb-2">
             <input type="password" class="form-control shadow-sm" id="floatingPasswordConfirmation" placeholder="Konfirmasi Password" v-model="userData.password_confirmation" required />
@@ -168,11 +179,6 @@ onMounted(() => {
                   <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ya</button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div v-if="message" class="mt-3 text-center">
-            <div class="alert alert-danger">
-              <small>{{ message }}</small>
             </div>
           </div>
           <div class="d-flex justify-content-end">

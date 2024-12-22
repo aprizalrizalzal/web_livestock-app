@@ -8,6 +8,7 @@ import navbarGuest from '@/views/layouts/navbar/NavbarGuest.vue';
 import offcanvasAdmin from '@/views/layouts/offcanvas/OffcanvasAdmin.vue';
 import offcanvasSeller from '@/views/layouts/offcanvas/offcanvasSeller.vue';
 import offcanvasBuyer from '@/views/layouts/offcanvas/offcanvasBuyer.vue';
+import GlobalLoader from './components/GlobalLoader.vue';
 
 const isLoggedIn = localStorage.getItem('isLoggedIn');
 
@@ -32,6 +33,7 @@ const login = computed(() => {
       <offcanvasSeller v-if="role === 'seller'" />
       <offcanvasBuyer v-if="role === 'buyer'" />
     </div>
+    <GlobalLoader />
     <router-view />
   </main>
 

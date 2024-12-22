@@ -13,6 +13,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
+import PrimeVue from 'primevue/config';
+import Aura from '@primevue/themes/aura';
+
 const app = createApp(App);
 
 const i18n = createI18n({
@@ -38,6 +41,11 @@ const i18n = createI18n({
   },
 });
 
+app.use(PrimeVue, {
+  theme: {
+      preset: Aura
+  }
+});
 app.use(createPinia());
 app.use(router);
 app.use(i18n);

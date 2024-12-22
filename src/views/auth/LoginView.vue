@@ -10,7 +10,7 @@ const userData = {
   password: '',
 };
 
-const message = ref('');
+const loading = ref();
 const reload = localStorage.getItem('reloaded');
 
 const loginUser = async () => {
@@ -23,8 +23,7 @@ const loginUser = async () => {
       router.push({ name: 'login' });
     }
   } catch (error) {
-    console.error('Kesalahan dalam login:', error);
-    message.value = error;
+    
   }
 };
 
@@ -34,6 +33,7 @@ onMounted(() => {
     localStorage.setItem('reloaded', true);
   }
 });
+
 </script>
 
 <template>
@@ -83,9 +83,9 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div v-if="message" class="mt-3 text-center">
+          <div v-if="loading == true" class="mt-3 text-center">
             <div class="alert alert-danger show">
-              <small>{{ message }}</small>
+              <small>Loading</small>
             </div>
           </div>
           <div class="d-flex justify-content-end">

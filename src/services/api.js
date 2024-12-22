@@ -15,9 +15,9 @@ const instance = axios.create({
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-      if (error.response && (error.response.status === 401 || error.response.status === 419)) {
+      if (error.response && (error.response.status === 401 || error.response.status === 419 )) {
           localStorage.removeItem('isLoggedIn');
-          localStorage.removeItem('reload');
+          localStorage.setItem('reloaded', 'false');
           localStorage.removeItem('role');
           localStorage.removeItem('token');
 

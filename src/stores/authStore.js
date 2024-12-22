@@ -8,14 +8,14 @@ export const useAuthStore = defineStore({
     reloaded: localStorage.getItem('reloaded') || null,
     role: localStorage.getItem('role') || null,
     token: localStorage.getItem('token') || null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     isLoggedIn: (state) => !!state.token,
     getReloaded: (state) => state.reloaded,
     getRole: (state) => state.role,
-    getMessage: (state) => state.message,
   },
 
   actions: {
@@ -30,6 +30,9 @@ export const useAuthStore = defineStore({
 
     async register(userData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -43,11 +46,12 @@ export const useAuthStore = defineStore({
           localStorage.setItem('role', this.user.roles[0].name);
           localStorage.setItem('token', this.token);
 
+          this.loading = false;
           resolve(this.user);
         } catch (error) {
-          console.error('Error in post register ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
@@ -60,9 +64,8 @@ export const useAuthStore = defineStore({
           this.roles = response.data.roles;
           resolve(this.roles);
         } catch (error) {
-          console.error('Error in getUsers ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
@@ -75,15 +78,17 @@ export const useAuthStore = defineStore({
           this.permissions = response.data.permissions;
           resolve(this.permissions);
         } catch (error) {
-          console.error('Error in getUsers ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     async login(userData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+       
         try {
           await this.fetchCsrfToken();
 
@@ -97,17 +102,21 @@ export const useAuthStore = defineStore({
           localStorage.setItem('role', this.user.roles[0].name);
           localStorage.setItem('token', this.token);
 
+          this.loading = false;
           resolve(this.user);
         } catch (error) {
-          console.error('Error in post login ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     async logout() {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+        
         try {
           const token = this.token;
           if (!token) {
@@ -124,7 +133,7 @@ export const useAuthStore = defineStore({
           const response = await axios.post('/api/logout', null, {
             headers,
           });
-          this.message = response.data.message;
+          this.error = response.data.message;
 
           this.user = null;
           this.token = null;
@@ -134,11 +143,12 @@ export const useAuthStore = defineStore({
           localStorage.removeItem('role');
           localStorage.removeItem('token');
 
-          resolve(this.message);
+          this.loading = false;
+          resolve(this.error);
         } catch (error) {
-          console.error('Error in post logout ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

@@ -17,7 +17,6 @@ const profile = ref({
 
 const user = ref({});
 
-const message = ref('');
 const messagePhoto = ref('');
 
 onMounted(() => {});
@@ -31,8 +30,7 @@ const fetchProfile = async () => {
       fetchUserById(profile.value.user_id);
     }
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data profile:', error);
-    message.value = error;
+
   }
 };
 
@@ -40,8 +38,7 @@ const fetchUserById = async (userId) => {
   try {
     user.value = await storeUser.fetchUserById(userId);
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data user:', error);
-    message.value = error;
+
   }
 };
 
@@ -78,8 +75,7 @@ const saveProfile = async () => {
     profile.value = await storeProfile.postProfile(profile.value);
     window.location.reload();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data profile:', error);
-    message.value = error;
+
   }
 };
 
@@ -87,8 +83,7 @@ const updateProfile = async () => {
   try {
     profile.value = await storeProfile.putProfile(profile.value);
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data profile:', error);
-    message.value = error;
+
   }
 };
 
@@ -157,17 +152,19 @@ onMounted(fetchProfile);
                   </div>
                 </div>
                 <div class="col-md-12">
-                  <label class="labels">Nomer Telpon</label>
-                  <input type="text" class="form-control shadow-sm mb-2" placeholder="Nomor Telepon" v-model="profile.phone_number" required />
+                  <div class="d-flex">
+                    <div class="col">
+                      <label class="labels">Nomor Telpon</label>
+                      <input type="text" class="form-control shadow-sm mb-2" placeholder="Nomor Telepon" v-model="profile.phone_number" required />
+                    </div>
+                    <div class="ms-2 mt-auto mb-2">
+                    <button type="button" v-if="!phone_number_verified_at" class="btn btn-success shadow-sm">Verifikasi</button>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-md-12">
                   <label class="labels">Alamat</label>
                   <input type="text" class="form-control shadow-sm mb-2" placeholder="Alamat" v-model="profile.address" required />
-                </div>
-                <div v-if="message" class="mt-3 text-center">
-                  <div class="alert alert-danger">
-                    <small>{{ message }}</small>
-                  </div>
                 </div>
                 <div class="mt-4 text-end">
                   <button type="submit" :class="profile.id ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ profile.id ? 'Perbarui Profil' : 'Simpan Profil' }}</button>
