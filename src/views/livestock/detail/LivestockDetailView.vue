@@ -105,7 +105,7 @@ onMounted(() => {
             </tr>
             <tr>
               <td>Umur</td>
-              <td>{{ livestock.age }} Tahun</td>
+              <td>{{ livestock.age }} Bulan</td>
             </tr>
             <tr>
               <td>Harga</td>

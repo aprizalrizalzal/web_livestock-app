@@ -11,6 +11,8 @@ const livestocks = ref([]);
 const searchQuery = ref('');
 const startNumber = 1;
 
+const role = localStorage.getItem('role');
+
 const message = ref('');
 
 const fetchLivestocks = async () => {
@@ -127,7 +129,7 @@ const filteredLivestocks = computed(() => {
               <td>{{ autoNumber(i) }}</td>
               <td>{{ livestock.livestock_type.name }}</td>
               <td>{{ livestock.livestock_species.name }}</td>
-              <td>{{ livestock.age }} Tahun</td>
+              <td>{{ livestock.age }} Bulan</td>
               <td>{{ livestock.gender === 'Male' ? 'Jantan' : 'Betina' }}</td>
               <td>{{ $n(livestock.price, 'currency', 'id-ID') }}</td>
               <td class="text-truncate" style="max-width: 150px">
@@ -137,7 +139,7 @@ const filteredLivestocks = computed(() => {
               <td v-else class="text-info">Tersedia</td>
               <td class="text-truncate text-center">
                 <button @click="navigateToDetail(livestock.id)" class="btn btn-primary me-2"><i class="bi bi-view-list"></i> Detail</button>
-                <button v-if="livestock.status === 0" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button v-if="livestock.status === 0 && role !== 'admin'" @click="navigateToEdit(livestock.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + livestock.id" class="btn btn-danger me-2"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + livestock.id" class="modal modal-lg" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
