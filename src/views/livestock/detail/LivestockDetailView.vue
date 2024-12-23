@@ -12,6 +12,7 @@ const livestockId = route.params.id;
 
 const livestock = ref({});
 const transaction = ref({});
+const role = localStorage.getItem('role');
 
 const message = ref('');
 const messageTransaction = ref('');
@@ -48,7 +49,7 @@ onMounted(() => {
   <div class="row">
     <div class="col-md-9">
       <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-      <button data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
+      <button v-if="role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
     </div>
     <div v-if="messageTransaction" class="mt-3 text-center">
       <div class="alert alert-danger">
