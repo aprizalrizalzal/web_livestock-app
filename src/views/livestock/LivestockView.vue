@@ -93,7 +93,7 @@ const filteredLivestocks = computed(() => {
   <div class="row">
     <div class="col-md-9">
       <button @click="goBack" class="btn btn-secondary my-2 me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
-      <button @click="navigateToAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
+      <button v-if="role !== 'admin'" @click="navigateToAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
     </div>
     <div class="col-md-3 text-end">
       <h2 class="mb-4">Hewan Ternak</h2>
