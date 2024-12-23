@@ -23,7 +23,7 @@ const loginUser = async () => {
       router.push({ name: 'login' });
     }
   } catch (error) {
-    
+    console.error(error);
   }
 };
 

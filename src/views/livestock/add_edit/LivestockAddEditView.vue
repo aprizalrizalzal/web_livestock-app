@@ -48,7 +48,7 @@ const fetchLivestockById = async () => {
     selectedLivestockSpeciesId.value = livestock.value.livestock_species_id;
     fetchLivestockTypes();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestock:', error);
+    console.error(error);
   }
 };
 
@@ -57,7 +57,7 @@ const fetchLivestockTypes = async () => {
     livestockTypes.value = await storeLivestockType.fetchLivestockTypes();
     fetchLivestockSpeciesByIdLivestockType();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestockType:', error);
+    console.error(error);
   }
 };
 
@@ -65,7 +65,7 @@ const fetchLivestockSpeciesByIdLivestockType = async () => {
   try {
     livestocksSpecies.value = await storeLivestockSpecies.fetchLivestockSpeciesByIdLivestockType(selectedLivestockTypeId.value);
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestockSpecies:', error);
+    console.error(error);
   }
 };
 
@@ -74,7 +74,7 @@ const saveLivestock = async () => {
     livestock.value = await storeLivestock.postLivestock(livestock.value);
     goBack();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data livestock:', error);
+    console.error(error);
   }
 };
 
@@ -88,7 +88,7 @@ const updateLivestock = async (livestockId) => {
     livestock.value = await storeLivestock.putLivestockById(livestockId, _livestock);
     goBack();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data livestock:', error);
+    console.error(error);
   }
 };
 
@@ -97,7 +97,7 @@ const fetchLivestockPhotosByIdLivestock = async () => {
     livestockPhotos.value = await storeLivestockPhoto.fetchLivestockPhotosByIdLivestock(livestockId);
     fetchLivestockById();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil gambar livestockPhotos:', error);
+    console.error(error);
   }
 };
 
@@ -112,7 +112,7 @@ const handleSampulFileUpload = async (event) => {
       livestock.value = await storeLivestock.postLivestockPhotoById(livestockId, formData);
       fetchLivestockById();
     } catch (error) {
-      console.error('Kesalahan dalam mengunggah gambar livestock:', error);
+      console.error(error);
     }
   }
 };
@@ -122,7 +122,7 @@ const putLivestockPhotoById = async (livestockId) => {
     livestock.value = await storeLivestock.putLivestockPhotoById(livestockId);
     fetchLivestockById();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus gambar livestock:', error);
+    console.error(error);
   }
 };
 
@@ -137,7 +137,7 @@ const handleDetailFileUpload = async (event) => {
       livestockPhotos.value = await storeLivestockPhoto.postLivestockPhotoByIdLivestock(livestockId, formData);
       fetchLivestockPhotosByIdLivestock();
     } catch (error) {
-      console.error('Kesalahan dalam mengunggah gambar livestockPhoto:', error);
+      console.error(error);
     }
   }
 };
@@ -147,7 +147,7 @@ const deleteLivestockPhotoById = async (livestockPhotoId) => {
     await storeLivestockPhoto.deleteLivestockPhotoById(livestockPhotoId);
     fetchLivestockPhotosByIdLivestock();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus gambar livestock:', error);
+    console.error(error);
   }
 };
 

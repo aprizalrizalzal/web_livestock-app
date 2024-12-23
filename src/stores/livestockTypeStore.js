@@ -41,7 +41,6 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           this.livestockTypes = response.data.livestockTypes;
           resolve(this.livestockTypes);
         } catch (error) {
-          console.error('Error in getLivestockTypes ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -91,7 +90,6 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           this.livestockType = response.data.livestockType;
           resolve(this.livestockType);
         } catch (error) {
-          console.error('Error in getLivestockTypeById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }

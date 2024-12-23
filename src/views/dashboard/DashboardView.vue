@@ -41,7 +41,7 @@ const fetchUsers = async () => {
     usersLength.value = users.value.length;
     fetchChartData();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data users:', error);
+    console.error(error);
   }
 };
 
@@ -55,7 +55,7 @@ const fetchLivestocks = async () => {
     livestocksLength.value = livestocks.value.length;
     fetchChartData();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestocks:', error);
+    console.error(error);
   }
 };
 
@@ -69,7 +69,7 @@ const fetchTransactions = async () => {
     transactionsLength.value = transactions.value.length;
     fetchChartData();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data transactions:', error);
+    console.error(error);
   }
 };
 
@@ -83,7 +83,7 @@ const fetchPayments = async () => {
     paymentsLength.value = payments.value.length;
     fetchChartData();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data payments:', error);
+    console.error(error);
   }
 };
 
@@ -105,7 +105,7 @@ const fetchChartData = async () => {
   try {
     chartData.value.datasets[0].data = [parseInt(usersLength.value), parseInt(livestocksLength.value), parseInt(transactionsLength.value), parseInt(paymentsLength.value)];
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data:', error);
+    console.error(error);
   }
 };
 

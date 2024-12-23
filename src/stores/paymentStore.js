@@ -41,7 +41,6 @@ export const usePaymentStore = defineStore('paymentStore', {
           this.payments = response.data.payments;
           resolve(this.payments);
         } catch (error) {
-          console.error('Error in getPayment ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -67,7 +66,6 @@ export const usePaymentStore = defineStore('paymentStore', {
           this.payment = response.data.payment;
           resolve(this.payment);
         } catch (error) {
-          console.error('Error in postPayment ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -90,7 +88,6 @@ export const usePaymentStore = defineStore('paymentStore', {
           this.payment = response.data.payment;
           resolve(this.payment);
         } catch (error) {
-          console.error('Error in getPaymentById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -116,7 +113,6 @@ export const usePaymentStore = defineStore('paymentStore', {
           this.payment = response.data.payment;
           resolve(this.payment);
         } catch (error) {
-          console.error('Error in putPaymentById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -143,7 +139,6 @@ export const usePaymentStore = defineStore('paymentStore', {
           this.transaction = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deletePaymentById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }

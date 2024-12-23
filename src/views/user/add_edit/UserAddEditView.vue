@@ -35,7 +35,7 @@ const fetchUserById = async () => {
     selectedUserSpeciesId.value = user.value.user_species_id;
     fetchUserTypes();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data user:', error);
+    console.error(error);
   }
 };
 
@@ -44,7 +44,7 @@ const saveUser = async () => {
     user.value = await storeUser.postUser(user.value);
     goBack();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data user:', error);
+    console.error(error);
   }
 };
 
@@ -57,7 +57,7 @@ const updateUser = async (userId) => {
     user.value = await storeUser.putUserById(userId, _user);
     goBack();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data user:', error);
+    console.error(error);
   }
 };
 

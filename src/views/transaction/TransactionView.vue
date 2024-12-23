@@ -28,7 +28,7 @@ const fetchTransactions = async () => {
   try {
     transactions.value = await storeTransaction.fetchTransactions();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data transactions:', error);
+    console.error(error);
   }
 };
 
@@ -52,7 +52,7 @@ const processTransaction = async (transactionId) => {
     transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
     fetchTransactions();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data transaction:', error);
+    console.error(error);
   }
 };
 
@@ -61,7 +61,7 @@ const methodTransaction = async (transactionId) => {
     transaction.value = await storeTransaction.putTransactionById(transactionId, _transaction.value);
     processPayment(transactionId);
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data transaction:', error);
+    console.error(error);
   }
 };
 
@@ -70,7 +70,7 @@ const processPayment = async (transactionId) => {
     payment.value = await storePayment.postPaymentByIdTransaction(transactionId);
     router.push({ name: 'payments' });
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data payment:', error);
+    console.error(error);
   }
 };
 
@@ -79,7 +79,7 @@ const deleteTransaction = async (transactionId) => {
     await storeTransaction.deleteTransactionById(transactionId);
     fetchTransactions();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus transaction');
+    console.error(error);
   }
 };
 

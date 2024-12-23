@@ -26,7 +26,7 @@ const fetchPayments = async () => {
   try {
     payments.value = await storePayment.fetchPayments();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data payments:', error);
+    console.error(error);
   }
 };
 
@@ -59,7 +59,7 @@ const processLivestock = async (livestock) => {
     await storeLivestock.putLivestockById(livestock.id, _livestock.value);
     fetchPayments();
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data livestock:', error);
+    console.error(error);
   }
 };
 
@@ -72,7 +72,7 @@ const processPaymentLivestock = async (paymentId, livestock) => {
       fetchPayments();
     }
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data payment:', error);
+    console.error(error);
   }
 };
 
@@ -81,7 +81,7 @@ const deletePayment = async (paymentId) => {
     await storePayment.deletePaymentById(paymentId);
     fetchPayments();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus payment');
+    console.error(error);
   }
 };
 

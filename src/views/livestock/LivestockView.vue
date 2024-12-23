@@ -17,7 +17,7 @@ const fetchLivestocks = async () => {
   try {
     livestocks.value = await store.fetchLivestocks();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestocks:', error);
+    console.error(error);
   }
 };
 
@@ -25,7 +25,7 @@ const fetchLivestocksByIdProfile = async () => {
   try {
     livestocks.value = await store.fetchLivestocksByIdProfile(profileId);
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestocks:', error);
+    console.error(error);
   }
 };
 
@@ -50,7 +50,7 @@ const deleteLivestockById = async (livestockId) => {
       fetchLivestocks();
     }
   } catch (error) {
-    console.error('Kesalahan dalam menghapus data livestock:', error);
+    console.error(error);
   }
 };
 

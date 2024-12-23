@@ -27,7 +27,7 @@ const fetchPayments = async () => {
       filterPaymentsByMonth();
     }
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data payments:', error);
+    console.error(error);
   }
 };
 

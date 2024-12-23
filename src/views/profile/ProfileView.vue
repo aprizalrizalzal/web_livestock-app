@@ -18,8 +18,6 @@ const profile = ref({
 
 const user = ref({});
 
-const messagePhoto = ref('');
-
 onMounted(() => {});
 
 const isEditPhoto = ref(false);
@@ -31,7 +29,7 @@ const fetchProfile = async () => {
       fetchUserById(profile.value.user_id);
     }
   } catch (error) {
-
+    console.error(error);
   }
 };
 
@@ -39,7 +37,7 @@ const fetchUserById = async (userId) => {
   try {
     user.value = await storeUser.fetchUserById(userId);
   } catch (error) {
-
+    console.error(error);
   }
 };
 
@@ -55,8 +53,7 @@ const handleFileUpload = async (event) => {
       isEditPhoto.value = false;
       fetchProfile();
     } catch (error) {
-      console.error('Kesalahan dalam mengunggah gambar profil:', error);
-      messagePhoto.value = error;
+      console.error(error);
     }
   }
 };
@@ -66,8 +63,7 @@ const putProfilePhoto = async () => {
     profile.value = await storeProfile.putProfilePhoto();
     fetchProfile();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus gambar profile:', error);
-    messagePhoto.value = error;
+    console.error(error);
   }
 };
 
@@ -76,7 +72,7 @@ const saveProfile = async () => {
     profile.value = await storeProfile.postProfile(profile.value);
     window.location.reload();
   } catch (error) {
-
+    console.error(error);
   }
 };
 
@@ -84,7 +80,7 @@ const updateProfile = async () => {
   try {
     profile.value = await storeProfile.putProfile(profile.value);
   } catch (error) {
-
+    console.error(error);
   }
 };
 
@@ -117,11 +113,6 @@ onMounted(fetchProfile);
             <span v-if="user.roles">{{ user.email }}</span>
             <span v-if="user.permissions">{{ user.roles[0].name }} ({{ user.permissions[0].name }})</span>
             <div class="mt-5 text-center">
-              <div v-if="messagePhoto" class="mt-3 text-center">
-                <div class="alert alert-danger">
-                  <small>{{ messagePhoto }}</small>
-                </div>
-              </div>
               <input type="file" @change="handleFileUpload" class="form-control" id="inputGroupFile" style="display: none" />
               <label v-if="profile.photo_url" class="btn btn-primary shadow-sm mx-2" for="inputGroupFile"><i class="bi bi-upload"></i> Unggah</label>
               <button v-if="profile.photo_url" @click="putProfilePhoto" class="btn btn-danger shadow-sm my-2"><i class="bi bi-eraser-fill"></i> Hapus Foto</button>

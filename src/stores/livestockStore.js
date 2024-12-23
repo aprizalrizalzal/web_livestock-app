@@ -35,7 +35,6 @@ export const useLivestockStore = defineStore({
           this.livestocks = response.data.livestocks;
           resolve(this.livestocks);
         } catch (error) {
-          console.error('Error in fetchLivestocks ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -58,7 +57,6 @@ export const useLivestockStore = defineStore({
           this.livestocks = response.data.livestocks;
           resolve(this.livestocks);
         } catch (error) {
-          console.error('Error in fetchLivestocks ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -81,7 +79,6 @@ export const useLivestockStore = defineStore({
           this.livestocks = response.data.livestocks;
           resolve(this.livestocks);
         } catch (error) {
-          console.error('Error in fetchLivestocksByIdProfile ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -186,7 +183,6 @@ export const useLivestockStore = defineStore({
           this.livestock = response.data.livestock;
           resolve(this.livestock);
         } catch (error) {
-          console.error('Error in fetchLivestockById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }

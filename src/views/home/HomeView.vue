@@ -7,16 +7,13 @@ const store = useLivestockStore();
 const router = useRouter();
 const livestocks = ref([]);
 const searchQuery = ref('');
-
-const error = ref('');
 const reload = localStorage.getItem('reloaded');
 
 const fetchLivestocksAnonymous = async () => {
   try {
     livestocks.value = await store.fetchLivestocksAnonymous();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestocks:', error);
-    error.value = error;
+    console.error(error);
   }
 };
 
@@ -51,11 +48,6 @@ const filteredLivestocks = computed(() => {
   <h2 class="mb-4">Beranda</h2>
   <div class="col-md-12">
     <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan, Jenis, Alamat" aria-label="Search" />
-  </div>
-  <div v-if="error" class="mt-3 text-center">
-    <div role="alert" class="fade alert alert-danger show">
-      <small>{{ error }}</small>
-    </div>
   </div>
   <div class="home" v-if="filteredLivestocks[0] && filteredLivestocks[0].profile && filteredLivestocks[0].livestock_type && filteredLivestocks[0].livestock_species">
     <div class="row justify-content-center">

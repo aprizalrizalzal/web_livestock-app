@@ -18,7 +18,7 @@ const fetchLivestockById = async () => {
   try {
     livestock.value = await storeLivestock.fetchLivestockById(livestockId);
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data detail livestock:', error);
+    console.error(error);
   }
 };
 
@@ -27,7 +27,7 @@ const addTransaction = async () => {
     transaction.value = await storeTransaction.postTransactionByIdLivestok(livestockId);
     router.push({ name: 'transactions' });
   } catch (error) {
-    console.error('Kesalahan dalam mengirim data transaction:', error);
+    console.error(error);
   }
 };
 

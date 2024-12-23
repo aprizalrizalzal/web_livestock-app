@@ -11,7 +11,7 @@ const logoutUser = async () => {
     await store.logout();
     router.push({ name: 'login' });
   } catch (error) {
-    console.error('Kesalahan dalam logout:', error);
+    console.error(error);
   }
 };
 

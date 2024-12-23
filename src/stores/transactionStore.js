@@ -41,7 +41,6 @@ export const useTransactionStore = defineStore('transactionStore', {
           this.transactions = response.data.transactions;
           resolve(this.transactions);
         } catch (error) {
-          console.error('Error in getTransaction ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -92,7 +91,6 @@ export const useTransactionStore = defineStore('transactionStore', {
           this.transaction = response.data.transaction;
           resolve(this.transaction);
         } catch (error) {
-          console.error('Error in getTransactionById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }

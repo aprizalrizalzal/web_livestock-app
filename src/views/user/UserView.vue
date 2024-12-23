@@ -15,7 +15,7 @@ const fetchUsers = async () => {
   try {
     users.value = await storeUser.fetchUsers();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data users:', error);
+    console.error(error);
   }
 };
 
@@ -28,7 +28,7 @@ const deleteUserById = async (userId) => {
     users.value = await storeUser.deleteUserById(userId);
     fetchUsers();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus data users:', error);
+    console.error(error);
   }
 };
 

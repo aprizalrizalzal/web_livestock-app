@@ -44,7 +44,6 @@ export const useUserStore = defineStore({
           this.users = response.data.users;
           resolve(this.users);
         } catch (error) {
-          console.error('Error in getUsers ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -67,7 +66,6 @@ export const useUserStore = defineStore({
           this.user = response.data.user;
           resolve(this.user);
         } catch (error) {
-          console.error('Error in getUserById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -93,7 +91,6 @@ export const useUserStore = defineStore({
           this.user = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteUserById ', error);
           this.error = error.response.data.message;
           reject(this.error);
         }

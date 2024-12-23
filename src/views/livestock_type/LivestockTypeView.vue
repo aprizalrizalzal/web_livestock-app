@@ -16,7 +16,7 @@ const fetchLivestockTypes = async () => {
   try {
     livestockTypes.value = await store.fetchLivestockTypes();
   } catch (error) {
-    console.error('Kesalahan dalam mengambil data livestockTypes:', error);
+    console.error(error);
   }
 };
 
@@ -25,7 +25,7 @@ const addLivestockType = async () => {
     livestockTypes.value = await store.postLivestockType(_livestockType.value);
     fetchLivestockTypes();
   } catch (error) {
-    console.error('Kesalahan dalam menambah data livestockTypes:', error);
+    console.error(error);
   }
 };
 
@@ -38,7 +38,7 @@ const updateLivestockType = async (livestockTypeId) => {
     livestockTypes.value = await store.putLivestockTypeById(livestockTypeId, _livestockType.value);
     fetchLivestockTypes();
   } catch (error) {
-    console.error('Kesalahan dalam merubah data livestockTypes:', error);
+    console.error(error);
   }
 };
 
@@ -47,7 +47,7 @@ const deleteLivestockType = async (livestockTypeId) => {
     livestockTypes.value = await store.deleteLivestockTypeById(livestockTypeId);
     fetchLivestockTypes();
   } catch (error) {
-    console.error('Kesalahan dalam menghapus data livestockTypes:', error);
+    console.error(error);
   }
 };
 
