@@ -116,10 +116,11 @@ const filteredLivestocks = computed(() => {
               <th>No.</th>
               <th>Hewan</th>
               <th>Jenis</th>
-              <th>Umur</th>
+              <th>Umur </th>
+              <th>Berat (Satuan) </th>
               <th>Jenis Kelamin</th>
               <th>Harga</th>
-              <th>Detail</th>
+              <th>Kondisi</th>
               <th>Status</th>
               <th class="text-center">Aksi</th>
             </tr>
@@ -130,10 +131,11 @@ const filteredLivestocks = computed(() => {
               <td>{{ livestock.livestock_type.name }}</td>
               <td>{{ livestock.livestock_species.name }}</td>
               <td>{{ livestock.age }} Bulan</td>
+              <td>{{ livestock.weight }} {{livestock.unit}}</td>
               <td>{{ livestock.gender === 'Male' ? 'Jantan' : 'Betina' }}</td>
               <td>{{ $n(livestock.price, 'currency', 'id-ID') }}</td>
               <td class="text-truncate" style="max-width: 150px">
-                {{ livestock.detail }}
+                {{ livestock.condition }}
               </td>
               <td v-if="livestock.status === 1" class="text-success">Terjual</td>
               <td v-else class="text-info">Tersedia</td>

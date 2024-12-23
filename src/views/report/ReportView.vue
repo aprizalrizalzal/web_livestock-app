@@ -95,7 +95,7 @@ const viewPDF = () => {
   doc.text(monthText, doc.internal.pageSize.width / 2, 30, 'center');
 
   const tableData = [];
-  const columns = ['No', 'Hewan Ternak', 'Tanggal Transaksi', 'Pembeli', 'No. Telepon', 'Tanggal Pembayaran', 'Penjual', 'No. Telepon', 'Status', 'Harga'];
+  const columns = ['No', 'Hewan Ternak', 'Tanggal Transaksi', 'Pembeli', 'No. Telepon', 'Tanggal Pembayaran', 'Penjual', 'No. Telepon', 'Status', 'Harga (Rp)'];
 
   filteredPayments.value.forEach((payment, i) => {
     const rowData = [
@@ -194,7 +194,7 @@ onMounted(() => {
               <th>Penjual</th>
               <th>No. Telepon</th>
               <th>Status</th>
-              <th>Harga</th>
+              <th>Harga (Rp)</th>
             </tr>
           </thead>
           <tbody v-for="(payment, i) in filteredPayments" :key="payment.id">

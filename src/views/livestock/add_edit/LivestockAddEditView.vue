@@ -22,14 +22,24 @@ const livestock = ref({
   livestock_type_id: selectedLivestockTypeId,
   livestock_species_id: selectedLivestockSpeciesId,
   age: '',
+  weight: '',
+  unit: '',
   gender: '',
   price: '',
-  detail: '',
+  condition: '',
 });
 
 const livestockPhotos = ref([]);
 const livestockTypes = ref({});
 const livestocksSpecies = ref([]);
+const livestocksUnits = ref([
+  {
+    name: 'Ton'
+  },
+  {
+    name: 'Quintal'
+  }
+]);
 
 const message = ref('');
 
@@ -262,16 +272,35 @@ onMounted(() => {
               </div>
             </div>
             <div class="col-md-12">
-              <label class="labels">Umur</label>
-              <input type="text" class="form-control shadow-sm mb-2" placeholder="Umur" v-model="livestock.age" required />
+              <label class="labels">Umur (Bulan)</label>
+              <input type="text" class="form-control shadow-sm mb-2" placeholder="Umur (Bulan)" v-model="livestock.age" required />
+            </div>
+            <div class="d-flex col-md-12 gap-2">
+              <div class="col-md-6">
+                <label class="labels">Berat</label>
+                <input type="text" class="form-control shadow-sm mb-2" placeholder="Berat" v-model="livestock.weight" required />
+              </div>
+              <div class="col-md-6">
+                <label class="labels">Satuan</label>
+                <select class="form-select mb-2" v-model="livestock.unit">
+                <option v-for="livestocksUnit in livestocksUnits" :value="livestocksUnit.name" :key="livestocksUnit.name">
+                  {{ livestocksUnit.name }}
+                </option>
+              </select>
+              <div v-if="messageSpecies" class="mt-3 text-center">
+                <div class="alert alert-primary p-2">
+                  <small>{{ messageSpecies }}</small>
+                </div>
+              </div>
+              </div>
             </div>
             <div class="col-md-12">
-              <label class="labels">Harga</label>
-              <input type="text" class="form-control shadow-sm mb-2" placeholder="Harga" v-model="livestock.price" required />
+              <label class="labels">Harga (Rp)</label>
+              <input type="text" class="form-control shadow-sm mb-2" placeholder="Harga (Rp)" v-model="livestock.price" required />
             </div>
             <div class="col-md-12">
-              <label class="labels">Detail</label>
-              <textarea type="text" class="form-control shadow-sm mb-2" rows="3" placeholder="Detail" v-model="livestock.detail" required></textarea>
+              <label class="labels">Kondisi</label>
+              <textarea type="text" class="form-control shadow-sm mb-2" rows="3" placeholder="Kondisi" v-model="livestock.condition" required></textarea>
             </div>
             <div v-if="message" class="mt-3 text-center">
               <div class="alert alert-danger">

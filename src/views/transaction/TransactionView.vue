@@ -148,7 +148,7 @@ const filteredTransactions = computed(() => {
               <th>Hewan Ternak</th>
               <th>Penjual</th>
               <th>No. Telepon</th>
-              <th>Harga</th>
+              <th>Harga (Rp)</th>
               <th>Status</th>
               <th class="text-center">Aksi</th>
             </tr>

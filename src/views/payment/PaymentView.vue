@@ -57,7 +57,7 @@ const processLivestock = async (livestock) => {
       age: livestock.age,
       price: livestock.price,
       status: true,
-      detail: livestock.detail,
+      detail: livestock.condition,
     });
     await storeLivestock.putLivestockById(livestock.id, _livestock.value);
     fetchPayments();
@@ -145,7 +145,7 @@ const filteredPayments = computed(() => {
               <th>Tanggal Pembayaran</th>
               <th>Metode Pembayaran</th>
               <th>Hewan Ternak</th>
-              <th>Harga</th>
+              <th>Harga (Rp)</th>
               <th>Status</th>
               <th class="text-center">Aksi</th>
             </tr>

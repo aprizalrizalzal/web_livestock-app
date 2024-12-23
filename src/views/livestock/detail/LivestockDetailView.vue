@@ -70,7 +70,7 @@ onMounted(() => {
               Anda yakin ingin memesan hewan <b>{{ livestock.livestock_type.name }}</b> Jenis <b>{{ livestock.livestock_species.name }}</b
               >?
             </p>
-            <p>Harga {{ $n(livestock.price, 'currency', 'id-ID') }}</p>
+            <p>Harga (Rp) {{ $n(livestock.price, 'currency', 'id-ID') }}</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -85,6 +85,26 @@ onMounted(() => {
     <div v-if="message" class="mt-3 text-center">
       <div class="alert alert-danger">
         <small>{{ message }}</small>
+      </div>
+    </div>
+    <div class="col-md-12 pt-4 mt-4">
+      <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
+        <ol class="carousel-indicators">
+          <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
+            <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
+          </div>
+        </div>
+        <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </a>
       </div>
     </div>
     <div class="bg-body rounded shadow-sm">
@@ -109,6 +129,10 @@ onMounted(() => {
               <td>{{ livestock.age }} Bulan</td>
             </tr>
             <tr>
+              <td>Berat (Satuan)</td>
+              <td>{{ livestock.weight }} {{ livestock.unit }}</td>
+            </tr>
+            <tr>
               <td>Harga</td>
               <td>{{ $n(livestock.price, 'currency', 'id-ID') }}</td>
             </tr>
@@ -117,8 +141,8 @@ onMounted(() => {
               <td>{{ livestock.status === 0 ? 'Tersedia' : 'Terjual' }}</td>
             </tr>
             <tr>
-              <td class="text-truncate">Detail</td>
-              <td>{{ livestock.detail }}</td>
+              <td class="text-truncate">Kondisi</td>
+              <td>{{ livestock.condition }}</td>
             </tr>
             <tr>
               <th>Penjual</th>
@@ -142,26 +166,6 @@ onMounted(() => {
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-    <div class="col-md-12 pt-4 mt-4">
-      <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">
-        <ol class="carousel-indicators">
-          <span v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :data-bs-target="'#carouselExampleCaptions-' + livestock.livestock_photos.id" :data-bs-slide-to="index" :class="{ active: index === 0 }"></span>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item" v-for="(livestockPhoto, index) in livestock.livestock_photos" :key="index" :class="{ active: index === 0 }">
-            <img :src="livestockPhoto.photo_url" class="rounded mx-auto d-block" style="width: 100%; height: 600px; object-fit: cover" :alt="'Foto Hewan ternak ' + livestockPhoto.id" />
-          </div>
-        </div>
-        <a class="carousel-control-prev" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </a>
-        <a class="carousel-control-next" :href="'#carouselExampleCaptions-' + livestock.livestock_photos.id" role="button" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </a>
       </div>
     </div>
   </div>
