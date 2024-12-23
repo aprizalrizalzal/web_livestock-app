@@ -5,13 +5,14 @@ export const usePaymentStore = defineStore('paymentStore', {
   state: () => ({
     payments: null,
     payment: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getPayments: (state) => state.payments,
     getPayment: (state) => state.payment,
-    getMessage: (state) => state.message,
+    
   },
 
   actions: {
@@ -26,6 +27,7 @@ export const usePaymentStore = defineStore('paymentStore', {
 
     fetchPayments() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -40,14 +42,16 @@ export const usePaymentStore = defineStore('paymentStore', {
           resolve(this.payments);
         } catch (error) {
           console.error('Error in getPayment ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postPaymentByIdTransaction(transactionId) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -64,14 +68,15 @@ export const usePaymentStore = defineStore('paymentStore', {
           resolve(this.payment);
         } catch (error) {
           console.error('Error in postPayment ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchPaymentById(id) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -86,14 +91,16 @@ export const usePaymentStore = defineStore('paymentStore', {
           resolve(this.payment);
         } catch (error) {
           console.error('Error in getPaymentById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putPaymentById(id, paymentData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -110,14 +117,16 @@ export const usePaymentStore = defineStore('paymentStore', {
           resolve(this.payment);
         } catch (error) {
           console.error('Error in putPaymentById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deletePaymentById(id) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -135,8 +144,8 @@ export const usePaymentStore = defineStore('paymentStore', {
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deletePaymentById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

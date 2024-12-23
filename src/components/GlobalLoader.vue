@@ -1,22 +1,50 @@
 <script setup>
 import { useAuthStore } from '../stores/authStore';
+import { useLivestockPhotoStore } from '../stores/livestockPhotoStore';
+import { useLivestockSpeciesStore } from '../stores/livestockSpeciesStore';
+import { useLivestockStore } from '../stores/livestockStore';
+import { useLivestockTypeStore } from '../stores/livestockTypeStore';
+import { usePaymentStore } from '../stores/paymentStore';
 import { useProfileStore } from '../stores/profileStore';
+import { useTransactionStore } from '../stores/transactionStore';
+import { useUserStore } from '../stores/userStore';
 import { computed, ref, watch } from 'vue';
 
 const useAuth = useAuthStore();
+const useLivestockPhoto = useLivestockPhotoStore();
+const useLivestockSpecies = useLivestockSpeciesStore();
+const useLivestock = useLivestockStore();
+const useLivestockType = useLivestockTypeStore();
+const usePayment = usePaymentStore();
 const useProfile = useProfileStore();
+const useTransaction = useTransactionStore();
+const useUser = useUserStore();
 
 const isLoading = computed(() => {
     return (
         useAuth.loading ||
-        useProfile.loading
+        useLivestockPhoto.loading ||
+        useLivestockSpecies.loading ||
+        useLivestock.loading ||
+        useLivestockType.loading ||
+        usePayment.loading ||
+        useProfile.loading ||
+        useTransaction.loading ||
+        useUser.loading
     );
 });
 
 const hasError = computed(() => {
     return (
         useAuth.error ||
-        useProfile.error
+        useLivestockPhoto.error ||
+        useLivestockSpecies.error ||
+        useLivestock.error ||
+        useLivestockType.error ||
+        usePayment.error ||
+        useProfile.error ||
+        useTransaction.error ||
+        useUser.error
     );
 });
 
@@ -44,7 +72,15 @@ watch(hasError, (error) => {
     <Dialog v-model:visible="dialogError" :draggable="false" header="Warning" modal>
         <div>
             <span>{{
-                useAuth.error || useProfile.error
+                useAuth.error ||
+                useLivestockPhoto.error ||
+                useLivestockSpecies.error ||
+                useLivestock.error ||
+                useLivestockType.error ||
+                usePayment.error ||
+                useProfile.error ||
+                useTransaction.error ||
+                useUser.error
             }}</span>
         </div>
     </Dialog>

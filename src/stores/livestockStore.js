@@ -6,13 +6,14 @@ export const useLivestockStore = defineStore({
   state: () => ({
     livestocks: null,
     livestock: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getLivestocks: (state) => state.livestocks,
     getLivestock: (state) => state.livestock,
-    getMessage: (state) => state.message,
+    
   },
 
   actions: {
@@ -27,6 +28,7 @@ export const useLivestockStore = defineStore({
 
     fetchLivestocksAnonymous() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const response = await axios.get('/api/livestocks-anonymous');
 
@@ -34,14 +36,15 @@ export const useLivestockStore = defineStore({
           resolve(this.livestocks);
         } catch (error) {
           console.error('Error in fetchLivestocks ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchLivestocks() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -56,14 +59,15 @@ export const useLivestockStore = defineStore({
           resolve(this.livestocks);
         } catch (error) {
           console.error('Error in fetchLivestocks ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchLivestocksByIdProfile(profileId) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -78,14 +82,16 @@ export const useLivestockStore = defineStore({
           resolve(this.livestocks);
         } catch (error) {
           console.error('Error in fetchLivestocksByIdProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postLivestock(livestockData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -98,18 +104,21 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.livestock = response.data.livestock;
           resolve(this.livestock);
         } catch (error) {
-          console.error('Error in postLivestock ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postLivestockPhotoById(livestockId, livestockPhoto) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -123,18 +132,21 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.livestock = response.data.livestock;
           resolve(this.livestock);
         } catch (error) {
-          console.error('Error in postLivestockPhoto ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putLivestockPhotoById(livestockId) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -147,18 +159,20 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.livestock = response.data.livestock;
           resolve(this.livestock);
         } catch (error) {
-          console.error('Error in putLivestockPhotoById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchLivestockById(id) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -173,14 +187,16 @@ export const useLivestockStore = defineStore({
           resolve(this.livestock);
         } catch (error) {
           console.error('Error in fetchLivestockById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putLivestockById(id, livestockData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -193,18 +209,21 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.livestock = response.data.livestock;
           resolve(this.livestock);
         } catch (error) {
-          console.error('Error in putLivestockById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deleteLivestockById(id) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -217,12 +236,13 @@ export const useLivestockStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.livestock = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteLivestockById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

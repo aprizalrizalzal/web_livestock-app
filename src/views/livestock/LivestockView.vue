@@ -13,14 +13,11 @@ const startNumber = 1;
 
 const role = localStorage.getItem('role');
 
-const message = ref('');
-
 const fetchLivestocks = async () => {
   try {
     livestocks.value = await store.fetchLivestocks();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestocks:', error);
-    message.value = error;
   }
 };
 
@@ -29,7 +26,6 @@ const fetchLivestocksByIdProfile = async () => {
     livestocks.value = await store.fetchLivestocksByIdProfile(profileId);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestocks:', error);
-    message.value = error;
   }
 };
 
@@ -55,7 +51,6 @@ const deleteLivestockById = async (livestockId) => {
     }
   } catch (error) {
     console.error('Kesalahan dalam menghapus data livestock:', error);
-    message.value = error;
   }
 };
 
@@ -100,11 +95,6 @@ const filteredLivestocks = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Hewan Ternak atau Jenis" aria-label="Search" />
-    </div>
-    <div v-if="message" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ message }}</small>
-      </div>
     </div>
   </div>
   <div class="livestock" v-if="filteredLivestocks[0] && filteredLivestocks[0].profile && filteredLivestocks[0].livestock_type && filteredLivestocks[0].livestock_species">

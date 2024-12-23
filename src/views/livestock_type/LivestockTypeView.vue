@@ -12,14 +12,11 @@ const _livestockType = ref({
 const searchQuery = ref('');
 const startNumber = 1;
 
-const message = ref('');
-
 const fetchLivestockTypes = async () => {
   try {
     livestockTypes.value = await store.fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestockTypes:', error);
-    message.value = error;
   }
 };
 
@@ -29,7 +26,6 @@ const addLivestockType = async () => {
     fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam menambah data livestockTypes:', error);
-    message.value = error;
   }
 };
 
@@ -43,7 +39,6 @@ const updateLivestockType = async (livestockTypeId) => {
     fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam merubah data livestockTypes:', error);
-    message.value = error;
   }
 };
 
@@ -53,7 +48,6 @@ const deleteLivestockType = async (livestockTypeId) => {
     fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam menghapus data livestockTypes:', error);
-    message.value = error;
   }
 };
 
@@ -92,11 +86,6 @@ const filteredLivestockType = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Jenis Hewan Ternak" aria-label="Search" />
-    </div>
-    <div v-if="message" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ message }}</small>
-      </div>
     </div>
   </div>
   <div class="livestock-type" v-if="filteredLivestockType[0] && filteredLivestockType[0].livestock_species">

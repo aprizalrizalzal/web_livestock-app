@@ -58,6 +58,7 @@ export const useAuthStore = defineStore({
 
     fetchRoles() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const response = await axios.get('/api/roles');
 
@@ -72,6 +73,7 @@ export const useAuthStore = defineStore({
 
     fetchPermissions() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const response = await axios.get('/api/permissions');
 

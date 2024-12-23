@@ -17,7 +17,6 @@ const router = useRouter();
 const payments = ref([]);
 const filteredPayments = ref([]);
 const selectedMonth = ref('');
-const message = ref('');
 
 const fetchPayments = async () => {
   try {
@@ -29,7 +28,6 @@ const fetchPayments = async () => {
     }
   } catch (error) {
     console.error('Kesalahan dalam mengambil data payments:', error);
-    message.value = error;
   }
 };
 
@@ -171,11 +169,6 @@ onMounted(() => {
           <option value="">Semua Bulan</option>
           <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
         </select>
-      </div>
-    </div>
-    <div v-if="message" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ message }}</small>
       </div>
     </div>
   </div>

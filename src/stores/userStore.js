@@ -8,13 +8,14 @@ export const useUserStore = defineStore({
     user: null,
     roles: null,
     permissions: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getUsers: (state) => state.users,
     getUser: (state) => state.user,
-    getMessage: (state) => state.message,
+    
   },
 
   actions: {
@@ -29,6 +30,7 @@ export const useUserStore = defineStore({
 
     fetchUsers() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -43,14 +45,15 @@ export const useUserStore = defineStore({
           resolve(this.users);
         } catch (error) {
           console.error('Error in getUsers ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchUserById(id) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -65,14 +68,15 @@ export const useUserStore = defineStore({
           resolve(this.user);
         } catch (error) {
           console.error('Error in getUserById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deleteUserById(id) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -90,8 +94,8 @@ export const useUserStore = defineStore({
           resolve(response.data.message);
         } catch (error) {
           console.error('Error in deleteUserById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

@@ -6,15 +6,12 @@ import { useRouter } from 'vue-router';
 const store = useAuthStore();
 const router = useRouter();
 
-const message = ref('');
-
 const logoutUser = async () => {
   try {
     await store.logout();
     router.push({ name: 'login' });
   } catch (error) {
     console.error('Kesalahan dalam logout:', error);
-    message.value = error;
   }
 };
 

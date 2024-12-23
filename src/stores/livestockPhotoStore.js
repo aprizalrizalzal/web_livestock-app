@@ -6,13 +6,14 @@ export const useLivestockPhotoStore = defineStore({
   state: () => ({
     livestockPhotos: null,
     livestockPhoto: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getLivestockPhotos: (state) => state.livestockPhotos,
     getLivestockPhoto: (state) => state.livestockPhoto,
-    getMessage: (state) => state.message,
+    
   },
 
   actions: {
@@ -27,6 +28,7 @@ export const useLivestockPhotoStore = defineStore({
 
     fetchLivestockPhotosByIdLivestock(livestockId) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -40,15 +42,16 @@ export const useLivestockPhotoStore = defineStore({
           this.livestockPhotos = response.data.livestockPhotos;
           resolve(this.livestockPhotos);
         } catch (error) {
-          console.error('Error in fetchLivestockPhotosByIdProfile ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postLivestockPhotoByIdLivestock(livestockId, livestockPhoto) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -62,18 +65,21 @@ export const useLivestockPhotoStore = defineStore({
             headers,
           });
 
+          this.loading = false;
           this.livestockPhoto = response.data.livestockPhoto;
           resolve(this.livestockPhoto);
         } catch (error) {
-          console.error('Error in postLivestockPhoto ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deleteLivestockPhotoById(livestockPhotoId) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -86,13 +92,13 @@ export const useLivestockPhotoStore = defineStore({
             headers,
           });
 
-          // Assuming you want to reset to null after a successful delete.
+          this.loading = false;
           this.livestockPhoto = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteLivestockPhotoById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

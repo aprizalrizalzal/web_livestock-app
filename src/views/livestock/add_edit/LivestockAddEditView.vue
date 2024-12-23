@@ -41,14 +41,6 @@ const livestocksUnits = ref([
   }
 ]);
 
-const message = ref('');
-
-const messagePhoto = ref('');
-const messageDetailPhoto = ref('');
-
-const messageType = ref('');
-const messageSpecies = ref('');
-
 const fetchLivestockById = async () => {
   try {
     livestock.value = await storeLivestock.fetchLivestockById(livestockId);
@@ -57,7 +49,6 @@ const fetchLivestockById = async () => {
     fetchLivestockTypes();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestock:', error);
-    message.value = error;
   }
 };
 
@@ -67,7 +58,6 @@ const fetchLivestockTypes = async () => {
     fetchLivestockSpeciesByIdLivestockType();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestockType:', error);
-    messageType.value = error;
   }
 };
 
@@ -76,7 +66,6 @@ const fetchLivestockSpeciesByIdLivestockType = async () => {
     livestocksSpecies.value = await storeLivestockSpecies.fetchLivestockSpeciesByIdLivestockType(selectedLivestockTypeId.value);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestockSpecies:', error);
-    messageSpecies.value = error;
   }
 };
 
@@ -86,7 +75,6 @@ const saveLivestock = async () => {
     goBack();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestock:', error);
-    message.value = error;
   }
 };
 
@@ -101,7 +89,6 @@ const updateLivestock = async (livestockId) => {
     goBack();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data livestock:', error);
-    message.value = error;
   }
 };
 
@@ -111,7 +98,6 @@ const fetchLivestockPhotosByIdLivestock = async () => {
     fetchLivestockById();
   } catch (error) {
     console.error('Kesalahan dalam mengambil gambar livestockPhotos:', error);
-    messagePhoto.value = error;
   }
 };
 
@@ -127,7 +113,6 @@ const handleSampulFileUpload = async (event) => {
       fetchLivestockById();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestock:', error);
-      messagePhoto.value = error;
     }
   }
 };
@@ -138,7 +123,6 @@ const putLivestockPhotoById = async (livestockId) => {
     fetchLivestockById();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar livestock:', error);
-    messagePhoto.value = error;
   }
 };
 
@@ -154,18 +138,16 @@ const handleDetailFileUpload = async (event) => {
       fetchLivestockPhotosByIdLivestock();
     } catch (error) {
       console.error('Kesalahan dalam mengunggah gambar livestockPhoto:', error);
-      messageDetailPhoto.value = error;
     }
   }
 };
 
 const deleteLivestockPhotoById = async (livestockPhotoId) => {
   try {
-    message.value = await storeLivestockPhoto.deleteLivestockPhotoById(livestockPhotoId);
+    await storeLivestockPhoto.deleteLivestockPhotoById(livestockPhotoId);
     fetchLivestockPhotosByIdLivestock();
   } catch (error) {
     console.error('Kesalahan dalam menghapus gambar livestock:', error);
-    messageDetailPhoto.value = error;
   }
 };
 
@@ -199,11 +181,6 @@ onMounted(() => {
           <h4 class="mb-4">Foto Sampul</h4>
           <div class="text-center">
             <img v-if="livestock.photo_url" :src="livestock.photo_url" alt="Livestock Photo" style="width: 300px; height: 200px; object-fit: cover" class="rounded mx-auto d-block" />
-            <div v-if="messagePhoto" class="mt-3 text-center">
-              <div class="alert alert-danger p-2">
-                <small>{{ messagePhoto }}</small>
-              </div>
-            </div>
           </div>
           <div class="my-3 text-center">
             <input type="file" @change="handleSampulFileUpload" class="form-control" id="inputGroupSampulFile" style="display: none" />
@@ -216,11 +193,6 @@ onMounted(() => {
               <div class="col-md-6" v-for="livestockPhoto in livestockPhotos" :key="livestockPhoto.id">
                 <img v-if="livestockPhoto.photo_url" :src="livestockPhoto.photo_url" alt="Livestock Photos" style="width: 150px; height: 100px; object-fit: cover" class="rounded mx-auto d-block" />
                 <button @click="deleteLivestockPhotoById(livestockPhoto.id)" class="btn btn-danger shadow-sm my-3"><i class="bi bi-eraser-fill"></i> Hapus</button>
-              </div>
-            </div>
-            <div v-if="messageDetailPhoto" class="mt-3 text-center">
-              <div class="alert alert-danger p-2">
-                <small>{{ messageDetailPhoto }}</small>
               </div>
             </div>
           </div>
@@ -239,11 +211,6 @@ onMounted(() => {
                   {{ livestockType.name }}
                 </option>
               </select>
-              <div v-if="messageType" class="mt-3 text-center">
-                <div class="alert alert-danger p-2">
-                  <small>{{ messageType }}</small>
-                </div>
-              </div>
             </div>
             <div class="col-md-12">
               <label class="labels">Jenis</label>
@@ -252,11 +219,6 @@ onMounted(() => {
                   {{ livestockSpecies.name }}
                 </option>
               </select>
-              <div v-if="messageSpecies" class="mt-3 text-center">
-                <div class="alert alert-primary p-2">
-                  <small>{{ messageSpecies }}</small>
-                </div>
-              </div>
             </div>
             <div class="col-md-12">
               <label class="labels">Jenis Kelamin</label>
@@ -287,11 +249,6 @@ onMounted(() => {
                   {{ livestocksUnit.name }}
                 </option>
               </select>
-              <div v-if="messageSpecies" class="mt-3 text-center">
-                <div class="alert alert-primary p-2">
-                  <small>{{ messageSpecies }}</small>
-                </div>
-              </div>
               </div>
             </div>
             <div class="col-md-12">
@@ -301,11 +258,6 @@ onMounted(() => {
             <div class="col-md-12">
               <label class="labels">Kondisi</label>
               <textarea type="text" class="form-control shadow-sm mb-2" rows="3" placeholder="Kondisi" v-model="livestock.condition" required></textarea>
-            </div>
-            <div v-if="message" class="mt-3 text-center">
-              <div class="alert alert-danger">
-                <small>{{ message }}</small>
-              </div>
             </div>
             <div class="mt-3 text-end">
               <button type="submit" :class="livestockId ? ' btn btn-secondary shadow-sm' : 'btn btn-primary shadow-sm'"><i class="bi bi-save"></i> {{ livestockId ? 'Perbarui' : 'Simpan' }}</button>

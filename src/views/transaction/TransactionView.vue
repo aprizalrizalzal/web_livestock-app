@@ -24,14 +24,11 @@ const _transaction = ref({
   method: selectedTransactionMethod,
 });
 
-const message = ref('');
-
 const fetchTransactions = async () => {
   try {
     transactions.value = await storeTransaction.fetchTransactions();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data transactions:', error);
-    message.value = error;
   }
 };
 
@@ -56,7 +53,6 @@ const processTransaction = async (transactionId) => {
     fetchTransactions();
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
-    message.value = error;
   }
 };
 
@@ -66,7 +62,6 @@ const methodTransaction = async (transactionId) => {
     processPayment(transactionId);
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
-    message.value = error;
   }
 };
 
@@ -76,7 +71,6 @@ const processPayment = async (transactionId) => {
     router.push({ name: 'payments' });
   } catch (error) {
     console.error('Kesalahan dalam mengirim data payment:', error);
-    message.value = error;
   }
 };
 
@@ -86,7 +80,6 @@ const deleteTransaction = async (transactionId) => {
     fetchTransactions();
   } catch (error) {
     console.error('Kesalahan dalam menghapus transaction');
-    message.value = error;
   }
 };
 
@@ -129,11 +122,6 @@ const filteredTransactions = computed(() => {
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Penjual atau No. Telepon" aria-label="Search" />
-    </div>
-    <div v-if="message" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ message }}</small>
-      </div>
     </div>
   </div>
   <div class="transactions" v-if="filteredTransactions[0] && filteredTransactions[0].profile && filteredTransactions[0].livestock && filteredTransactions[0].livestock.livestock_type && filteredTransactions[0].livestock.livestock_species && filteredTransactions[0].livestock.profile">

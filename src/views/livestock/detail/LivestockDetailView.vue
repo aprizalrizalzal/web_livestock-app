@@ -14,15 +14,11 @@ const livestock = ref({});
 const transaction = ref({});
 const role = localStorage.getItem('role');
 
-const message = ref('');
-const messageTransaction = ref('');
-
 const fetchLivestockById = async () => {
   try {
     livestock.value = await storeLivestock.fetchLivestockById(livestockId);
   } catch (error) {
     console.error('Kesalahan dalam mengambil data detail livestock:', error);
-    message.value = error;
   }
 };
 
@@ -32,7 +28,6 @@ const addTransaction = async () => {
     router.push({ name: 'transactions' });
   } catch (error) {
     console.error('Kesalahan dalam mengirim data transaction:', error);
-    messageTransaction.value = error;
   }
 };
 
@@ -50,11 +45,6 @@ onMounted(() => {
     <div class="col-md-9">
       <button @click="goBack" class="btn btn-secondary me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
       <button v-if="role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModal'" class="btn btn-primary my-2"><i class="bi bi-bag-fill"></i> Pesan Hewan</button>
-    </div>
-    <div v-if="messageTransaction" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ messageTransaction }}</small>
-      </div>
     </div>
   </div>
   <div class="livestock-detail" v-if="livestock && livestock.livestock_photos && livestock.profile && livestock.livestock_type && livestock.livestock_species">
@@ -81,11 +71,6 @@ onMounted(() => {
     </div>
     <div class="col-md-12 text-center">
       <h2 class="mb-4">Hewan Ternak {{ livestock.livestock_type.name }} {{ livestock.livestock_species.name }}</h2>
-    </div>
-    <div v-if="message" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ message }}</small>
-      </div>
     </div>
     <div class="col-md-12 pt-4 mt-4">
       <div v-if="livestock.livestock_photos" :id="'carouselExampleCaptions-' + livestock.livestock_photos.id" class="carousel slide carousel-dark rounded">

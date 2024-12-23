@@ -17,11 +17,6 @@ const storeTransaction = useTransactionStore();
 const storePayment = usePaymentStore();
 const router = useRouter();
 
-const messageUser = ref('');
-const messageLivestock = ref('');
-const messageTransaction = ref('');
-const messagePayment = ref('');
-
 const users = ref([]);
 const livestocks = ref([]);
 const transactions = ref([]);
@@ -47,7 +42,6 @@ const fetchUsers = async () => {
     fetchChartData();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
-    messageUser.value = error;
   }
 };
 
@@ -62,7 +56,6 @@ const fetchLivestocks = async () => {
     fetchChartData();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data livestocks:', error);
-    messageLivestock.value = error;
   }
 };
 
@@ -77,7 +70,6 @@ const fetchTransactions = async () => {
     fetchChartData();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data transactions:', error);
-    messageTransaction.value = error;
   }
 };
 
@@ -92,7 +84,6 @@ const fetchPayments = async () => {
     fetchChartData();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data payments:', error);
-    messagePayment.value = error;
   }
 };
 
@@ -153,11 +144,6 @@ onMounted(() => {
                     >
                   </p>
                 </div>
-                <div v-if="messageUser" class="mt-3 text-center">
-                  <div class="alert alert-danger">
-                    <small>{{ messageUser }}</small>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -177,11 +163,6 @@ onMounted(() => {
                       >Jumlah Hewan <b>{{ livestocksLength }}</b></small
                     >
                   </p>
-                </div>
-                <div v-if="messageLivestock" class="mt-3 text-center">
-                  <div class="alert alert-danger">
-                    <small>{{ messageLivestock }}</small>
-                  </div>
                 </div>
               </div>
             </div>
@@ -203,11 +184,6 @@ onMounted(() => {
                     >
                   </p>
                 </div>
-                <div v-if="messageTransaction" class="mt-3 text-center">
-                  <div class="alert alert-danger">
-                    <small>{{ messageTransaction }}</small>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -227,11 +203,6 @@ onMounted(() => {
                       >Jumlah pembayaran <b>{{ paymentsLength }}</b></small
                     >
                   </p>
-                </div>
-                <div v-if="messagePayment" class="mt-3 text-center">
-                  <div class="alert alert-danger">
-                    <small>{{ messagePayment }}</small>
-                  </div>
                 </div>
               </div>
             </div>

@@ -9,15 +9,13 @@ const users = ref([]);
 const isEditing = ref(false);
 const searchQuery = ref('');
 const startNumber = 1;
-
-const message = ref('');
+const role = localStorage.getItem('role');
 
 const fetchUsers = async () => {
   try {
     users.value = await storeUser.fetchUsers();
   } catch (error) {
     console.error('Kesalahan dalam mengambil data users:', error);
-    message.value = error;
   }
 };
 
@@ -31,12 +29,19 @@ const deleteUserById = async (userId) => {
     fetchUsers();
   } catch (error) {
     console.error('Kesalahan dalam menghapus data users:', error);
-    message.value = error;
   }
 };
 
 const goBack = () => {
   router.back();
+};
+
+const navigateToAdd = () => {
+  router.push({ name: 'users-add' });
+};
+
+const navigateToEdit = (userId) => {
+  router.push({ name: 'users-edit', params: { id: userId } });
 };
 
 const autoNumber = (i) => {
@@ -64,18 +69,14 @@ const filteredUsers = computed(() => {
 <template>
   <div class="row">
     <div class="col-md-9">
-      <button @click="goBack" class="btn btn-secondary my-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      <button @click="goBack" class="btn btn-secondary my-2 me-2"><i class="bi bi-arrow-left"></i> Kembali</button>
+      <button v-if="role === 'admin'" @click="navigateToAdd" class="btn btn-primary my-2"><i class="bi bi-plus"></i> Tambah</button>
     </div>
     <div class="col-md-3 text-end">
       <h2 class="mb-4">Pengguna</h2>
     </div>
     <div class="col-md-12">
       <input v-model="searchQuery" class="form-control mb-2" type="search" placeholder="Cari Nama atau Email" aria-label="Search" />
-    </div>
-    <div v-if="message" class="mt-3 text-center">
-      <div class="alert alert-danger">
-        <small>{{ message }}</small>
-      </div>
     </div>
   </div>
   <div class="users" v-if="filteredUsers[0] && filteredUsers[0].profile && filteredUsers[0].roles[0]">
@@ -103,6 +104,7 @@ const filteredUsers = computed(() => {
                 <span v-else class="text-info">Tidak Ada</span>
               </td>
               <td class="text-truncate text-center">
+                <button v-if="role === 'admin'" @click="navigateToEdit(user.id)" class="btn btn-secondary me-2"><i class="bi bi-pencil-square"></i> Edit</button>
                 <button v-if="user.profile ? user.profile.id : null" data-bs-toggle="modal" :data-bs-target="'#showModalDetail-' + user.id" class="btn btn-primary me-2"><i class="bi bi-person-badge"></i> Detail</button>
                 <button v-else class="btn btn-warning me-2" disabled><i class="bi bi-person-fill-exclamation"></i> Profile</button>
 

@@ -5,13 +5,14 @@ export const useTransactionStore = defineStore('transactionStore', {
   state: () => ({
     transactions: null,
     transaction: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getTransactions: (state) => state.transactions,
     getTransaction: (state) => state.transaction,
-    getMessage: (state) => state.message,
+    
   },
 
   actions: {
@@ -26,6 +27,7 @@ export const useTransactionStore = defineStore('transactionStore', {
 
     fetchTransactions() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -40,14 +42,17 @@ export const useTransactionStore = defineStore('transactionStore', {
           resolve(this.transactions);
         } catch (error) {
           console.error('Error in getTransaction ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postTransactionByIdLivestok(livestockId) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+        
         try {
           await this.fetchCsrfToken();
 
@@ -60,18 +65,20 @@ export const useTransactionStore = defineStore('transactionStore', {
             headers,
           });
 
+          this.loading = false;
           this.transaction = response.data.transaction;
           resolve(this.transaction);
         } catch (error) {
-          console.error('Error in postTransaction ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchTransactionById(id) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -86,14 +93,17 @@ export const useTransactionStore = defineStore('transactionStore', {
           resolve(this.transaction);
         } catch (error) {
           console.error('Error in getTransactionById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putTransactionById(id, transactionData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+        
         try {
           await this.fetchCsrfToken();
 
@@ -106,18 +116,22 @@ export const useTransactionStore = defineStore('transactionStore', {
             headers,
           });
 
+          this.loading = false;
           this.transaction = response.data.transaction;
           resolve(this.transaction);
         } catch (error) {
-          console.error('Error in putTransactionById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deleteTransactionById(id) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+        
         try {
           await this.fetchCsrfToken();
 
@@ -130,13 +144,13 @@ export const useTransactionStore = defineStore('transactionStore', {
             headers,
           });
 
-          // Assuming you want to reset to null after a successful delete.
+          this.loading = false;
           this.transaction = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteTransactionById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },

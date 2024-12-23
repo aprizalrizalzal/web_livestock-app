@@ -34,6 +34,16 @@ const router = createRouter({
       component: () => import('@/views/user/UserView.vue'),
     },
     {
+      path: '/users/tambah',
+      name: 'users-add',
+      component: () => import('@/views/user/add_edit/UserAddEditView.vue'),
+    },
+    {
+      path: '/users/:id/edit',
+      name: 'users-edit',
+      component: () => import('@/views/user/add_edit/UserAddEditView.vue'),
+    },
+    {
       path: '/livestocks',
       name: 'livestocks',
       component: () => import('@/views/livestock/LivestockView.vue'),
@@ -110,7 +120,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     const authorizedRoutes = {
-      admin: ['dashboard', 'profile', 'home', 'users', 'livestocks', 'livestocks-profile', 'livestocks-detail', 'livestock-types', 'livestock-species', 'transactions', 'payments', 'reports', 'about', 'unauthorized'],
+      admin: ['dashboard', 'profile', 'home', 'users', 'users-add', 'users-edit', 'livestocks', 'livestocks-profile', 'livestocks-detail', 'livestock-types', 'livestock-species', 'transactions', 'payments', 'reports', 'about', 'unauthorized'],
       seller: ['profile', 'home', 'livestocks', 'livestocks-add', 'livestocks-edit', 'livestocks-detail', 'transactions', 'payments', 'reports', 'about', 'unauthorized'],
       buyer: ['profile', 'home', 'livestocks-detail', 'transactions', 'payments', 'about', 'unauthorized'],
     };

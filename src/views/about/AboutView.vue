@@ -10,7 +10,6 @@ const goBack = () => {
 <template>
   <div class="about">
     <main class="mb-3">
-      <p v-if="message" class="alert alert-info text-center">{{ message }}</p>
       <div class="text-center">
         <h2 class="mx-3 my-3">Tentang Sistem Informasi Penjualan Hewan Ternak</h2>
         <h2 class="mx-3 my-3">di Nusa Tenggara Barat!</h2>

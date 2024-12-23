@@ -5,13 +5,14 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
   state: () => ({
     livestockTypes: null,
     livestockType: null,
-    message: null,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getLivestockTypes: (state) => state.livestockTypes,
     getLivestockType: (state) => state.livestockType,
-    getMessage: (state) => state.message,
+    
   },
 
   actions: {
@@ -26,6 +27,7 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
 
     fetchLivestockTypes() {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -40,14 +42,16 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(this.livestockTypes);
         } catch (error) {
           console.error('Error in getLivestockTypes ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     postLivestockType(livestockTypeData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -60,18 +64,20 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
             headers,
           });
 
+          this.loading = false;
           this.livestockType = response.data.livestockType;
           resolve(this.livestockType);
         } catch (error) {
-          console.error('Error in postLivestockType ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     fetchLivestockTypeById(id) {
       return new Promise(async (resolve, reject) => {
+        this.error = null;
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -86,14 +92,16 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
           resolve(this.livestockType);
         } catch (error) {
           console.error('Error in getLivestockTypeById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     putLivestockTypeById(id, livestockTypeData) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
         try {
           await this.fetchCsrfToken();
 
@@ -106,18 +114,22 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
             headers,
           });
 
+          this.loading = false;
           this.livestockType = response.data.livestockType;
           resolve(this.livestockType);
         } catch (error) {
-          console.error('Error in putLivestockTypeById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
 
     deleteLivestockTypeById(id) {
       return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+       
         try {
           await this.fetchCsrfToken();
 
@@ -130,13 +142,13 @@ export const useLivestockTypeStore = defineStore('livestockTypeStore', {
             headers,
           });
 
-          // Assuming you want to reset to null after a successful delete.
+          this.loading = false;
           this.livestockType = null;
           resolve(response.data.message);
         } catch (error) {
-          console.error('Error in deleteLivestockTypeById ', error);
-          this.message = error.response.data.message;
-          reject(this.message);
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
         }
       });
     },
