@@ -46,6 +46,33 @@ export const useProfileStore = defineStore({
       });
     },
 
+    postVerification() {
+      return new Promise(async (resolve, reject) => {
+        this.loading = true;
+        this.error = null;
+
+        try {
+          await this.fetchCsrfToken();
+
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await axios.post('api/verification/send', {
+            headers,
+          });
+
+          this.loading = false;
+          resolve(response);
+        } catch (error) {
+          this.loading = false;
+          this.error = error.response.data.message;
+          reject(this.error);
+        }
+      });
+    },
+
     postProfile(profileData) {
       return new Promise(async (resolve, reject) => {
         this.loading = true;

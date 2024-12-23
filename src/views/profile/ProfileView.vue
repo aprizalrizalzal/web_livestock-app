@@ -33,6 +33,14 @@ const fetchProfile = async () => {
   }
 };
 
+const postVerification = async () => {
+  try {
+    await storeProfile.postVerification();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const fetchUserById = async (userId) => {
   try {
     user.value = await storeUser.fetchUserById(userId);
@@ -149,8 +157,8 @@ onMounted(fetchProfile);
                       <label class="labels">Nomor Telpon</label>
                       <input type="text" class="form-control shadow-sm mb-2" placeholder="Nomor Telepon" v-model="profile.phone_number" required />
                     </div>
-                    <div class="ms-2 mt-auto mb-2">
-                      <button type="button" v-if="profile.phone_number_verified_at === null" class="btn btn-success shadow-sm">Verifikasi</button>
+                    <div v-if="profile.phone_number" class="ms-2 mt-auto mb-2">
+                      <button type="button" v-if="profile.phone_number_verified_at === null" @click="postVerification" class="btn btn-success shadow-sm">Verifikasi</button>
                       <p v-else class="text-success">Terverifikasi</p>
                     </div>
                   </div>
