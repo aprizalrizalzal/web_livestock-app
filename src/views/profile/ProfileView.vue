@@ -12,6 +12,7 @@ const profile = ref({
   name: '',
   gender: '',
   phone_number: '',
+  phone_number_verified_at: '',
   address: '',
 });
 
@@ -158,7 +159,8 @@ onMounted(fetchProfile);
                       <input type="text" class="form-control shadow-sm mb-2" placeholder="Nomor Telepon" v-model="profile.phone_number" required />
                     </div>
                     <div class="ms-2 mt-auto mb-2">
-                    <button type="button" v-if="!phone_number_verified_at" class="btn btn-success shadow-sm">Verifikasi</button>
+                      <button type="button" v-if="profile.phone_number_verified_at === null" class="btn btn-success shadow-sm">Verifikasi</button>
+                      <p v-else class="text-success">Terverifikasi</p>
                     </div>
                   </div>
                 </div>
