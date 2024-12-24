@@ -138,7 +138,7 @@ const filteredTransactions = computed(() => {
               <th>No. Telepon</th>
               <th>Harga (Rp)</th>
               <th>Status</th>
-              <th class="text-center">Aksi</th>
+              <th v-if="!role === 'buyer'" class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody v-for="(transaction, i) in filteredTransactions" :key="transaction.id">
@@ -209,7 +209,7 @@ const filteredTransactions = computed(() => {
                   </div>
                 </div>
 
-                <button data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + transaction.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
+                <button v-if="!role === 'buyer'" data-bs-toggle="modal" :data-bs-target="'#showModalDelete-' + transaction.id" class="btn btn-danger"><i class="bi bi-eraser-fill"></i> Hapus</button>
                 <div :id="'showModalDelete-' + transaction.id" class="modal modal-lg" tabindex="-1" role="dialog">
                   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
