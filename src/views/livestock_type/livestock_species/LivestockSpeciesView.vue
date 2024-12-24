@@ -94,7 +94,6 @@ const filteredLivestockSpecies = computed(() => {
             <tr>
               <th>No.</th>
               <th>Spesies Hewan Ternak</th>
-              <th class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody v-for="(livestockSpecies, i) in filteredLivestockSpecies" :key="livestockSpecies.id">

@@ -90,7 +90,6 @@ const filteredUsers = computed(() => {
               <th>Email</th>
               <th class="text-center">Peran</th>
               <th class="text-center">Hewan Ternak</th>
-              <th class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody v-for="(user, i) in filteredUsers" :key="user.id">

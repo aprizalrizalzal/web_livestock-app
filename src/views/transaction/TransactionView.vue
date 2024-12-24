@@ -138,7 +138,6 @@ const filteredTransactions = computed(() => {
               <th>No. Telepon</th>
               <th>Harga (Rp)</th>
               <th>Status</th>
-              <th v-if="role !== 'buyer'" class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody v-for="(transaction, i) in filteredTransactions" :key="transaction.id">
