@@ -28,6 +28,7 @@ export const usePaymentStore = defineStore('paymentStore', {
     fetchPayments() {
       return new Promise(async (resolve, reject) => {
         this.error = null;
+
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -51,6 +52,7 @@ export const usePaymentStore = defineStore('paymentStore', {
       return new Promise(async (resolve, reject) => {
         this.loading = true;
         this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -63,9 +65,11 @@ export const usePaymentStore = defineStore('paymentStore', {
             headers,
           });
 
+          this.loading = false;
           this.payment = response.data.payment;
           resolve(this.payment);
         } catch (error) {
+          this.loading = false;
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -75,6 +79,7 @@ export const usePaymentStore = defineStore('paymentStore', {
     fetchPaymentById(id) {
       return new Promise(async (resolve, reject) => {
         this.error = null;
+
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -98,6 +103,7 @@ export const usePaymentStore = defineStore('paymentStore', {
       return new Promise(async (resolve, reject) => {
         this.loading = true;
         this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -110,9 +116,11 @@ export const usePaymentStore = defineStore('paymentStore', {
             headers,
           });
 
+          this.loading = false;
           this.payment = response.data.payment;
           resolve(this.payment);
         } catch (error) {
+          this.loading = false;
           this.error = error.response.data.message;
           reject(this.error);
         }
@@ -123,6 +131,7 @@ export const usePaymentStore = defineStore('paymentStore', {
       return new Promise(async (resolve, reject) => {
         this.loading = true;
         this.error = null;
+
         try {
           await this.fetchCsrfToken();
 
@@ -135,10 +144,11 @@ export const usePaymentStore = defineStore('paymentStore', {
             headers,
           });
 
-          // Assuming you want to reset to null after a successful delete.
+          this.loading = false;
           this.transaction = null;
           resolve(response.data.message);
         } catch (error) {
+          this.loading = false;
           this.error = error.response.data.message;
           reject(this.error);
         }

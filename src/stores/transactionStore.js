@@ -28,6 +28,7 @@ export const useTransactionStore = defineStore('transactionStore', {
     fetchTransactions() {
       return new Promise(async (resolve, reject) => {
         this.error = null;
+
         try {
           const token = localStorage.getItem('token');
           const headers = {
@@ -78,6 +79,7 @@ export const useTransactionStore = defineStore('transactionStore', {
     fetchTransactionById(id) {
       return new Promise(async (resolve, reject) => {
         this.error = null;
+        
         try {
           const token = localStorage.getItem('token');
           const headers = {
