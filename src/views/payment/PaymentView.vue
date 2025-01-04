@@ -52,9 +52,11 @@ const processLivestock = async (livestock) => {
       livestock_species_id: livestock.livestock_species_id,
       gender: livestock.gender,
       age: livestock.age,
+      weight: livestock.weight,
+      unit: livestock.unit,
       price: livestock.price,
       status: true,
-      detail: livestock.condition,
+      condition: livestock.condition,
     });
     await storeLivestock.putLivestockById(livestock.id, _livestock.value);
     fetchPayments();
